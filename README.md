@@ -1,13 +1,35 @@
-# ESMAD - Project II - WebPII - Interdisplinary Project [Property Rental System]- 2324 CozyStay
+# CozyStay
 
-Repository for the Interdisplinary Project made in the scope of the Project II - 2nd year of the Degree in Technologies and Information Systems for the Web (TSIW) 
-(ESMAD-P.PORTO)
+This template should help get you started developing with Vue 3 in Vite.
 
-Students:
+## Recommended IDE Setup
 
-* Diogo Vale (40220475@esmad.ipp.pt)
-* Pedro Carneiro (40220243@esmad.ipp.pt)
-* Simão Freitas (40220191@esmad.ipp.pt)
+[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
+## Customize configuration
 
-Front-End of CozyStay
+See [Vite Configuration Reference](https://vitejs.dev/config/).
+
+## Project Setup
+
+```sh
+npm install
+```
+
+### Compile and Hot-Reload for Development
+
+```sh
+npm run dev
+```
+
+### Compile and Minify for Production
+
+```sh
+npm run build
+```
+
+### Run Unit Tests with [Vitest](https://vitest.dev/)
+
+```sh
+npm run test:unit
+```
