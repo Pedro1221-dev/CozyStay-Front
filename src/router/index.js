@@ -49,7 +49,7 @@ const router = createRouter({
       component: PropertyListView,
     },
     {
-      path: '/property',
+      path: '/property/:id',
       name: 'property',
       component: PropertyView,
     },
