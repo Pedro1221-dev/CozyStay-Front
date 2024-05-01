@@ -1,7 +1,9 @@
 <script setup>
+import Navbar from '../components/Navbar.vue';
 </script>
 
 <template>
+    <Navbar />
     <div class="navbar">
         <div class="lettering-logo">CozyStay</div>
         <p class="selected">Overview</p>
