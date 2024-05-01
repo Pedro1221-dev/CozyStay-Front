@@ -82,7 +82,7 @@
      display: flex;
      justify-content: space-between;
      align-items: center;
-     padding: 0 100px;
+     padding: 20px 100px;
      background-color: #193D4E;
      color: white;
    }
