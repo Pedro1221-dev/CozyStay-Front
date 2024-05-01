@@ -102,6 +102,7 @@ export default {
     width: 107.125rem;
     height: 50rem;
     background-image: url('../assets/img/login/login-background.webp'); 
+    background-size: cover;
     border-radius: inherit; 
 }
   
