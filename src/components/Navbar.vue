@@ -85,6 +85,7 @@
      padding: 20px 100px;
      background-color: #193D4E;
      color: white;
+     z-index: 10;
    }
    .navbar a {
      font-family: 'Montserrat', sans-serif;
