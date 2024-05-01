@@ -15,19 +15,19 @@
         <div class="footer-col">
           <h4>latest news</h4>
           <ul>
-            <li><a href="#">what is f1?</a></li>
-            <li><a href="#">drivers</a></li>
-            <li><a href="#">teams</a></li>
-            <li><a href="#">schedule</a></li>
+            <li><a href="#">become a host</a></li>
+            <li><a href="#">cover for host</a></li>
+            <li><a href="#">resources</a></li>
+            <li><a href="#">responsibly</a></li>
           </ul>
         </div>
         <div class="footer-col">
-          <h4>results</h4>
+          <h4>rentals</h4>
           <ul>
-            <li><a href="#">2023 season</a></li>
-            <li><a href="#">driver standings</a></li>
-            <li><a href="#">constructor standings</a></li>
-            <li><a href="#">archive</a></li>
+            <li><a href="#">top destination</a></li>
+            <li><a href="#">rentals</a></li>
+            <li><a href="#">top places</a></li>
+            <li><a href="#">top cities</a></li>
           </ul>
         </div>
         <div class="footer-col">
@@ -75,7 +75,7 @@ ul{
 .footer{
     background-color: #193D4E;
     padding: 70px 0;
-    position: fixed;
+    position: relative;
     bottom: 0;
     left:0;
     width: 100%;
@@ -121,15 +121,19 @@ ul{
 }
 .footer-col .social-links a{
     display: inline-block;
-    height: 40px;
-    width: 40px;
-    background-color: rgba(255,255,255,0.2);
+    height: 50px;
+    width: 50px;
+    background-color: #20A89C;
     margin:0 10px 10px 0;
     text-align: center;
-    line-height: 40px;
+    line-height: 50px;
     border-radius: 50%;
     color: #ffffff;
     transition: all 0.5s ease;
+}
+
+.social-links a i{
+    font-size: 20px;
 }
 .footer-col .social-links a:hover{
     color: #193D4E;

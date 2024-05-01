@@ -1,5 +1,259 @@
 <script setup>
+import Navbar from '../components/Navbar.vue';
+import Footer from '../components/Footer.vue';
+import CardPropriedade from '../components/CardPropriedade.vue';
 </script>
 
 <template>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
+    <Navbar />
+    <div class="search-bar">
+        <div class="search-input">
+            <label for="where-to">Where to</label>
+            <input id="where-to" type="text" placeholder="Search Destination">
+        </div>
+        <div class="search-input">
+            <label for="check-in">Check-in</label>
+            <input id="check-in" type="date" placeholder="Arrival Date">
+        </div>
+        <div class="search-input">
+            <label for="check-out">Check-out</label>
+            <input id="check-out" type="date" placeholder="Leaving Date">
+        </div>
+        <div class="search-input">
+            <label for="guests">With who</label>
+            <input id="guests" type="number" placeholder="How many Guests">
+        </div>
+        <span class="material-symbols-outlined">search</span>
+    </div>
+    <hr /> <!-- Linha de separação -->
+    <div class="home-types">
+        <div class="home-type">
+            <span class="material-symbols-outlined">houseboat</span>
+            <p>Beach House</p>
+        </div>
+        <div class="home-type">
+            <span class="material-symbols-outlined">apartment</span>
+            <p>Apartment</p>
+        </div>
+        <!-- Adicione mais tipos de casa aqui -->
+    </div>
+    <div class="containt">
+        <CardPropriedade
+            v-for="n in 9"
+            :key="n"
+            image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRYg2rNFiJzTCRPXETBxp80WLKVMxeLZZbxMGqdKlkAg&s"
+            location="Lisbon, Portugal"
+            title="Beautiful Apartment"
+            rating="4.5"
+            price="€100 per night"
+            beds="2"
+            rooms="1" />
+    </div>
+    <div class="promotation">
+        <h2>Ready to Cozy Up?</h2>
+        <p>Welcome to Cozystay, where cozy homes meet happy travelers! Got a spare room, a cozy cabin, or a chic apartment? Put it to work and let it earn for you. 
+Join our community of hosts and unlock the potential of your space</p>
+        <button class="btn-promotation">List Your Space Now !</button>
+        <img src="../assets/img/house_1.png" alt="">
+    </div>
+    <div class="containt">
+        <CardPropriedade
+            v-for="n in 9"
+            :key="n"
+            image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRYg2rNFiJzTCRPXETBxp80WLKVMxeLZZbxMGqdKlkAg&s"
+            location="Lisbon, Portugal"
+            title="Beautiful Apartment"
+            rating="4.5"
+            price="€100 per night"
+            beds="2"
+            rooms="1" />
+    </div>
+    <div class="pagination">
+        <button>First</button>
+        <button>&lt; Previous</button>
+        <button>1</button>
+        <button>2</button>
+        <button>3</button>
+        <span>...</span>
+        <button>36</button>
+        <button>37</button>
+        <button>Next ></button>
+        <button>Last</button>
+    </div>
+    <Footer />
 </template>
+
+<style>
+    body{
+        background-color: #fff;
+    }
+    .containt{
+        margin: 50px 100px 200px 100px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 20px;
+    }
+
+    .promotation {
+        background-color: #A5E8E2;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        grid-gap: 20px;
+        justify-items: center;
+        align-items: center;
+        margin-bottom: 100px;
+        max-height: 600px;
+    }
+
+    .promotation img {
+        grid-column: 2;
+    grid-row: 1 / span 3;
+    align-self: self-end;
+    position: relative;
+    top: -40px;
+    right: -24px;
+    }
+
+    .promotation h2,
+    .promotation p,
+    .promotation .btn-promotation {
+        grid-column: 1;
+        margin-left: 100px;
+    }
+
+    .promotation h2 {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 500; /* Medium */
+        font-size: 64px;
+        color: #193D4E;
+    }
+
+    .promotation p {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 400; /* Regular */
+        font-size: 24px;
+        color: #193D4E;
+    }
+
+    .promotation .btn-promotation {
+        background-color: #20A89C;
+        color: #fff;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 500; /* Medium */
+        font-size: 35px;
+        padding: 10px 120px 10px 100px;
+        border-radius: 20px;
+        border: 0px;
+    }
+    
+    .home-types {
+        display: flex;
+        justify-content: flex-start;
+        margin-bottom: 20px;
+        margin-top: 50px;
+        margin-left: 100px;
+        color: #193D4E;
+        
+    }
+
+    .home-type {
+        margin-right: 45px;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Alinha o ícone e o texto ao centro */
+    }
+
+    .home-type span.material-symbols-outlined {
+        width: 50px;
+        height: 50px;
+        font-size:50px;
+    }
+
+    .home-type p {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 400;
+        font-size: 20px;
+    }
+
+    .search-bar {
+        display: flex;
+    justify-content: space-around;
+    width: 1336px;
+    height: 112px;
+    border: 1px solid #193D4E;
+    margin: 0 auto;
+    margin-top: 150px;
+    margin-bottom: 20px;
+    color: #193D4E;
+    align-items: center;
+    border-radius: 70px;
+    }
+
+    .search-input {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border-right: 1px solid #193D4E;
+        padding: 0 10px;
+    }
+
+    .search-input:last-of-type {
+        border-right: none;
+    }
+
+    .search-input label {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 500;
+        font-size: 24px;
+        color: #193D4E;
+    }
+
+    .search-input input {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 300;
+        font-size: 20px;
+        color: #193D4E;
+        border: none;
+    }
+
+    .search-bar span {
+        font-size:50px
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+        background-color: rgba(25, 61, 78, 0.9);
+        width: 845px; /* Define a largura para 845px */
+        border-radius: 50px; /* Define o raio da borda para 50px */
+        margin: 0 auto; /* Centraliza a barra de paginação horizontalmente */
+        margin-bottom: 100px;
+    }
+
+    .pagination button {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 400;
+        font-size: 22px;
+        padding: 10px 20px;
+        background-color: transparent;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+    }
+    .pagination span {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 400;
+        font-size: 22px;
+        padding: 10px 20px;
+        color: #fff;
+    }
+
+    .pagination button:hover {
+        background-color: rgba(165, 232, 226, 0.70);
+        border-radius:50px
+    }
+
+</style>
