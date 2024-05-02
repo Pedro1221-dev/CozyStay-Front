@@ -3,7 +3,7 @@
         v-model="loginDialog"
         @update:model-loginDialog="$emit('input', false)"
         width="auto">
-      <v-card max-width="1700">
+      <v-card max-width="1700" class="overflow-hidden">
         <div class="outer-div">
           <!-- Div interior com imagem de fundo e div sobreposta -->
           <div class="inner-div">
@@ -20,7 +20,47 @@
             <v-window v-model="activeTab">
               <v-window-item value="login">
                 <!-- Conteúdo da aba de login -->
+                <div class="title">
+                    <v-card-title class="loginText">Login</v-card-title>
+                </div>
+        
+                <v-card-text class="login-section">
+                  <v-sheet width="300" class="form-background mx-auto">
+                    <v-form @submit.prevent="login" class="form">
+                      <v-text-field 
+                      clearable
+                      v-model="email" 
+                      label="Email" 
+                      variant="underlined"
+                      hint="Enter your email to access this website"
+                      placeholder="johndoe@gmail.com"
+                      :rules="[rules.email]"
+                      class="p-5 mb-5 text-h1 custom-class-text-input"
+                      ></v-text-field>
+                      <v-text-field 
+                      clearable
+                      v-model="password" 
+                      type="password" 
+                      label="Password" 
+                      variant="underlined"
+                      hint="Must have at least 6 characters"
+                      :rules="[rules.required]"
+                      class="p-5 text-h1 custom-class-text-input" 
+                      ></v-text-field>
+                      <v-btn 
+                      variant="tonal"
+                      size="x-large"
+                      rounded="lg"
+                      color="white"
+                      type="submit" 
+                      block 
+                      class="loginButton"
+                      >Login</v-btn>
+                    </v-form>
+                  </v-sheet>
+                </v-card-text>
               </v-window-item>
+
               <v-window-item value="register">
                 <!-- Conteúdo da aba de registro -->
               </v-window-item>
@@ -38,6 +78,16 @@ export default {
         loginDialog: false,
         activeTab: 'Login',
         overlayToLeft: true,
+        email: "",
+        password: "",
+        rules: {
+          required: value => !!value || 'Field is required',
+          email: value => {
+            const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            return pattern.test(value) || 'Invalid e-mail.'
+          },
+          
+        },
       };
     },
     computed: {
@@ -67,7 +117,10 @@ export default {
                 this.activeTab = 'login';
                 this.overlayToLeft = true;
             }
-        }
+        },
+        login() {
+          console.log(this.email,this.password);
+        },
         },
         mounted () {
             this.toggleTab();
@@ -89,6 +142,11 @@ export default {
 @font-face {
       font-family: 'Montserrat SemiBold';
       src: url(../assets/fonts/Montserrat-SemiBold.ttf);
+}
+
+@font-face {
+      font-family: 'Montserrat Regular';
+      src: url(../assets/fonts/Montserrat-Regular.ttf);
 }
 
 .outer-div {
@@ -133,7 +191,7 @@ export default {
     font-style: normal;
     line-height: normal;
     cursor: pointer; 
-    z-index: 2;
+    z-index: 50;
     transition: left 0.3s; 
 }
 
@@ -155,6 +213,56 @@ export default {
 
 .v-dialog > .v-overlay__content > .v-card, .v-dialog > .v-overlay__content > form > .v-card {
     border-radius: 5%;
+}
+
+.title {
+  position: fixed;
+  z-index: 3;
+  top: 25%;
+  left: 25%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.loginText {
+  color: #193D4E!important;
+  font-family: Montserrat SemiBold;
+  font-size: 4rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.loginButton {
+  background-color: #193D4E!important;
+  margin-top: 4em;
+  font-family: Montserrat Regular;
+  font-size: 1.5em;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.login-section {
+  z-index: 3;
+  position: relative;
+  bottom: 50%;
+  left: 25%;
+  transform: translate(-50%, -50%);
+  padding-top: 65em;
+}
+
+.form-background{
+  background-color: transparent;
+}
+
+
+.custom-class-text-input {
+  font-family: Montserrat SemiBold;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  color: #193D4E;
 }
 </style>
   
