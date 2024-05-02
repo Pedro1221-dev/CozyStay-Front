@@ -1,3 +1,4 @@
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"></link>
 <template>
     <v-dialog 
         v-model="loginDialog"
@@ -129,26 +130,6 @@ export default {
 </script>
   
 <style scoped>
-@font-face {
-      font-family: 'Montserrat Light';
-      src: url(../assets/fonts/Montserrat-Light.ttf);
-}
-
-@font-face {
-      font-family: 'Montserrat Medium';
-      src: url(../assets/fonts/Montserrat-Medium.ttf);
-}
-
-@font-face {
-      font-family: 'Montserrat SemiBold';
-      src: url(../assets/fonts/Montserrat-SemiBold.ttf);
-}
-
-@font-face {
-      font-family: 'Montserrat Regular';
-      src: url(../assets/fonts/Montserrat-Regular.ttf);
-}
-
 .outer-div {
     width: 120rem;
     height: 50rem;
@@ -186,9 +167,10 @@ export default {
     top: 5%; 
     left: 35%; 
     color: #193D4E; 
-    font-family: Montserrat Light;
+    font-family: 'Montserrat', sans-serif;
     font-size: 1.5rem;
     font-style: normal;
+    font-weight: 300;
     line-height: normal;
     cursor: pointer; 
     z-index: 50;
@@ -202,9 +184,12 @@ export default {
 }
   
 .tab-text .active-tab {
-    font-family: Montserrat Medium;
-    text-decoration: underline; 
-    font-weight: 500;
+  font-family: 'Montserrat', sans-serif;
+  text-decoration: underline; 
+  font-size: 1.5rem;
+  font-style: normal;
+  font-weight: 800;
+  line-height: normal;
 }
 
 .lineLoginRegister {
@@ -226,7 +211,7 @@ export default {
 
 .loginText {
   color: #193D4E!important;
-  font-family: Montserrat SemiBold;
+  font-family: 'Montserrat', sans-serif;
   font-size: 4rem;
   font-style: normal;
   font-weight: 600;
@@ -236,8 +221,8 @@ export default {
 .loginButton {
   background-color: #193D4E!important;
   margin-top: 4em;
-  font-family: Montserrat Regular;
-  font-size: 1.5em;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -258,7 +243,8 @@ export default {
 
 
 .custom-class-text-input {
-  font-family: Montserrat SemiBold;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.5rem;
   font-style: normal;
   font-weight: 600;
   line-height: normal;
