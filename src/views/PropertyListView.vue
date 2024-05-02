@@ -1,26 +1,54 @@
 <script setup>
+import { onMounted, ref } from 'vue';
 import Navbar from '../components/Navbar.vue';
 import Footer from '../components/Footer.vue';
 import CardPropriedade from '../components/CardPropriedade.vue';
+
+let focusInput = (id) => {
+  let inputElement = document.getElementById(id);
+  if (inputElement) {
+    inputElement.focus();
+  }
+}
+
+onMounted(() => {
+  
+
+  var inputElement = document.getElementById('where-to');
+  var autocomplete = new google.maps.places.Autocomplete(inputElement);
+
+  autocomplete.addListener('place_changed', function() {
+    var place = autocomplete.getPlace();
+    console.log(place)
+    // Agora você pode acessar as informações do lugar selecionado através do objeto 'place'
+  });
+});
+
+defineExpose({
+  focusInput
+});
 </script>
 
+
 <template>
+    
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
     <Navbar />
     <div class="search-bar">
-        <div class="search-input">
+        <div class="search-input" @click="focusInput('where-to')">
             <label for="where-to">Where to</label>
             <input id="where-to" type="text" placeholder="Search Destination">
         </div>
-        <div class="search-input">
+        <div class="search-input" @click="focusInput('check-in')">
             <label for="check-in">Check-in</label>
             <input id="check-in" type="date" placeholder="Arrival Date">
+            <v-date-picker v-model="date"></v-date-picker>
         </div>
-        <div class="search-input">
+        <div class="search-input" @click="focusInput('check-out')">
             <label for="check-out">Check-out</label>
             <input id="check-out" type="date" placeholder="Leaving Date">
         </div>
-        <div class="search-input">
+        <div class="search-input" @click="focusInput('guests')">
             <label for="guests">With who</label>
             <input id="guests" type="number" placeholder="How many Guests">
         </div>
@@ -220,6 +248,10 @@ Join our community of hosts and unlock the potential of your space</p>
 
     .search-bar span {
         font-size:50px
+    }
+
+    .search-input input:focus {
+        outline: none;
     }
 
     .pagination {
