@@ -177,7 +177,7 @@ export default {
 }
   
 .overlay-right {
-    left: 50%; 
+    left: 40%; 
     border-radius: 0 5% 5% 0;
 }
   
@@ -197,7 +197,7 @@ export default {
 
 .tab-text-right {
   left: auto; 
-  right: 5%; 
+  right: 18%; 
   transition: left 0.3s; 
 }
   
@@ -219,7 +219,7 @@ export default {
   position: fixed;
   z-index: 3;
   top: 25%;
-  left: 25%;
+  left: 29%;
   transform: translate(-50%, -50%);
   text-align: center;
 }
