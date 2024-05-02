@@ -1,10 +1,13 @@
 <template>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400" rel="stylesheet" />
+    
     <div class="navbar">
       <!-- Base da navbar que é sempre igual -->
       <router-link to="/">
         <img src="../assets/img/logo/logo.png" alt="Home" @click="setActiveSection('section1')">
       </router-link>
+
+      
   
       <!-- Opções de navegação que mudam com base na página atual -->
       <div v-if="$route.name === 'home'">
@@ -21,7 +24,7 @@
         <a href="#location" :class="{ active: activeSection === 'location' }" @click="setActiveSection('location')">Location</a>
         <a href="#host" :class="{ active: activeSection === 'host' }" @click="setActiveSection('host')">Host</a>
       </div>
-  
+      
       <!-- Ícone do usuário ou foto do usuário com base no status de login -->
       <div v-if="!isLoggedIn">
         <span class="material-symbols-outlined login-icon" @click="openModal">account_circle</span>
@@ -30,15 +33,25 @@
         <img :src="userPhoto" alt="User Photo" @click="openDropdown">
       </div>
     </div>
+
+      <LoginModal v-model="loginModal"></LoginModal>
+    
+
   </template>
   
   <script>
+  import LoginModal from '../components/loginModal.vue';
+
   export default {
+    components: {
+      LoginModal
+    },
     data() {
       return {
         isLoggedIn: false, // Altere isso para refletir o status de login real
         userPhoto: '', // Altere isso para a URL da foto do usuário real
         activeSection: 'home',
+        loginModal: false
       };
     },
     created() {
@@ -58,8 +71,7 @@
         console.log(this.activeSection)
       },
       openModal() {
-        // Abra a modal aqui
-        alert(this.$route.name);
+        this.loginModal = true;
       },
       openDropdown() {
         // Abra o menu dropdown aqui
