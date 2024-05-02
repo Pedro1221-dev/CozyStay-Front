@@ -3,7 +3,9 @@
     <v-dialog 
         v-model="loginDialog"
         @update:model-loginDialog="$emit('input', false)"
-        width="auto">
+        width="auto"
+        
+        >
       <v-card max-width="1700" class="overflow-hidden">
         <div class="outer-div">
           <!-- Div interior com imagem de fundo e div sobreposta -->
@@ -241,7 +243,6 @@ export default {
   background-color: transparent;
 }
 
-
 .custom-class-text-input {
   font-family: 'Montserrat', sans-serif;
   font-size: 1.5rem;
@@ -249,6 +250,10 @@ export default {
   font-weight: 600;
   line-height: normal;
   color: #193D4E;
+}
+
+.v-dialog {
+  backdrop-filter: blur(5px);
 }
 </style>
   
