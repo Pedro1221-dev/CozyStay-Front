@@ -83,7 +83,7 @@
                           variant="underlined"
                           hint="Enter your email to access this website"
                           placeholder="johndoe@gmail.com"
-                          :rules="[rules.email]"
+                          :rules="[rules.email, rules.required]"
                           class="mt-15 text-h1 custom-class-text-input"
                           ></v-text-field>
                           <v-text-field 
@@ -124,6 +124,7 @@
                           hint="Enter your first name to access this website"
                           placeholder="John"
                           class="mt-10 text-h1 custom-class-text-input"
+                          :rules="[rules.required]"
                           ></v-text-field>
                           <v-text-field 
                           clearable
@@ -134,6 +135,7 @@
                           hint="Enter your last name to access this website"
                           placeholder="Doe"
                           class="mt-2 text-h1 custom-class-text-input" 
+                          :rules="[rules.required]"
                           ></v-text-field>
                           <v-text-field 
                           clearable
@@ -142,6 +144,7 @@
                           variant="underlined"
                           hint="Enter your vat number to access this website"
                           class="mt-2 text-h1 custom-class-text-input" 
+                          :rules="[rules.required]"
                           ></v-text-field>
                           <v-combobox
                             clearable
@@ -151,6 +154,7 @@
                             :items="['Portuguese', 'French', 'Spanish', 'German', 'Italian', 'Chinese', 'American']"
                             class="mb-n5 custom-class-text-input" 
                             variant="underlined"
+                            :rules="[rules.required]"
                           ></v-combobox>
                         </v-form>
                     </v-sheet>
@@ -178,6 +182,7 @@
                               :label="''"
                               :value="nationality.name"
                               class="ml-n2 privacyPolicyCheckbox"
+                              :rules="[rules.required]"
                             ></v-checkbox>
                           </v-col>
                         </v-row>
@@ -262,7 +267,7 @@ export default {
           'tab-text': true,
           'tab-text-right': !this.overlayToLeft
         };
-      }
+      },
     },
     methods: {
         toggleOverlay() {
@@ -281,6 +286,7 @@ export default {
         login() {
           console.log(this.email,this.password);
         },
+        
         },
         mounted () {
             this.toggleTab();
@@ -298,7 +304,7 @@ export default {
 .inner-div {
     position: relative; 
     width: 81.25rem;
-    height: 44rem;
+    height: 100%;
     background-image: url('../assets/img/login/login-background.webp'); 
     background-size: cover;
     border-radius: inherit; 
