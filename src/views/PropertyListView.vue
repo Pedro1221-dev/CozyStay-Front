@@ -1,32 +1,74 @@
-<script setup>
+<script>
 import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import Navbar from '../components/Navbar.vue';
 import Footer from '../components/Footer.vue';
 import CardPropriedade from '../components/CardPropriedade.vue';
 
-let focusInput = (id) => {
-  let inputElement = document.getElementById(id);
-  if (inputElement) {
-    inputElement.focus();
+export default {
+  components: {
+    Navbar,
+    Footer,
+    CardPropriedade
+  },
+  setup() {
+    const router = useRouter();
+
+    let focusInput = (id) => {
+      let inputElement = document.getElementById(id);
+      if (inputElement) {
+        inputElement.focus();
+      }
+    }
+
+    let search = () => {
+        const whereTo = document.getElementById('where-to').value;
+        const checkIn = document.getElementById('check-in').value;
+        const checkOut = document.getElementById('check-out').value;
+        const guests = document.getElementById('guests').value;
+
+        let query = {};
+
+        if (whereTo) query.whereTo = whereTo;
+        if (checkIn) query.checkIn = checkIn;
+        if (checkOut) query.checkOut = checkOut;
+        if (guests) query.guests = guests;
+
+        router.push({
+            path: '/properties',
+            query
+        });
+    }
+
+    let updateMinCheckoutDate = () => {
+        const checkIn = document.getElementById('check-in').value;
+        const checkOutInput = document.getElementById('check-out');
+
+        let checkInDate = new Date(checkIn);
+        checkInDate.setDate(checkInDate.getDate() + 1);
+
+        let minCheckoutDate = checkInDate.toISOString().split('T')[0];
+        checkOutInput.min = minCheckoutDate;
+    }
+
+    onMounted(() => {
+      var inputElement = document.getElementById('where-to');
+      var autocomplete = new google.maps.places.Autocomplete(inputElement);
+
+      autocomplete.addListener('place_changed', function() {
+        var place = autocomplete.getPlace();
+        console.log(place)
+        // Agora você pode acessar as informações do lugar selecionado através do objeto 'place'
+      });
+    });
+
+    return {
+      focusInput,
+      search,
+      updateMinCheckoutDate
+    }
   }
 }
-
-onMounted(() => {
-  
-
-  var inputElement = document.getElementById('where-to');
-  var autocomplete = new google.maps.places.Autocomplete(inputElement);
-
-  autocomplete.addListener('place_changed', function() {
-    var place = autocomplete.getPlace();
-    console.log(place)
-    // Agora você pode acessar as informações do lugar selecionado através do objeto 'place'
-  });
-});
-
-defineExpose({
-  focusInput
-});
 </script>
 
 
@@ -41,8 +83,7 @@ defineExpose({
         </div>
         <div class="search-input" @click="focusInput('check-in')">
             <label for="check-in">Check-in</label>
-            <input id="check-in" type="date" placeholder="Arrival Date">
-            <v-date-picker v-model="date"></v-date-picker>
+            <input id="check-in" type="date" placeholder="Arrival Date" @change="updateMinCheckoutDate">
         </div>
         <div class="search-input" @click="focusInput('check-out')">
             <label for="check-out">Check-out</label>
@@ -52,7 +93,7 @@ defineExpose({
             <label for="guests">With who</label>
             <input id="guests" type="number" placeholder="How many Guests">
         </div>
-        <span class="material-symbols-outlined">search</span>
+        <span class="material-symbols-outlined" @click="search">search</span>
     </div>
     <hr /> <!-- Linha de separação -->
     <div class="home-types">
@@ -68,7 +109,7 @@ defineExpose({
     </div>
     <div class="containt">
         <CardPropriedade
-            v-for="n in 9"
+            v-for="n in 12"
             :key="n"
             image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRYg2rNFiJzTCRPXETBxp80WLKVMxeLZZbxMGqdKlkAg&s"
             location="Lisbon, Portugal"
@@ -87,7 +128,7 @@ Join our community of hosts and unlock the potential of your space</p>
     </div>
     <div class="containt">
         <CardPropriedade
-            v-for="n in 9"
+            v-for="n in 12"
             :key="n"
             image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRYg2rNFiJzTCRPXETBxp80WLKVMxeLZZbxMGqdKlkAg&s"
             location="Lisbon, Portugal"
@@ -119,8 +160,9 @@ Join our community of hosts and unlock the potential of your space</p>
     .containt{
         margin: 50px 100px 200px 100px;
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         grid-gap: 20px;
+        justify-content: center;
     }
 
     .promotation {
@@ -132,16 +174,16 @@ Join our community of hosts and unlock the potential of your space</p>
         justify-items: center;
         align-items: center;
         margin-bottom: 100px;
-        max-height: 600px;
+        max-height: 450px;
     }
 
     .promotation img {
         grid-column: 2;
-    grid-row: 1 / span 3;
-    align-self: self-end;
-    position: relative;
-    top: -40px;
-    right: -24px;
+        grid-row: 1 / span 3;
+        align-self: self-end;
+        position: relative;
+        left: 12%;
+        width: 77%;
     }
 
     .promotation h2,
@@ -154,14 +196,14 @@ Join our community of hosts and unlock the potential of your space</p>
     .promotation h2 {
         font-family: 'Montserrat', sans-serif;
         font-weight: 500; /* Medium */
-        font-size: 64px;
+        font-size: 55px;
         color: #193D4E;
     }
 
     .promotation p {
         font-family: 'Montserrat', sans-serif;
         font-weight: 400; /* Regular */
-        font-size: 24px;
+        font-size: 20px;
         color: #193D4E;
     }
 
@@ -170,7 +212,7 @@ Join our community of hosts and unlock the potential of your space</p>
         color: #fff;
         font-family: 'Montserrat', sans-serif;
         font-weight: 500; /* Medium */
-        font-size: 35px;
+        font-size: 30px;
         padding: 10px 120px 10px 100px;
         border-radius: 20px;
         border: 0px;
@@ -180,7 +222,7 @@ Join our community of hosts and unlock the potential of your space</p>
         display: flex;
         justify-content: flex-start;
         margin-bottom: 20px;
-        margin-top: 50px;
+        margin-top: 20px;
         margin-left: 100px;
         color: #193D4E;
         
@@ -194,15 +236,15 @@ Join our community of hosts and unlock the potential of your space</p>
     }
 
     .home-type span.material-symbols-outlined {
-        width: 50px;
-        height: 50px;
-        font-size:50px;
+        width: 35px;
+        height: 35px;
+        font-size:35px;
     }
 
     .home-type p {
         font-family: 'Montserrat', sans-serif;
         font-weight: 400;
-        font-size: 20px;
+        font-size: 15px;
     }
 
     .search-bar {
@@ -247,7 +289,8 @@ Join our community of hosts and unlock the potential of your space</p>
     }
 
     .search-bar span {
-        font-size:50px
+        font-size:50px;
+        cursor:pointer;
     }
 
     .search-input input:focus {
@@ -257,9 +300,9 @@ Join our community of hosts and unlock the potential of your space</p>
     .pagination {
         display: flex;
         justify-content: center;
-        padding: 20px;
+        padding: 15px;
         background-color: rgba(25, 61, 78, 0.9);
-        width: 845px; /* Define a largura para 845px */
+        width: 50%; /* Define a largura para 845px */
         border-radius: 50px; /* Define o raio da borda para 50px */
         margin: 0 auto; /* Centraliza a barra de paginação horizontalmente */
         margin-bottom: 100px;
@@ -268,7 +311,7 @@ Join our community of hosts and unlock the potential of your space</p>
     .pagination button {
         font-family: 'Montserrat', sans-serif;
         font-weight: 400;
-        font-size: 22px;
+        font-size: 16px;
         padding: 10px 20px;
         background-color: transparent;
         border: none;
@@ -278,7 +321,7 @@ Join our community of hosts and unlock the potential of your space</p>
     .pagination span {
         font-family: 'Montserrat', sans-serif;
         font-weight: 400;
-        font-size: 22px;
+        font-size: 16px;
         padding: 10px 20px;
         color: #fff;
     }
