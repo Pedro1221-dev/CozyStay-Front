@@ -89,7 +89,7 @@
    }
    .navbar a {
      font-family: 'Montserrat', sans-serif;
-     font-weight: 500; /* Medium */
+     font-weight: 200; /* Medium */
      font-size: 20px;
      color: #FFFEF2;
      margin-right: 55px;
@@ -103,6 +103,7 @@
     .navbar a.active {
         text-decoration: underline !important;
         text-decoration-color: #A5E8E2 !important;
+        text-underline-offset: 10px !important;
     }
   </style>
   
