@@ -205,7 +205,7 @@ export default {
     .landing-page {
         display: grid;
         grid-template-columns: 1fr;
-        grid-template-rows: 0vh 100vh 80vh 50vh 70vh 140vh 60vh 70vh 10vh;
+        grid-template-rows: 0vh 100vh 80vh 200vh 70vh 140vh 60vh 70vh 10vh;
     }
 
     /* Main Page */
@@ -231,7 +231,7 @@ export default {
 
     pre {
         font-family: 'Montserrat', sans-serif;
-        font-weight: 50; /* Medium */     
+        font-weight: 500; /* Medium */     
     }
     
     /* Top Destinations */
