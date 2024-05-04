@@ -249,7 +249,7 @@ export default {
             font-family: Montserrat;
             font-size: 40px;
             font-style: normal;
-            font-weight: 400;
+            font-weight: 500;
             line-height: normal;
             align-items: center;
             margin-top: 5%;
@@ -302,7 +302,7 @@ export default {
 
     .location {
         position: absolute;
-        top: 8%;
+        top: 3%;
         left: 3%;
         color: black;
         background: white;
@@ -313,9 +313,11 @@ export default {
         border-radius: 40px;
         display: flex;
         align-items: center;
-        justify-content: flex-start; 
+        justify-content: flex-end; 
         
         p {
+            display: flex;
+            align-items: flex-start;
             font-size: 18px;
             color: black;
         }
@@ -344,7 +346,7 @@ export default {
             font-family: Montserrat;
             font-size: 40px;
             font-style: normal;
-            font-weight: 400;
+            font-weight: 500;
             line-height: normal;
             align-items: center;
             margin-top: 5%;
@@ -377,7 +379,7 @@ export default {
             font-family: Montserrat;
             font-size: 40px;
             font-style: normal;
-            font-weight: 400;
+            font-weight: 500;
             line-height: normal;
             align-items: center;
             margin-top: 5%;
@@ -397,7 +399,7 @@ export default {
             font-family: Montserrat;
             font-size: 40px;
             font-style: normal;
-            font-weight: 400;
+            font-weight: 500;
             line-height: normal;
             align-items: center;
             margin-bottom: 4%;
@@ -517,7 +519,7 @@ export default {
             font-family: Montserrat;
             font-size: 40px;
             font-style: normal;
-            font-weight: 400;
+            font-weight: 500;
             line-height: normal;
             margin-top: 0%;
             margin-bottom: 3%;
