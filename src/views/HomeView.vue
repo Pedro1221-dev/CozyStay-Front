@@ -61,8 +61,11 @@ import Navbar from '../components/Navbar.vue';
             </div>
 
             <div class="promo">
-                <h1>Promo</h1>
-
+                <h2>Ready to Cozy Up?</h2>
+                <p>Welcome to Cozystay, where cozy homes meet happy travelers! Got a spare room, a cozy cabin, or a chic apartment? Put it to work and let it earn for you. 
+        Join our community of hosts and unlock the potential of your space</p>
+                <button class="btn-promo">List Your Space Now !</button>
+                <img src="../assets/img/house_1.png" alt="">
             </div>
 
             <div class="about-us">
@@ -217,6 +220,10 @@ export default {
         align-items: center;
     }
 
+    .main-content img {
+        background: lightgray url('/src/assets/img/wallpaper/landingPageWallpaper.webp') no-repeat center / cover;
+    }
+    
     .slogan {
         position: absolute;
         top: 48%;
@@ -231,7 +238,7 @@ export default {
 
     pre {
         font-family: 'Montserrat', sans-serif;
-        font-weight: 500; /* Medium */     
+        font-weight: 400; /* Medium */     
     }
     
     /* Top Destinations */
@@ -365,26 +372,66 @@ export default {
         }
     }
 
+    /* Promotion */ 
+
+
+
     .promo {
-        background-color: #A9E3D3; /* */ 
-        font-family: 'Montserrat', sans-serif;
+        background-color: #A9E3D3;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        grid-gap: 20px;
+        justify-items: center;
         align-items: center;
-        margin-top: 0px;
-        margin-bottom: 50px;
-        justify-content: flex-start;
-        display: flex;
-        flex-direction: column;
-        h1{
-            color: var(--Background, #000000);
-            font-family: Montserrat;
-            font-size: 40px;
-            font-style: normal;
-            font-weight: 500;
-            line-height: normal;
-            align-items: center;
-            margin-top: 5%;
-        }   
+        margin-bottom: 100px;
+        max-height: 600px;
     }
+
+    .promo img {
+        grid-column: 2;
+        grid-row: 1 / span 3;
+        align-self: self-end;
+        position: relative;
+        top: -40px;
+        right: -24px;
+        width: 500px;
+    }
+
+    .promo h2,
+    .promo p,
+    .promo .btn-promo {
+        grid-column: 1;
+        margin-left: 100px;
+    }
+
+    .promo h2 {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 400; /* Medium */
+        font-size: 45px;
+        color: #193D4E;
+    }
+
+    .promo p {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 300; /* Regular */
+        font-size: 20px;
+        color: #193D4E;
+    }
+
+    .promo .btn-promo {
+        background-color: #20A89C;
+        color: #fff;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 300; /* Medium */
+        font-size: 20px;
+        padding: 10px 80px 10px 80px;
+        border-radius: 20px;
+        border: 0px;
+    }
+
+
+    /* About Us */
 
     .about-us {
         margin-bottom: 5%;
