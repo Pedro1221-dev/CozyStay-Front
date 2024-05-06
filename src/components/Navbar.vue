@@ -103,7 +103,11 @@
     .navbar a.active {
         text-decoration: underline !important;
         text-decoration-color: #A5E8E2 !important;
+<<<<<<< Updated upstream
         text-underline-offset: 10px !important;
+=======
+        text-underline-offset: 5px;
+>>>>>>> Stashed changes
     }
   </style>
   
