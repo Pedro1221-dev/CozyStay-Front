@@ -29,15 +29,15 @@ import Navbar from '../components/Navbar.vue';
                     </div>
                     <div class="search-input">
                         <label for="check-in">Check-in</label>
-                        <input id="check-in" type="date" placeholder="Arrival Date">
+                        <input id="check-in" type="date" :min="today" placeholder="Arrival Date">
                     </div>
                     <div class="search-input">
                         <label for="check-out">Check-out</label>
-                        <input id="check-out" type="date" placeholder="Leaving Date">
+                        <input id="check-out" type="date" :min="today" placeholder="Leaving Date">
                     </div>
                     <div class="search-input">
                         <label for="guests">With who</label>
-                        <input id="guests" type="number" placeholder="How many Guests">
+                        <input id="guests" type="number" min="1" placeholder="How many Guests">
                     </div>
                     <span class="material-symbols-outlined">search</span>
                 </div>
@@ -226,6 +226,11 @@ export default {
       }
 
       items.forEach(item => item.addEventListener('click', toggleAccordion));
+    }
+  },
+  data() {
+    return {
+      today: new Date().toISOString().split('T')[0],
     }
   }
 }
