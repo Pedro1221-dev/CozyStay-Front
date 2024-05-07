@@ -209,6 +209,7 @@ export default {
         display: grid;
         grid-template-columns: 1fr;
         grid-template-rows: 0vh 100vh 80vh 200vh 70vh 140vh 60vh 70vh 10vh;
+        background-color: #FFF;
     }
 
     /* Main Page */
@@ -455,7 +456,8 @@ export default {
             text-align: center;
             font-size: 20px;
             margin-left: 10%;
-            margin-right: 10%; 
+            margin-right: 10%;
+            color: #000000
         };
     }
     .about-us p:first-of-type {
