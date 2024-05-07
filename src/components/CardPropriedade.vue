@@ -67,8 +67,8 @@
     padding: 10px;
     font-size: 18px;
     border-radius: 100px;
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     justify-content: space-around;
     align-items: center;
 }

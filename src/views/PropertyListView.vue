@@ -14,6 +14,11 @@ export default {
   setup() {
     const router = useRouter();
 
+    const campo1 = ref('');
+    const campo2 = ref('');
+    const campo3 = ref('');
+    const campo4 = ref('');
+
     let focusInput = (id) => {
       let inputElement = document.getElementById(id);
       if (inputElement) {
@@ -52,6 +57,8 @@ export default {
     }
 
     onMounted(() => {
+      console.log("ROUTER MOUNTED", router.currentRoute._rawValue.query.whereTo)
+
       var inputElement = document.getElementById('where-to');
       var autocomplete = new google.maps.places.Autocomplete(inputElement);
 
@@ -60,12 +67,22 @@ export default {
         console.log(place)
         // Agora você pode acessar as informações do lugar selecionado através do objeto 'place'
       });
+
+      console.log("Campo", campo1.value)
+      campo1.value = router.currentRoute._rawValue.query.whereTo || '';
+      campo2.value = router.currentRoute._rawValue.query.checkIn || '';
+      campo3.value = router.currentRoute._rawValue.query.checkOut || '';
+      campo4.value = router.currentRoute._rawValue.query.guests || ''; 
     });
 
     return {
+      campo1,
+      campo2,
+      campo3,
+      campo4,
       focusInput,
       search,
-      updateMinCheckoutDate
+      updateMinCheckoutDate,
     }
   }
 }
@@ -79,19 +96,19 @@ export default {
     <div class="search-bar">
         <div class="search-input" @click="focusInput('where-to')">
             <label for="where-to">Where to</label>
-            <input id="where-to" type="text" placeholder="Search Destination">
+            <input id="where-to" type="text" placeholder="Search Destination" v-model="campo1">
         </div>
         <div class="search-input" @click="focusInput('check-in')">
             <label for="check-in">Check-in</label>
-            <input id="check-in" type="date" placeholder="Arrival Date" @change="updateMinCheckoutDate">
+            <input id="check-in" type="date" placeholder="Arrival Date" @change="updateMinCheckoutDate" v-model="campo2">
         </div>
         <div class="search-input" @click="focusInput('check-out')">
             <label for="check-out">Check-out</label>
-            <input id="check-out" type="date" placeholder="Leaving Date">
+            <input id="check-out" type="date" placeholder="Leaving Date" v-model="campo3">
         </div>
         <div class="search-input" @click="focusInput('guests')">
             <label for="guests">With who</label>
-            <input id="guests" type="number" placeholder="How many Guests">
+            <input id="guests" type="number" placeholder="How many Guests" v-model="campo4">
         </div>
         <span class="material-symbols-outlined" @click="search">search</span>
     </div>
