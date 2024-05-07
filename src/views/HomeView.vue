@@ -9,7 +9,7 @@ import Navbar from '../components/Navbar.vue';
         <div class="navbar">
             <Navbar/>
         </div>
-            <div class="main-content">
+            <div class="main-content" id="home">
                 <img src="/src/assets/img/wallpaper/landingPageWallpaper.webp" width="100%" height="750px">
                 <div class="slogan">
                     <pre>
@@ -20,7 +20,7 @@ import Navbar from '../components/Navbar.vue';
                 </div>
             </div>
 
-            <div class="top-destinations">
+            <div class="top-destinations" id="top-destinations">
                 <h1>Top Destinations</h1>
 
                 <p>Lorem ipsum dolor sit amet consectetur. Sed cum urna orci ac accumsan. Et non congue morbi nisl lacus tristique faucibus odio eget. 
@@ -53,7 +53,7 @@ import Navbar from '../components/Navbar.vue';
 
             </div>
 
-            <div class="rentals">
+            <div class="rentals" id="rentals">
                 <h1>Rentals</h1>
 
                 <p>Lorem ipsum dolor sit amet consectetur. Sed cum urna orci ac accumsan. Et non congue morbi nisl lacus tristique faucibus odio eget. 
@@ -68,7 +68,7 @@ import Navbar from '../components/Navbar.vue';
                 <img src="../assets/img/house_1.png" alt="">
             </div>
 
-            <div class="about-us">
+            <div class="about-us" id="about-us">
                 <h1>About Us</h1>
                 <div>
                     <p>Bem-vindo ao CozyStay: Encontre o seu Refúgio Perfeito</p>
@@ -134,7 +134,7 @@ import Navbar from '../components/Navbar.vue';
             
             </div>
 
-            <div class="faqs">
+            <div class="faqs" id="faqs">
                 <h1>Frequently Asked Questions</h1>
                     <div class="accordion">
                         <div class="accordion-item">
