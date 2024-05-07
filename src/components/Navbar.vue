@@ -83,7 +83,7 @@
      justify-content: space-between;
      align-items: center;
      padding: 20px 100px;
-     background-color: #193D4E;
+     background-color: rgba(25, 61, 78, 0.8); /* 80% opacity */
      color: white;
      z-index: 10;
    }
@@ -103,11 +103,7 @@
     .navbar a.active {
         text-decoration: underline !important;
         text-decoration-color: #A5E8E2 !important;
-<<<<<<< Updated upstream
         text-underline-offset: 10px !important;
-=======
-        text-underline-offset: 5px;
->>>>>>> Stashed changes
     }
   </style>
   
