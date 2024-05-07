@@ -4,7 +4,7 @@ import Navbar from '../components/Navbar.vue';
 </script>
 
 <template>
-    <div class="landing-page">
+    <div class="landing-page" id="home">
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
         <div class="navbar">
             <Navbar/>
@@ -20,7 +20,7 @@ import Navbar from '../components/Navbar.vue';
                 </div>
             </div>
 
-            <div class="top-destinations">
+            <div class="top-destinations" id="top-destinations">
                 <h1>Top Destinations</h1>
 
                 <p>Lorem ipsum dolor sit amet consectetur. Sed cum urna orci ac accumsan. Et non congue morbi nisl lacus tristique faucibus odio eget. 
@@ -53,7 +53,7 @@ import Navbar from '../components/Navbar.vue';
 
             </div>
 
-            <div class="rentals">
+            <div class="rentals" id="rentals">
                 <h1>Rentals</h1>
 
                 <p>Lorem ipsum dolor sit amet consectetur. Sed cum urna orci ac accumsan. Et non congue morbi nisl lacus tristique faucibus odio eget. 
@@ -68,7 +68,7 @@ import Navbar from '../components/Navbar.vue';
                 <img src="../assets/img/house_1.png" alt="">
             </div>
 
-            <div class="about-us">
+            <div class="about-us" id="about-us">
                 <h1>About Us</h1>
                 <div>
                     <p>Bem-vindo ao CozyStay: Encontre o seu Refúgio Perfeito</p>
@@ -99,7 +99,7 @@ import Navbar from '../components/Navbar.vue';
                 </div>
             </div>
 
-            <div class="overview">
+            <div class="overview" id="overview">
                 <h1>Overview</h1>
                 <div class="overview-content">
                     <div class="overview-properties">
@@ -134,7 +134,7 @@ import Navbar from '../components/Navbar.vue';
             
             </div>
 
-            <div class="faqs">
+            <div class="faqs" id="faqs">
                 <h1>Frequently Asked Questions</h1>
                     <div class="accordion">
                         <div class="accordion-item">
@@ -204,11 +204,12 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
     .landing-page {
         display: grid;
         grid-template-columns: 1fr;
         grid-template-rows: 0vh 100vh 80vh 200vh 70vh 140vh 60vh 70vh 10vh;
+        background-color: #FFF;
     }
 
     /* Main Page */
@@ -455,7 +456,8 @@ export default {
             text-align: center;
             font-size: 20px;
             margin-left: 10%;
-            margin-right: 10%; 
+            margin-right: 10%;
+            color: #000000
         };
     }
     .about-us p:first-of-type {
