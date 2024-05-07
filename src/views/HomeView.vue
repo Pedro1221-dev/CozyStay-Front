@@ -30,21 +30,21 @@ import Navbar from '../components/Navbar.vue';
                     <div class="destination">
                         <img class="destination-img" src="/src/assets/img/destinations/barcelona.webp" alt="Barcelona"/>
                         <div class="location">
-                            <img class="icon" src="/src/assets/img/icons/LocationPin.webp" alt="">
+                            <span class="material-symbols-outlined icon-location">location_on</span>
                             <p>Barcelona, Spain</p>
                         </div>
                     </div>
                     <div class="destination">
                         <img class="destination-img" src="/src/assets/img/destinations/iceland.webp" alt="Iceland"/>
                         <div class="location">
-                            <img class="icon" src="/src/assets/img/icons/LocationPin.webp" alt="">
+                            <span class="material-symbols-outlined icon-location">location_on</span>
                             <p>Reykjavik, Iceland</p>
                         </div>
                     </div>
                     <div class="destination">
                         <img class="destination-img" src="/src/assets/img/destinations/dubai.webp" alt="Dubai"/>
                         <div class="location">
-                            <img class="icon" src="/src/assets/img/icons/LocationPin.webp" alt="">
+                            <span class="material-symbols-outlined icon-location">location_on</span>
                             <p>Dubai, UAE</p>
                         </div>
 
@@ -309,33 +309,37 @@ export default {
 
     .location {
         position: absolute;
-        top: 3%;
-        left: 3%;
-        color: black;
-        background: white;
-        width: 70%;
-        height: 18%;
+        padding: 10px;
+        background-color: rgba(255, 254, 242, 0.8);
+        width: 44px;
+        height: 44px;
         text-align: left;
         opacity: 0.8;
-        border-radius: 40px;
+        border-radius: 100px;
         display: flex;
+        justify-content: space-around;
         align-items: center;
-        justify-content: flex-end; 
         
         p {
-            display: flex;
-            align-items: flex-start;
             font-size: 18px;
             color: black;
         }
     }
+    .location {
+        position: absolute;
+        top: 1.125rem;
+        left: 0.75rem;
+        width: 16.563rem;
+        height: 2.75rem;
+        opacity: 0.8;
+        border-radius: 40px; /* Adiciona cantos arredondados ao fundo da localização */
+    }
 
-    .icon {
-        width: 30px;
-        height: 30px;
-        display: flex;
-        align-items: center;
-        margin-left: 15px;
+    .icon-location{
+        font-size: 30px;
+        font-weight: 200;
+        left: 10px;
+        color: black;
     }
 
     /* Rentals */
