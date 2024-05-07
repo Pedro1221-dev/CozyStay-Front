@@ -204,7 +204,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
     .landing-page {
         display: grid;
         grid-template-columns: 1fr;

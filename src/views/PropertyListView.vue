@@ -170,7 +170,7 @@ Join our community of hosts and unlock the potential of your space</p>
     <Footer />
 </template>
 
-<style>
+<style scoped>
     body{
         background-color: #fff;
     }
