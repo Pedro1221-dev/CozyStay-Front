@@ -83,7 +83,7 @@
      justify-content: space-between;
      align-items: center;
      padding: 20px 100px;
-     background-color: rgba(25, 61, 78, 0.8); /* 80% opacity */
+     background-color: rgba(25, 61, 78, 1); /* 80% opacity */
      color: white;
      z-index: 10;
    }
