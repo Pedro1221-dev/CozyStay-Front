@@ -69,7 +69,7 @@
                 <div class="titleRegister">
                     <v-card-title class="registerText">Register</v-card-title>
                 </div>
-                <v-stepper editable :items="['Account Information', 'Personal Details', 'Additional Information']" class="register-section">
+                <v-stepper alt-labels hide-actions :items="['Account Information', 'Personal Details', 'Additional Information']" class="register-section" v-model="step">
                   <template v-slot:item.1>
                     <v-card 
                     class="mt-n9 mb-5 custom-card-color" 
@@ -106,6 +106,12 @@
                           :rules="[rules.required]"
                           class="mt-2 mb-8 text-h1 custom-class-text-input" 
                           ></v-text-field>
+                          <v-btn variant="tonal"
+                      size="x-large"
+                      rounded="lg"
+                      color="white"
+                      block 
+                      class="registerButton" @click="next">Seguinte</v-btn>
                         </v-form>
                     </v-sheet>
                     </v-card>
@@ -147,6 +153,7 @@
                           :rules="[rules.required]"
                           ></v-text-field>
                           <v-combobox
+                            v-model="selectedNationalities"
                             clearable
                             chips
                             multiple
@@ -156,6 +163,12 @@
                             variant="underlined"
                             :rules="[rules.required]"
                           ></v-combobox>
+                          <v-btn variant="tonal"
+                      size="x-large"
+                      rounded="lg"
+                      color="white" 
+                      block 
+                      class="registerButton" @click="next">Seguinte</v-btn>
                         </v-form>
                     </v-sheet>
                   </v-card>
@@ -178,7 +191,7 @@
                             <v-img :src="nationality.flag" class="flag-icon mb-5"></v-img>
                             <div class="ml-1 mr-1 mb-5">{{ nationality.name }}</div>
                             <v-checkbox
-                              v-model="selectedNationalities"
+                              v-model="selectedLanguages"
                               :label="''"
                               :value="nationality.name"
                               class="ml-n2 privacyPolicyCheckbox"
@@ -202,11 +215,11 @@
                       variant="tonal"
                       size="x-large"
                       rounded="lg"
-                      color="white"
-                      type="submit" 
+                      color="white" 
                       block 
                       class="registerButton"
                       :disabled="!privacyPolicyAccepted"
+                      @click="next"
                       >Register</v-btn>
                   </template>
                   
@@ -223,6 +236,7 @@
 export default {
     data() {
       return {
+        step:1,
         privacyPolicyAccepted: false,
         loginDialog: false,
         activeTab: 'Login',
@@ -251,7 +265,8 @@ export default {
           { name: 'Russian', flag: '../src/assets/img/register/ru.png' },
           { name: 'Mandarim', flag: '../src/assets/img/register/cn.png' }
         ],
-        selectedNationalities: []
+        selectedNationalities: [],
+        selectedLanguages: []
 
       };
     },
@@ -286,11 +301,41 @@ export default {
         login() {
           console.log(this.email,this.password);
         },
+        next(){
+          console.log("Nacionalidades", this.selectedNationalities.length);
+          if(this.step==1 && (!this.email || !this.password || !this.confirmPassword || this.confirmPassword != this.password)) {
+            //fazer validaçoes com bd
+            console.log("Erro 1");
+            return;
+          }
+          else if(this.step==2 && (!this.firstName || !this.lastName ||!this.vatNumber || this.selectedNationalities.length == 0)) {
+            //fazer validaçoes com bd
+            console.log("Nacionalidades", this.selectedNationalities.length);
+            console.log("Erro 2");
+            return;
+          }
+          else if(this.step==3 && (this.selectedLanguages.length == 0 || !this.privacyPolicyAccepted)){
+            //fazer validaçoes com bd
+            console.log("Erro 3");
+            return;
+          }
+
+          this.step++;
+
+          // If all steps are completed, show success alert
+          if(this.step > 3) {
+            alert("Sucesso!");
+            this.step = 3;
+          }
+
+          return;
+        },
         
         },
         mounted () {
             this.toggleTab();
         },
+        
 };
 </script>
   
