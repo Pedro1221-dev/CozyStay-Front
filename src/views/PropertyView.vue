@@ -1293,7 +1293,7 @@ h1{
     color: white;
     background-color: #193D4E;
     border-radius: 40px;
-    width: 300px;
+    width: 250px;
     height: 50px;
     font-size: 18px;
     font-weight: lighter;
