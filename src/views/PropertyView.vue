@@ -571,7 +571,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 
 * {
     color: #193D4E;
