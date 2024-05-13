@@ -3,6 +3,26 @@ import Navbar from '@/components/Navbar.vue';
 </script>
 
 <script>
+export default {
+  data() {
+    return {
+      isModalOpen: false,
+      picture: 'images/test',
+    };
+  },
+  methods: {
+    openModal() {
+      this.isModalOpen = true;
+    },
+    closeModal() {
+      this.isModalOpen = false;
+    },
+    changePicture() {
+      this.picture = 'images/test2';
+    },
+  },
+};
+
 /* import BadgesComponent from './BadgesComponent.vue';
 import BookingsComponent from './BookingsComponent.vue';
 import FavoritesComponent from './FavoritesComponent.vue';
@@ -53,7 +73,45 @@ export default {
             </div>
 
             <div>
-                <button class="edit-btn" type="button">Edit Profile</button>
+                <button class="edit-btn" type="button" @click="openModal">Edit Profile</button>
+            </div>
+            <div class="modal" v-if="isModalOpen">
+                <div>
+                    <h2>Edit Profile</h2>
+                    <div class="close" @click="closeModal">
+                        <span class="material-symbols-outlined close-icon">close</span>
+                    </div>
+                </div>
+
+                <div class="container">
+                    <div class="changers">
+                        <div class="pictures">
+                            <img src="/src/assets/img/propertie/image.png" alt="">
+                            <button class="change-btn" @click="changePicture">Change Picture</button>
+                        </div>
+                        <div class="color">
+                            <input type="color" id="color" name="color" value="#red">
+                            <button class="change-btn">Change Color</button>
+                        </div>
+                    </div>
+
+                    <div class="form-inputs">
+                        <input type="text" class="email" placeholder="Email">
+                        <input type="password" class="password" placeholder="Password">
+                        <input type="password" class="confirm-password" placeholder="Password Confirmation">
+                    </div>
+
+                    <div class="buttons">
+                        <div class="save-btn">
+                            <button class="save-btn">Save</button>
+                        </div>
+                        <div class="delete-btn">
+                            <button class="delete-btn">Delete Account</button>
+                        </div>
+                    </div>
+                </div>
+
+                
             </div>
 
             <div class="profile-stats">
@@ -126,7 +184,7 @@ export default {
 .profile{
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 13vh 120vh 10vh;
+    grid-template-rows: 10vh 100vh 10vh;
 }
 
 .main{
@@ -146,9 +204,105 @@ export default {
     width: 10%;
     height: 20%;
     left: 45%;
-    top: 28%;
+    top: 25%;
 /*     border: 1px solid #A5E8E2;
     border-radius: 50%;  */
+}
+
+/* Modal */
+
+.modal{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    background-color: #FFF;
+    border-radius: 40px;
+    border: 1px solid;
+    margin-left: 10%;
+    margin-right: 10%;
+    padding: 2%;
+    width: 80%;
+    height: 70%;
+    top: 20%;
+    h2{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        color: #193D4E;
+        font-weight: 600;
+    }
+}
+
+.container{
+    margin-top: 5%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+}
+
+.changers{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+
+.close-icon{
+    position: absolute;
+    right: 50px;
+    top: 40px;
+    cursor: pointer;
+    color: #193D4E;
+}
+
+.pictures{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex;
+    align-items: center;
+    grid-column: 1;
+    img{
+        width: 70%;
+        height: 40%;    
+    }
+}
+
+.change-btn{
+    border: 1px solid #193D4E;
+    border-radius: 40px;
+    background-color: #FFF;
+    width: 150px;
+}
+
+.form-inputs{
+    display: flex;
+    flex-direction: column;
+    grid-column: 2;
+    row-gap: 20px;
+}
+
+.form-inputs input::placeholder {
+    color: #193D4E;
+}
+
+.form-inputs input {
+    width: 400px;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+}
+.buttons{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+}
+
+/* */
+
+.navbar > * {
+    height: 80px;
 }
 
 .edit-btn {
@@ -198,7 +352,6 @@ export default {
 }
 
 /* Profile Stats */
-
 
 .profile-stats {
     margin-left: 10%;
@@ -278,7 +431,7 @@ export default {
     justify-content: flex-start;
     align-items: center;
     align-content: center;
-    margin-top: 5%;
+    margin-top: 2%;
     margin-left: 15%;
     margin-right: 10%;
     gap: 20px;

@@ -161,7 +161,7 @@ import Navbar from '../components/Navbar.vue';
 
                 <div class="form-guests">
                     <p>Guests</p>
-                    <input type="number" min="1" max="10">
+                    <input type="number" placeholder="1" min="1" max="10">
                 </div>
 
                 <div class="form-prices">
@@ -491,8 +491,8 @@ import Navbar from '../components/Navbar.vue';
                         <p>Responds within an hour</p>
                         <p>Languages spoken: English, Portuguese, French</p>
                     </div>
-                    <div>
-                        <button class="profile-btn" type="button">Visit Profile</button>
+                    <div class="visit-profile">
+                        <router-link to="/profile" class="profile-btn">Visit Profile</router-link>
                     </div>
                 </div>
             
@@ -817,7 +817,7 @@ h1{
 .form-place {
     display: flex;
     flex-direction: row;
-    gap: 30px;
+    gap: 20px;
 }
 
 .form-image img{
@@ -866,6 +866,11 @@ h1{
     height: 75px;
 }
 
+.check-in input,
+.check-out input{
+    border: none;
+}
+
 .check-in p, .check-out p {
   font-weight: bold;
   text-align: center;
@@ -889,6 +894,10 @@ h1{
     p {
         font-weight: bold;
         text-align: center;
+    }
+    input{
+        width: 50px;
+        border: none;
     }
 }
 
@@ -1292,11 +1301,20 @@ h1{
 .profile-btn{
     color: white;
     background-color: #193D4E;
-    border-radius: 40px;
-    width: 250px;
-    height: 50px;
     font-size: 18px;
     font-weight: lighter;
+}
+
+.visit-profile {
+    color: white;
+    background-color: #193D4E;
+    border-radius: 40px;
+    width: 250px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
 
