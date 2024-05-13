@@ -108,6 +108,7 @@
      font-size: 20px;
      color: #FFFEF2;
      margin-right: 55px;
+     cursor:pointer;
     }
     span {
      cursor: pointer;
