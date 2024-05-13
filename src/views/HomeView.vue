@@ -1,4 +1,5 @@
 <script setup>
+/* import CardPropriedade from '@/components/CardPropriedade.vue';*/
 import Footer from '../components/Footer.vue';
 import Navbar from '../components/Navbar.vue';
 </script>
@@ -6,10 +7,12 @@ import Navbar from '../components/Navbar.vue';
 <template>
     <div class="landing-page" id="home">
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
-        <div class="navbar">
-            <Navbar/>
-        </div>
-            <div class="main-content">
+            
+            <div class="navbar">
+                <Navbar/>
+            </div>
+
+            <div class="main-content" id="home">
                 <img src="/src/assets/img/wallpaper/landingPageWallpaper.webp" width="100%" height="750px">
                 <div class="slogan">
                     <pre>
@@ -18,34 +21,54 @@ import Navbar from '../components/Navbar.vue';
                         clouds of
                         delight</pre>
                 </div>
+                
+                <div class="search-bar">
+                    <div class="search-input">
+                        <label for="where-to">Where to</label>
+                        <input id="where-to" type="text" placeholder="Search Destination">
+                    </div>
+                    <div class="search-input">
+                        <label for="check-in">Check-in</label>
+                        <input id="check-in" type="date" :min="today" placeholder="Arrival Date">
+                    </div>
+                    <div class="search-input">
+                        <label for="check-out">Check-out</label>
+                        <input id="check-out" type="date" :min="today" placeholder="Leaving Date">
+                    </div>
+                    <div class="search-input">
+                        <label for="guests">With who</label>
+                        <input id="guests" type="number" min="1" placeholder="How many Guests">
+                    </div>
+                    <span class="material-symbols-outlined">search</span>
+                </div>
             </div>
 
             <div class="top-destinations" id="top-destinations">
                 <h1>Top Destinations</h1>
 
-                <p>Lorem ipsum dolor sit amet consectetur. Sed cum urna orci ac accumsan. Et non congue morbi nisl lacus tristique faucibus odio eget. 
+                <p class="top-destinations-text">Lorem ipsum dolor sit amet consectetur. Sed cum urna orci ac accumsan. Et non congue morbi nisl lacus tristique faucibus odio eget. 
                     Elementum porta enim praesent ultrices aliquet. Viverra fermentum vulputate at et pellentesque suspendisse.</p>
 
                 <div class="grid-destinations">
                     <div class="destination">
                         <img class="destination-img" src="/src/assets/img/destinations/barcelona.webp" alt="Barcelona"/>
                         <div class="location">
-                            <img class="icon" src="/src/assets/img/icons/LocationPin.webp" alt="">
-                            <p>Barcelona, Spain</p>
+                            <span class="material-symbols-outlined icon-location">location_on</span>
+                            <p class="city">Barcelona, Spain</p>
                         </div>
                     </div>
                     <div class="destination">
                         <img class="destination-img" src="/src/assets/img/destinations/iceland.webp" alt="Iceland"/>
                         <div class="location">
-                            <img class="icon" src="/src/assets/img/icons/LocationPin.webp" alt="">
-                            <p>Reykjavik, Iceland</p>
+                            <span class="material-symbols-outlined icon-location">location_on</span>
+                            <p class="city"> Reykjavik, Iceland</p>
                         </div>
                     </div>
                     <div class="destination">
                         <img class="destination-img" src="/src/assets/img/destinations/dubai.webp" alt="Dubai"/>
                         <div class="location">
-                            <img class="icon" src="/src/assets/img/icons/LocationPin.webp" alt="">
-                            <p>Dubai, UAE</p>
+                            <span class="material-symbols-outlined icon-location">location_on</span>
+                            <p class="city">Dubai, UAE</p>
                         </div>
 
                     </div>
@@ -60,10 +83,14 @@ import Navbar from '../components/Navbar.vue';
                     Elementum porta enim praesent ultrices aliquet. Viverra fermentum vulputate at et pellentesque suspendisse.</p>
             </div>
 
+<!--             <div>
+                <CardPropriedade></CardPropriedade> 
+            </div> -->
+
             <div class="promo">
                 <h2>Ready to Cozy Up?</h2>
                 <p>Welcome to Cozystay, where cozy homes meet happy travelers! Got a spare room, a cozy cabin, or a chic apartment? Put it to work and let it earn for you. 
-        Join our community of hosts and unlock the potential of your space</p>
+                    Join our community of hosts and unlock the potential of your space</p>
                 <button class="btn-promo">List Your Space Now !</button>
                 <img src="../assets/img/house_1.png" alt="">
             </div>
@@ -200,6 +227,11 @@ export default {
 
       items.forEach(item => item.addEventListener('click', toggleAccordion));
     }
+  },
+  data() {
+    return {
+      today: new Date().toISOString().split('T')[0],
+    }
   }
 }
 </script>
@@ -223,6 +255,7 @@ export default {
 
     .main-content img {
         background: lightgray url('/src/assets/img/wallpaper/landingPageWallpaper.webp') no-repeat center / cover;
+        opacity: 0.9;
     }
     
     .slogan {
@@ -234,12 +267,59 @@ export default {
         font-size: 60px;
         font-family: 'Montserrat', sans-serif;
         line-height: normal;   
-        backdrop-filter: blur(1px);
+        backdrop-filter: blur(0.5px);
     }
 
     pre {
         font-family: 'Montserrat', sans-serif;
         font-weight: 400; /* Medium */     
+    }
+
+    /* Search Bar */
+
+    .search-bar {
+        justify-content: space-around;
+        width: 1336px;
+        height: 112px;
+        border: 1px solid #193D4E;
+        color: #193D4E;
+        align-items: center;
+        border-radius: 70px;
+        position: absolute;
+        background-color: white;
+        bottom: 7%;
+        opacity: 0.7;
+    }
+
+    .search-input {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border-right: 1px solid #193D4E;
+        padding: 0 10px;
+    }
+
+    .search-input:last-of-type {
+        border-right: none;
+    }
+
+    .search-input label {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 500;
+        font-size: 24px;
+        color: #193D4E;
+    }
+
+    .search-input input {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 300;
+        font-size: 20px;
+        color: #193D4E;
+        border: none;
+    }
+
+    .search-bar span {
+        font-size:50px
     }
     
     /* Top Destinations */
@@ -252,8 +332,10 @@ export default {
         display: flex;
         flex-direction: column;
         background: linear-gradient(0deg, #FFF 0%, rgba(255, 255, 255, 0.00) 100%), linear-gradient(90deg, #0A6D5F 0%, #42927D 19.34%, #549F8B 40.75%, #68A18C 64.77%, #619A88 97.9%);
+        background-size: 100% 50vh;
+        background-repeat: no-repeat;
         h1 {
-            color: var(--Background, #FFFFFF);
+            color: #FFFFFF;
             font-family: Montserrat;
             font-size: 40px;
             font-style: normal;
@@ -262,18 +344,19 @@ export default {
             align-items: center;
             margin-top: 5%;
         }
-        p {
-            font-family: Montserrat;
-            color: #FFF;
-            font-size: 20px;
-            font-style: normal;
-            font-weight: 400;
-            line-height: normal;
-            text-align: center;
-            margin-top: 3%;
-            margin-left: 20%;
-            margin-right: 20%;
-        }
+    }
+
+    .top-destinations-text{
+        font-family: Montserrat;
+        color: #FFF;
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        text-align: center;
+        margin-top: 3%;
+        margin-left: 20%;
+        margin-right: 20%;
     }
 
     /* Top Destinations Cards  */
@@ -310,33 +393,41 @@ export default {
 
     .location {
         position: absolute;
-        top: 3%;
-        left: 3%;
-        color: black;
-        background: white;
-        width: 70%;
-        height: 18%;
+        padding: 10px;
+        background-color: rgba(255, 254, 242, 0.8);
+        width: 44px;
+        height: 44px;
         text-align: left;
         opacity: 0.8;
-        border-radius: 40px;
+        border-radius: 100px;
         display: flex;
-        align-items: center;
-        justify-content: flex-end; 
-        
-        p {
-            display: flex;
-            align-items: flex-start;
-            font-size: 18px;
-            color: black;
-        }
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: flex-start;
     }
 
-    .icon {
-        width: 30px;
-        height: 30px;
-        display: flex;
-        align-items: center;
-        margin-left: 15px;
+    .city {
+        position: relative;
+        left: 10px;;
+        font-size: 18px;
+        color: black;
+    }
+
+    .location {
+        position: absolute;
+        top: 1.075rem;
+        left: 0.70rem;
+        width: 15rem;
+        height: 2.75rem;
+        opacity: 0.8;
+        border-radius: 40px; /* Adiciona cantos arredondados ao fundo da localização */
+    }
+
+    .icon-location{
+        font-size: 30px;
+        font-weight: 200;
+        left: 10px;
+        color: black;
     }
 
     /* Rentals */
@@ -350,7 +441,7 @@ export default {
         display: flex;
         flex-direction: column;
         h1{
-            color: var(--Background, #000000);
+            color: var(--Background, #193D4E);
             font-family: Montserrat;
             font-size: 40px;
             font-style: normal;
@@ -360,22 +451,22 @@ export default {
             margin-top: 5%;
         }
         p{
-            color: var(--Background, #000000);
+            color: var(--Background, #193D4E);
             font-family: Montserrat;
             font-size: 20px;
             font-style: normal;
             font-weight: 400;
             line-height: normal;
             align-items: center;
+            text-align: center;
+
             margin-top: 3%;
-            margin-left: 10%;
-            margin-right: 10%; 
+            margin-left: 20%;
+            margin-right: 20%;
         }
     }
 
     /* Promotion */ 
-
-
 
     .promo {
         background-color: #A9E3D3;
@@ -438,19 +529,17 @@ export default {
         margin-bottom: 5%;
         font-family: 'Montserrat', sans-serif;
         align-items: center;
-        justify-content: flex-end;
         display: flex;
         flex-direction: column;
-        
         h1{
-            color: var(--Background, #000000);
+            color: var(--Background, #193D4E);
             font-family: Montserrat;
             font-size: 40px;
             font-style: normal;
             font-weight: 500;
             line-height: normal;
             align-items: center;
-            margin-bottom: 4%;
+            margin-bottom: 3%;
         }
         p {
             text-align: center;
@@ -465,24 +554,24 @@ export default {
     }
 
     .about-us-images{
-        margin-top: 5%;
+        margin-top: 3%;
         display: grid;
         grid-template-columns: 1fr 1fr 1fr ;
         grid-template-rows: 1fr;
         grid-column-gap: 50px;  
-        margin-left: 10%;
-        margin-right: 10%;
-
+        margin-left: 20%;
+        margin-right: 20%;
     }
 
     .left img, .right img {
-        width: 390px;
-        height: 260px;
+        width: 300px;
+        height: 170px;
         border-radius: 40px;
+        margin-top: 7%;
     }
 
     .left div:first-child img, .right div:first-child img {
-        margin-bottom: 50px; /* Adjust as needed */
+        margin-bottom: 15px; /* Adjust as needed */
     }
 
     .middle {
@@ -491,8 +580,8 @@ export default {
         align-items: center;
         img {
             border-radius: 40px;
-            width: 400px;
-            height: 550px;
+            width: 300px;
+            height: 450px;
         }
     }
 
@@ -526,7 +615,6 @@ export default {
         width: 60%;
         margin-left: 20%;
         margin-right: 20%;
-        
     }
 
     .number {
@@ -555,6 +643,8 @@ export default {
         margin-bottom: 5spx;
     }
 
+    /* FAQS */
+
     .faqs {
         font-family: 'Montserrat', sans-serif;
         align-items: center;
@@ -564,7 +654,7 @@ export default {
         margin-left: 10%;
         margin-right: 10%;
         h1{
-            color: var(--Background, #000000);
+            color: var(--Background, #193D4E);
             font-family: Montserrat;
             font-size: 40px;
             font-style: normal;
@@ -574,10 +664,6 @@ export default {
             margin-bottom: 3%;
         }
     }
-
-
-
-    /* FAQS */
 
     * {
 	    box-sizing: border-box;
@@ -686,5 +772,6 @@ export default {
         font-size: 1rem;
         font-weight: 300;
         margin: 2em 0;
+        color: #193D4E;
     }
 </style>
