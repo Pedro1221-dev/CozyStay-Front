@@ -492,7 +492,7 @@ import Navbar from '../components/Navbar.vue';
                         <p>Languages spoken: English, Portuguese, French</p>
                     </div>
                     <div class="profile-btn">
-                        <button class="profile-btn" type="button">Visit Profile</button>
+                        <router-link class="profile-btn" to="/profile">Visit Profile</router-link>
                     </div>
                 </div>
             
@@ -731,7 +731,7 @@ h1{
 }
 
 .images {
-    z-index: -1; 
+    z-index: 1; 
     position: absolute;
     display: flex;
     flex-direction: row;
