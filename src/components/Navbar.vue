@@ -1,7 +1,7 @@
 <template>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400" rel="stylesheet" />
     
-    <div class="navbar">
+    <div class="navbar" :class="{'home-page': $route.name === 'home'}">
       <!-- Base da navbar que é sempre igual -->
       <router-link to="/">
         <img src="../assets/img/logo/logo.png" alt="Home" @click="setActiveSection('section1')">
@@ -95,10 +95,13 @@
      justify-content: space-between;
      align-items: center;
      padding: 20px 100px;
-     background-color: rgba(25, 61, 78, 0.8); /* 80% opacity */
+     background-color: rgba(25, 61, 78, 1);
      color: white;
      z-index: 10;
    }
+   .navbar.home-page {
+      background-color: rgba(25, 61, 78, 0.8); /* 80% opacity */
+    }
    .navbar a {
      font-family: 'Montserrat', sans-serif;
      font-weight: 200; /* Medium */

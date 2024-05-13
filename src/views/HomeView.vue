@@ -278,6 +278,8 @@ export default {
     /* Search Bar */
 
     .search-bar {
+        display: flex;
+        flex-direction: row;
         justify-content: space-around;
         width: 1336px;
         height: 112px;
