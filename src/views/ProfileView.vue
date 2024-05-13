@@ -182,6 +182,7 @@ export default {
 
 <style scoped>
 .profile{
+    background-color: #FFF;
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 10vh 100vh 10vh;
