@@ -40,14 +40,14 @@
     background-color: rgba(255, 255, 255, 0);
     border: 1px solid rgba(0, 0, 0, 0.7);
     box-sizing: border-box;
-    width: 26.688rem;
-    height: 28.563rem;
+    width: 20rem;
+    height: 22rem;
     color: black;
 }
 
 .card-image {
-    width: 426px;
-    height: 294px;
+    width: 100%;
+    height: 60%;
     position: relative;
     border-radius: 10px; 
 
@@ -65,10 +65,10 @@
     position: absolute;
     background-color: rgba(255, 254, 242, 0.8);
     padding: 10px;
-    font-size: 24px;
+    font-size: 18px;
     border-radius: 100px;
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     justify-content: space-around;
     align-items: center;
 }
@@ -77,8 +77,8 @@
     position: absolute;
     top: 1.125rem;
     left: 0.75rem;
-    width: 16.563rem;
-    height: 2.75rem;
+    width: 12rem;
+    height: 2.5rem;
     opacity: 0.8;
     border-radius: 40px; /* Adiciona cantos arredondados ao fundo da localização */
 }
@@ -107,20 +107,20 @@
 }
 
 .title-rating h2 {
-    font-size: 30px;
+    font-size: 25px;
     font-weight: 600;
 }
 
 .rating {
-    font-size: 28px;
+    font-size: 20px;
 }
 
 .price {
-    font-size: 24px;
+    font-size: 16px;
 }
 
 .info {
-    font-size: 24px;
+    font-size: 14px;
     font-weight: 200;
 }
 </style>
