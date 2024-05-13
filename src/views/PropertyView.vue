@@ -491,7 +491,7 @@ import Navbar from '../components/Navbar.vue';
                         <p>Responds within an hour</p>
                         <p>Languages spoken: English, Portuguese, French</p>
                     </div>
-                    <div>
+                    <div class="profile-btn">
                         <button class="profile-btn" type="button">Visit Profile</button>
                     </div>
                 </div>
@@ -1290,6 +1290,9 @@ h1{
 }
 
 .profile-btn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
     color: white;
     background-color: #193D4E;
     border-radius: 40px;
@@ -1298,7 +1301,6 @@ h1{
     font-size: 18px;
     font-weight: lighter;
 }
-
 
 /* Reservation Info */
 
