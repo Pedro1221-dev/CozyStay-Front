@@ -589,10 +589,12 @@ h1{
 }
 
 .property-page {
+    background-color: #fff;
     display: grid;
     grid-template-columns: 2fr;
     grid-template-rows: 13vh 90vh 40vh 55vh 95vh 90vh 90vh 50vh 10vh;
 }
+    
 /* Overview */
 
 .overview {
