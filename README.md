@@ -33,3 +33,21 @@ npm run build
 ```sh
 npm run test:unit
 ```
+
+### Vuetify
+
+```sh
+npm i vuetify
+```
+
+### Google Places Api
+
+```sh
+npm install google-places
+```
+
+### Vue Toastification
+
+```sh
+npm install --save vue-toastification
+```
