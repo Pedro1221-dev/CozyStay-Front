@@ -281,16 +281,18 @@ export default {
         display: flex;
         flex-direction: row;
         justify-content: space-around;
-        width: 1336px;
-        height: 112px;
+        width: 1000px;
+        height: 100px;
         border: 1px solid #193D4E;
         color: #193D4E;
         align-items: center;
         border-radius: 70px;
+        border: none;
         position: absolute;
         background-color: white;
-        bottom: 7%;
+        bottom: 12%;
         opacity: 0.7;
+
     }
 
     .search-input {
@@ -308,14 +310,14 @@ export default {
     .search-input label {
         font-family: 'Montserrat', sans-serif;
         font-weight: 500;
-        font-size: 24px;
+        font-size: 20px;
         color: #193D4E;
     }
 
     .search-input input {
         font-family: 'Montserrat', sans-serif;
         font-weight: 300;
-        font-size: 20px;
+        font-size: 16px;
         color: #193D4E;
         border: none;
     }
