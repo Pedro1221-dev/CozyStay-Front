@@ -150,18 +150,18 @@ import Navbar from '../components/Navbar.vue';
                 <div class="form-dates">
                     <div class="check-in">
                         <p>Check-in</p>
-                        <input type="date" :min="today" v-model="checkInDate">
+                        <input type="date" :min="today" @change="validateDates" v-model="checkInDate">
                     </div>
                     <div class="vertical-line"></div>
                     <div class="check-out">
                         <p>Check-out</p>
-                        <input type="date" :min="today" v-model="checkOutDate">                    
+                        <input type="date" :min="today" @change="validateDates" v-model="checkOutDate">                    
                     </div>                
                 </div>
 
                 <div class="form-guests">
                     <p>Guests</p>
-                    <input type="number" min="1" max="10">
+                    <input type="number" min="1" max="10" placeholder="01">
                 </div>
 
                 <div class="form-prices">
@@ -536,9 +536,6 @@ import Navbar from '../components/Navbar.vue';
 
 <script>
 export default {
-
-  // Other options
-
   computed: {
     today() {
       const today = new Date();
@@ -552,11 +549,12 @@ export default {
 
   data() {
     return {
-      checkInDate: '',
-      checkOutDate: '',
       isOpen: false,
       selectedOption: 'Sort',
       options: ['Latest', 'Oldest', 'Highest Rated', 'Lowest Rated'],
+      checkInDate: '',
+      checkOutDate: '',
+      errorMessage: null,
     };
   },
 
@@ -565,9 +563,18 @@ export default {
       this.selectedOption = option;
       this.isOpen = false;
     },
+    validateDates() {
+      const checkIn = new Date(this.checkInDate);
+      const checkOut = new Date(this.checkOutDate);
+
+      if (checkOut <= checkIn) {
+        this.errorMessage = 'Check-out date must be after the check-in date.';
+      } else {
+        this.errorMessage = null;
+      }
+    },
   },
 
-  // Other options
 };
 </script>
 
@@ -776,8 +783,16 @@ h1{
     .bottom-right img{
         border-radius: 0px 0px 40px 0px;
     }
-
 }  
+
+/* .right div:nth-child(1) {
+    border-radius: 0px 40px 0px 0px;
+}
+
+.right div:nth-child(2) {
+    border-radius: 0px 0px 40px 0px;
+
+} */
 
 /* Accomodation */
 
