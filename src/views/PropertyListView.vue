@@ -4,6 +4,8 @@ import { useRouter } from 'vue-router';
 import Navbar from '../components/Navbar.vue';
 import Footer from '../components/Footer.vue';
 import CardPropriedade from '../components/CardPropriedade.vue';
+import { usePropertiesStore } from "@/stores/property";
+
 
 export default {
   components: {
@@ -76,6 +78,7 @@ export default {
     });
 
     return {
+      propertyStore: usePropertiesStore(),
       campo1,
       campo2,
       campo3,
@@ -84,6 +87,14 @@ export default {
       search,
       updateMinCheckoutDate,
     }
+  },
+  computed: {
+    properties() {
+        return this.propertyStore.getProperties; 
+    }
+  },
+  created() {
+        this.propertyStore.fetchProperties();
   }
 }
 </script>
@@ -126,15 +137,16 @@ export default {
     </div>
     <div class="containt">
         <CardPropriedade
-            v-for="n in 12"
-            :key="n"
-            image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRYg2rNFiJzTCRPXETBxp80WLKVMxeLZZbxMGqdKlkAg&s"
-            location="Lisbon, Portugal"
-            title="Beautiful Apartment"
-            rating="4.5"
-            price="€100 per night"
-            beds="2"
-            rooms="1" />
+        v-for="property in properties"
+        :key="property.property_id"
+        image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRYg2rNFiJzTCRPXETBxp80WLKVMxeLZZbxMGqdKlkAg&s"
+        :location="`${property.city}, ${property.country}`"
+        :title="property.title"
+        :rating="property.averageRating"
+        :price="`€${property.price} per night`"
+        :beds="property.number_beds"
+        :rooms="property.number_bedrooms"
+    />
     </div>
     <div class="promotation">
         <h2>Ready to Cozy Up?</h2>
