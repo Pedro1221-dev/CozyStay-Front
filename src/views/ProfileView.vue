@@ -6,8 +6,25 @@ import Navbar from '@/components/Navbar.vue';
 export default {
   data() {
     return {
-      isModalOpen: false,
-      picture: 'images/test',
+        isModalOpen: false,
+        selectedFile: null,
+        isPhotoSelected: false,
+        email: '',
+        password: '',
+        confirmpassword: '',
+        rules: {
+            required: value => !!value || 'Required Field.',
+            email: value => {
+                const pattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
+                return pattern.test(value) || 'Invalid e-mail.';
+            },
+        },
+        items: [
+            { title: 'Click Me' },
+            { title: 'Click Me' },
+            { title: 'Click Me' },
+            { title: 'Click Me 2' },
+        ],
     };
   },
   methods: {
@@ -17,11 +34,20 @@ export default {
     closeModal() {
       this.isModalOpen = false;
     },
-    changePicture() {
-      this.picture = 'images/test2';
+    openFileInput() {
+        const fileInput = this.$refs.fileInput.$el.querySelector('input');
+        fileInput.click();
+        fileInput.onchange = (e) => {
+        this.selectedFile = URL.createObjectURL(e.target.files[0]);
+        };
     },
+    handlePhotoSelection() {
+        this.isPhotoSelected = true;
+  },
   },
 };
+
+
 
 /* import BadgesComponent from './BadgesComponent.vue';
 import BookingsComponent from './BookingsComponent.vue';
@@ -75,9 +101,12 @@ export default {
             <div>
                 <button class="edit-btn" type="button" @click="openModal">Edit Profile</button>
             </div>
+
+            <div class="overlay" v-if="isModalOpen"></div>
+
             <div class="modal" v-if="isModalOpen">
                 <div>
-                    <h2>Edit Profile</h2>
+                    <h1>Edit Profile</h1>
                     <div class="close" @click="closeModal">
                         <span class="material-symbols-outlined close-icon">close</span>
                     </div>
@@ -86,28 +115,82 @@ export default {
                 <div class="container">
                     <div class="changers">
                         <div class="pictures">
-                            <img src="/src/assets/img/propertie/image.png" alt="">
-                            <button class="change-btn" @click="changePicture">Change Picture</button>
+                            <div class="photo">
+                                <img :class="{ 'photo-selected': selectedFile }" :src="selectedFile" alt="Selected picture">                            
+                            </div>
+                            <v-file-input label="File input" ref="fileInput" v-model="selectedFile" style="display: none" class="photo-input"></v-file-input>
+                            <button class="change-btn" @click="openFileInput">Change Picture</button>
                         </div>
-                        <div class="color">
-                            <input type="color" id="color" name="color" value="#red">
-                            <button class="change-btn">Change Color</button>
+                        <div class="theme">
+                            <div class="edit">
+                                <span class="material-symbols-outlined editIcon">edit</span>
+                            </div>
+<!--                        <button class="change-btn" @click="changePicture">Change Theme</button>
+ -->                        
+                            <div class="text-center">
+                                <v-menu
+                                open-on-hover
+                                >
+                                <template v-slot:activator="{ props }">
+                                    <v-btn
+                                    v-bind="props"
+                                    class="change-btn"
+                                    >
+                                    Change Theme
+                                    </v-btn>
+                                </template>
+
+                                <v-list>
+                                    <v-list-item
+                                    v-for="(item, index) in items"
+                                    :key="index"
+                                    >
+                                    <v-list-item-title>{{ item.title }}</v-list-item-title>
+                                    </v-list-item>
+                                </v-list>
+                                </v-menu>
+                            </div>
+                        
                         </div>
                     </div>
 
                     <div class="form-inputs">
-                        <input type="text" class="email" placeholder="Email">
-                        <input type="password" class="password" placeholder="Password">
-                        <input type="password" class="confirm-password" placeholder="Password Confirmation">
-                    </div>
+                        <v-text-field 
+                            clearable
+                            v-model="email" 
+                            label="Email"
+                            variant="underlined"
+                            placeholder="example@gmail.com"
+                            class="mt-1 text-h1 custom-class-text-input field-380"
+                            :rules="[rules.required, rules.email]"
+                            ></v-text-field>
+                        <v-text-field 
+                            clearable
+                            v-model="password" 
+                            label="Password"
+                            type="password" 
+                            variant="underlined"
+                            class="mt-1 text-h1 custom-class-text-input field-380"
+                            :rules="[rules.required, rules.password]"
 
-                    <div class="buttons">
-                        <div class="save-btn">
-                            <button class="save-btn">Save</button>
-                        </div>
-                        <div class="delete-btn">
-                            <button class="delete-btn">Delete Account</button>
-                        </div>
+                        ></v-text-field>
+                        <v-text-field 
+                            clearable
+                            v-model="confirmpassword" 
+                            label="Confirm Password"
+                            type="password" 
+                            variant="underlined"
+                            class="mt-1 text-h1 custom-class-text-input field-380"
+                            :rules="[rules.required, rules.password]"
+                        ></v-text-field>
+                    </div>
+                </div>
+                <div class="buttons">
+                    <div class="save-btn">
+                        <button class="save-btn">Save</button>
+                    </div>
+                    <div class="delete-btn">
+                        <button class="delete-btn">Delete Account</button>
                     </div>
                 </div>
 
@@ -212,21 +295,32 @@ export default {
 
 /* Modal */
 
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(3px);
+    z-index: 1; /* Make sure the overlay is above other elements */
+}
+
 .modal{
+    z-index: 10000;
     display: flex;
     flex-direction: column;
     align-items: center;
     position: absolute;
-    background-color: #FFF;
+    background-color: rgba(255, 255, 255, 1);
     border-radius: 40px;
-    border: 1px solid;
+    border: 1px solid #193D4E;
     margin-left: 10%;
     margin-right: 10%;
     padding: 2%;
     width: 80%;
     height: 70%;
     top: 20%;
-    h2{
+    h1{
         display: flex;
         flex-direction: row;
         justify-content: center;
@@ -239,7 +333,8 @@ export default {
     margin-top: 5%;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 50px;
+    column-gap: 140px;
+    row-gap: 20px;
 }
 
 .changers{
@@ -260,44 +355,129 @@ export default {
 .pictures{
     display: flex;
     flex-direction: column;
-    justify-content: flex;
+    justify-content: center;
     align-items: center;
-    grid-column: 1;
+    border-radius: 50%;
     img{
-        width: 70%;
-        height: 40%;    
+        display: flex;
+        align-items: center;
+        max-width: 100px;
+        max-height: 100px;
+        min-height: 150px;
+        max-width: 150px;
+    }; 
+}
+
+.photo{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+/*     width: 60%;
+    height: 0; */
+    padding: 30%;
+    margin: auto;
+    border: 1px solid #193D4E;
+    width: 150px;
+    height: 150px;  
+    border-radius: 50%;
+    z-index: 1;
+
+}
+
+.photo-selected {
+    width: 500%;
+    border-radius: 50%;
+    border: 1px solid #193D4E;
+}
+
+.theme{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.photo-input{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    label{
+        display: block;
+        text-align: center;
     }
 }
 
+.edit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #A5E8E2;
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    padding: 0;
+    margin: auto;
+    border: 1px solid #193D4E;
+}
+
+.editIcon {    
+    color: rgba(28, 27, 31, 0.6);
+    font-size: 24px;
+}
+
 .change-btn{
+    margin-top: 5%;
     border: 1px solid #193D4E;
     border-radius: 40px;
     background-color: #FFF;
     width: 150px;
+    text-transform: none;
+}
+
+/* Drop Menu Vuetify */
+.v-list {
+    position: relative;
+    z-index: 2;
 }
 
 .form-inputs{
     display: flex;
     flex-direction: column;
     grid-column: 2;
-    row-gap: 20px;
 }
 
-.form-inputs input::placeholder {
-    color: #193D4E;
+.field-380 {
+    width: 380px !important;
 }
 
-.form-inputs input {
-    width: 400px;
-    border-left: none;
-    border-right: none;
-    border-top: none;
-}
 .buttons{
     display: flex;
     flex-direction: row;
     justify-content: center;
     width: 100%;
+    gap: 30px;
+    margin-top: 7%;
+}
+
+.save-btn{
+    background-color: #193D4E;
+    color: #FFF;
+    width: 200px;
+    height: 40px;
+    border-radius: 20px;
+    font-weight: 500;
+}   
+
+.delete-btn{
+    background-color: #F5D0CD;
+    color: #193D4E;
+    width: 200px;
+    height: 40px;
+    border-radius: 20px;
+    font-weight: 500;
+
 }
 
 /* */
@@ -314,7 +494,7 @@ export default {
     width: 150px;
     height: 40px;
     font-size: 16px;
-    font-weight: lighter;
+    font-weight: 400;
     float: right;
     margin-right: 10%;
     margin-top: -80px;
