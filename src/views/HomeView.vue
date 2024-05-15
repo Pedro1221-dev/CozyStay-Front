@@ -1,5 +1,5 @@
 <script setup>
-/* import CardPropriedade from '@/components/CardPropriedade.vue';*/
+import CardPropriedade from '@/components/CardPropriedade.vue';
 import Footer from '../components/Footer.vue';
 import Navbar from '../components/Navbar.vue';
 </script>
@@ -81,12 +81,21 @@ import Navbar from '../components/Navbar.vue';
 
                 <p>Lorem ipsum dolor sit amet consectetur. Sed cum urna orci ac accumsan. Et non congue morbi nisl lacus tristique faucibus odio eget. 
                     Elementum porta enim praesent ultrices aliquet. Viverra fermentum vulputate at et pellentesque suspendisse.</p>
+            
+                <div class="rental-cards">
+                    <CardPropriedade
+                        v-for="n in 6"
+                        :key="n"
+                        image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRYg2rNFiJzTCRPXETBxp80WLKVMxeLZZbxMGqdKlkAg&s"
+                        location="Lisbon, Portugal"
+                        title="Beautiful Apartment"
+                        rating="4.5"
+                        price="€100 per night"
+                        beds="2"
+                        rooms="1" /> 
+                </div>
             </div>
-
-<!--             <div>
-                <CardPropriedade></CardPropriedade> 
-            </div> -->
-
+            
             <div class="promo">
                 <h2>Ready to Cozy Up?</h2>
                 <p>Welcome to Cozystay, where cozy homes meet happy travelers! Got a spare room, a cozy cabin, or a chic apartment? Put it to work and let it earn for you. 
@@ -240,7 +249,7 @@ export default {
     .landing-page {
         display: grid;
         grid-template-columns: 1fr;
-        grid-template-rows: 0vh 100vh 80vh 200vh 70vh 140vh 60vh 70vh 10vh;
+        grid-template-rows: 0vh 100vh 80vh 150vh 70vh 110vh 60vh 70vh 10vh;
         background-color: #FFF;
     }
 
@@ -424,7 +433,7 @@ export default {
         width: 15rem;
         height: 2.75rem;
         opacity: 0.8;
-        border-radius: 40px; /* Adiciona cantos arredondados ao fundo da localização */
+        border-radius: 40px; 
     }
 
     .icon-location{
@@ -464,10 +473,15 @@ export default {
             align-items: center;
             text-align: center;
 
-            margin-top: 3%;
-            margin-left: 20%;
-            margin-right: 20%;
+            margin: 3% 20% 3% 20%;
         }
+    }
+
+    .rental-cards {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 50px;
     }
 
     /* Promotion */ 
