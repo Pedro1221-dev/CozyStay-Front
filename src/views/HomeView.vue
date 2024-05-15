@@ -174,33 +174,33 @@ import Navbar from '../components/Navbar.vue';
                 <h1>Frequently Asked Questions</h1>
                     <div class="accordion">
                         <div class="accordion-item">
-                        <button id="accordion-button-1" aria-expanded="false"><span class="accordion-title">Why is the moon sometimes out during the day?</span><span class="icon" aria-hidden="true"></span></button>
+                        <button id="accordion-button-1" aria-expanded="false"><span class="accordion-title">How can I rent a property through Cozy Stay?</span><span class="icon" aria-hidden="true"></span></button>
                         <div class="accordion-content">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor pretium viverra suspendisse potenti.</p>
+                            <p>To rent a property through Cozy Stay, simply visit our website and use our search tool to find available properties. Once you've found a property that meets your needs, you can make a reservation directly through the website.</p>
                         </div>
                         </div>
                         <div class="accordion-item">
-                        <button id="accordion-button-2" aria-expanded="false"><span class="accordion-title">Why is the sky blue?</span><span class="icon" aria-hidden="true"></span></button>
+                        <button id="accordion-button-2" aria-expanded="false"><span class="accordion-title">What are the requirements for listing my property on Cozy Stay?</span><span class="icon" aria-hidden="true"></span></button>
                         <div class="accordion-content">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor pretium viverra suspendisse potenti.</p>
+                            <p>To list your property on Cozy Stay, you need to create an owner account and fill out all the necessary information about your property, including photos, descriptions, and pricing details. Our team will review your listing before making it public.</p>
                         </div>
                         </div>
                         <div class="accordion-item">
-                        <button id="accordion-button-3" aria-expanded="false"><span class="accordion-title">Will we ever discover aliens?</span><span class="icon" aria-hidden="true"></span></button>
+                        <button id="accordion-button-3" aria-expanded="false"><span class="accordion-title">How are payments and financial transactions managed on Cozy Stay?</span><span class="icon" aria-hidden="true"></span></button>
                         <div class="accordion-content">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor pretium viverra suspendisse potenti.</p>
+                            <p>Payments and financial transactions on Cozy Stay are securely managed through our platform. Renters pay through the website, and owners receive payments directly into their registered bank accounts.</p>
                         </div>
                         </div>
                         <div class="accordion-item">
-                        <button id="accordion-button-4" aria-expanded="false"><span class="accordion-title">How much does the Earth weigh?</span><span class="icon" aria-hidden="true"></span></button>
+                        <button id="accordion-button-4" aria-expanded="false"><span class="accordion-title">Is there any service fee associated with using Cozy Stay, for either owners or renters?</span><span class="icon" aria-hidden="true"></span></button>
                         <div class="accordion-content">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor pretium viverra suspendisse potenti.</p>
+                            <p>Yes, there is a service fee associated with using Cozy Stay. This fee varies depending on the type of transaction and is detailed during the booking or property listing process.</p>
                         </div>
                         </div>
                         <div class="accordion-item">
-                        <button id="accordion-button-5" aria-expanded="false"><span class="accordion-title">How do airplanes stay up?</span><span class="icon" aria-hidden="true"></span></button>
+                        <button id="accordion-button-5" aria-expanded="false"><span class="accordion-title">What should I do in case of problems during my stay in a property rented through Cozy Stay?</span><span class="icon" aria-hidden="true"></span></button>
                         <div class="accordion-content">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor pretium viverra suspendisse potenti.</p>
+                            <p>If you encounter any problems during your stay in a property rented through Cozy Stay, please contact us immediately. We are available 24 hours a day to help resolve any issues that may arise and ensure a comfortable stay for all our customers.</p>
                         </div>
                         </div>
                     </div>
@@ -249,7 +249,7 @@ export default {
     .landing-page {
         display: grid;
         grid-template-columns: 1fr;
-        grid-template-rows: 0vh 100vh 80vh 150vh 70vh 110vh 60vh 70vh 10vh;
+        grid-template-rows: 0vh 100vh 80vh 150vh 70vh 110vh 60vh 100vh 10vh;
         background-color: #FFF;
     }
 
