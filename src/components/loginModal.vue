@@ -32,7 +32,7 @@
                     <v-form @submit.prevent="login" class="form">
                       <v-text-field 
                       clearable
-                      v-model="email" 
+                      v-model="email_login" 
                       label="Email" 
                       variant="underlined"
                       hint="Enter your email to access this website"
@@ -42,7 +42,7 @@
                       ></v-text-field>
                       <v-text-field 
                       clearable
-                      v-model="password" 
+                      v-model="password_login" 
                       type="password" 
                       label="Password" 
                       variant="underlined"
@@ -69,7 +69,7 @@
                 <div class="titleRegister">
                     <v-card-title class="registerText">Register</v-card-title>
                 </div>
-                <v-stepper alt-labels hide-actions :items="['Account Information', 'Personal Details', 'Additional Information']" class="register-section" v-model="step">
+                <v-stepper alt-labels hide-actions :items="['Account Information', 'Personal Details', 'Additional Information', 'Email Confirmation']" class="register-section" v-model="step">
                   <template v-slot:item.1>
                     <v-card 
                     class="mt-n9 mb-5 custom-card-color" 
@@ -78,7 +78,7 @@
                         <v-form @submit.prevent="login" class="form">
                           <v-text-field 
                           clearable
-                          v-model="email" 
+                          v-model="email_register" 
                           label="Email" 
                           variant="underlined"
                           hint="Enter your email to access this website"
@@ -88,12 +88,12 @@
                           ></v-text-field>
                           <v-text-field 
                           clearable
-                          v-model="password" 
+                          v-model="password_resgister" 
                           type="password" 
                           label="Password" 
                           variant="underlined"
                           hint="Must have at least 6 characters"
-                          :rules="[rules.required]"
+                          :rules="rules.password"
                           class="mt-2 text-h1 custom-class-text-input" 
                           ></v-text-field>
                           <v-text-field 
@@ -103,7 +103,7 @@
                           label="Password Confirmation" 
                           variant="underlined"
                           hint="The password should match"
-                          :rules="[rules.required]"
+                          :rules="rules.confirmPassword"
                           class="mt-2 mb-8 text-h1 custom-class-text-input" 
                           ></v-text-field>
                           <v-btn variant="tonal"
@@ -130,18 +130,17 @@
                           hint="Enter your first name to access this website"
                           placeholder="John"
                           class="mt-10 text-h1 custom-class-text-input"
-                          :rules="[rules.required]"
+                          :rules="rules.firstName"
                           ></v-text-field>
                           <v-text-field 
                           clearable
                           v-model="lastName" 
-                          type="password" 
                           label="Last Name" 
                           variant="underlined"
                           hint="Enter your last name to access this website"
                           placeholder="Doe"
                           class="mt-2 text-h1 custom-class-text-input" 
-                          :rules="[rules.required]"
+                          :rules="rules.lastName"
                           ></v-text-field>
                           <v-text-field 
                           clearable
@@ -150,13 +149,12 @@
                           variant="underlined"
                           hint="Enter your vat number to access this website"
                           class="mt-2 text-h1 custom-class-text-input" 
-                          :rules="[rules.required]"
+                          :rules="rules.vatNumber"
                           ></v-text-field>
                           <v-combobox
                             v-model="selectedNationalities"
                             clearable
                             chips
-                            multiple
                             label="Nationality"
                             :items="['Portuguese', 'French', 'Spanish', 'German', 'Italian', 'Chinese', 'American']"
                             class="mb-n5 custom-class-text-input" 
@@ -168,7 +166,7 @@
                       rounded="lg"
                       color="white" 
                       block 
-                      class="registerButton" @click="next">Seguinte</v-btn>
+                      class="registerButton margin-42" @click="next">Seguinte</v-btn>
                         </v-form>
                     </v-sheet>
                   </v-card>
@@ -193,7 +191,7 @@
                             <v-checkbox
                               v-model="selectedLanguages"
                               :label="''"
-                              :value="nationality.name"
+                              :value="nationality.id"
                               class="ml-n2 privacyPolicyCheckbox"
                               :rules="[rules.required]"
                             ></v-checkbox>
@@ -201,7 +199,7 @@
                         </v-row>
                       </v-container>
                     </v-card>
-                    <div class="d-flex align-center mt-n15">
+                    <div class="d-flex align-center mt-n15 margin-5">
                       <!-- Checkbox para a política de privacidade -->
                       <v-checkbox
                         v-model="privacyPolicyAccepted"
@@ -216,11 +214,37 @@
                       size="x-large"
                       rounded="lg"
                       color="white" 
-                      block 
                       class="registerButton"
                       :disabled="!privacyPolicyAccepted"
                       @click="next"
+                      style="width: 300px; margin-left:25%;"
                       >Register</v-btn>
+                  </template>
+                  <template v-slot:item.4>
+                    <v-card 
+                    class="mt-n9 mb-5 custom-card-color" 
+                    flat>
+                      <v-sheet width="300" class="form-background mx-auto">
+                        <v-form @submit.prevent="login" class="form">
+                          <v-text-field 
+                          clearable
+                          v-model="otp" 
+                          label="OTP" 
+                          variant="underlined"
+                          hint="Enter the OTP sent to your email"
+                          placeholder="123456"
+                          class="mt-15 text-h1 custom-class-text-input"
+                          :rules="[rules.required]"
+                          ></v-text-field>
+                          <v-btn variant="tonal"
+                      size="x-large"
+                      rounded="lg"
+                      color="white" 
+                      block 
+                      class="registerButton" @click="next">Confirm</v-btn>
+                        </v-form>
+                    </v-sheet>
+                    </v-card>
                   </template>
                   
                 </v-stepper>
@@ -233,16 +257,28 @@
 </template>
   
 <script>
+import { useUserStore } from "@/stores/user";
+import { useToast } from "vue-toastification";
+
 export default {
+  setup() {
+    // Get toast interface
+    const toast = useToast();
+
+    // Make it available inside methods
+    return { toast }
+  },
     data() {
       return {
         step:1,
         privacyPolicyAccepted: false,
         loginDialog: false,
         activeTab: 'Login',
+        email_login:"",
+        password_login:"",
         overlayToLeft: true,
-        email: "",
-        password: "",
+        email_register: "",
+        password_resgister: "",
         confirmPassword: "",
         firstName: "",
         lastName: "",
@@ -253,17 +289,39 @@ export default {
             const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
             return pattern.test(value) || 'Invalid e-mail.'
           },
+          password: [
+            v => !!v || 'Password is required',
+            v => (v && v.length >= 8) || 'Password must be at least 8 characters',
+            v => (v && /\W/.test(v)) || 'Password must contain at least one special character'
+          ],
+          confirmPassword: [
+            v => !!v || 'Password confirmation is required',
+            v => (v && v === this.password_resgister) || 'Passwords must match'
+          ],
+          vatNumber: [
+            v => !!v || 'VAT number is required',
+            v => (v && v.length === 9) || 'VAT number must be 9 digits',
+            v => (v && /^\d+$/.test(v)) || 'VAT number must contain only digits'
+          ],
+          firstName: [
+            v => !!v || 'First name is required',
+            v => (v && /^[a-zA-Z]+$/.test(v)) || 'First name must contain only letters'
+          ],
+          lastName: [
+            v => !!v || 'Last name is required',
+            v => (v && /^[a-zA-Z]+$/.test(v)) || 'Last name must contain only letters'
+          ],
           
         },
         nationalities: [
-          { name: 'English', flag: '../src/assets/img/register/uk.png' },
-          { name: 'French', flag: '../src/assets/img/register/fr.png' },
-          { name: 'German', flag: '../src/assets/img/register/de.png' },
-          { name: 'Portuguese', flag: '../src/assets/img/register/pt.png' },
-          { name: 'Spanish', flag: '../src/assets/img/register/es.png' },
-          { name: 'Italian', flag: '../src/assets/img/register/it.png' },
-          { name: 'Russian', flag: '../src/assets/img/register/ru.png' },
-          { name: 'Mandarim', flag: '../src/assets/img/register/cn.png' }
+          { id: 1,name: 'English', flag: '../src/assets/img/register/uk.png' },
+          { id: 2,name: 'French', flag: '../src/assets/img/register/fr.png' },
+          { id: 3,name: 'German', flag: '../src/assets/img/register/de.png' },
+          { id: 4,name: 'Portuguese', flag: '../src/assets/img/register/pt.png' },
+          { id: 5,name: 'Spanish', flag: '../src/assets/img/register/es.png' },
+          { id: 6,name: 'Italian', flag: '../src/assets/img/register/it.png' },
+          { id: 7,name: 'Russian', flag: '../src/assets/img/register/ru.png' },
+          { id: 8,name: 'Mandarim', flag: '../src/assets/img/register/cn.png' }
         ],
         selectedNationalities: [],
         selectedLanguages: []
@@ -301,14 +359,13 @@ export default {
         login() {
           console.log(this.email,this.password);
         },
-        next(){
-          console.log("Nacionalidades", this.selectedNationalities.length);
-          if(this.step==1 && (!this.email || !this.password || !this.confirmPassword || this.confirmPassword != this.password)) {
+        next() {
+          if(this.step==1 && (!this.email_register || !this.password_resgister || !this.confirmPassword || this.confirmPassword != this.password_resgister || this.password_resgister.length < 8 || !/[^A-Za-z0-9]/.test(this.password_resgister))) {
             //fazer validaçoes com bd
             console.log("Erro 1");
             return;
           }
-          else if(this.step==2 && (!this.firstName || !this.lastName ||!this.vatNumber || this.selectedNationalities.length == 0)) {
+          else if(this.step==2 && (!this.firstName || !this.lastName || !this.vatNumber || this.selectedNationalities.length == 0 || !/^[A-Za-z]+$/.test(this.firstName) || !/^[A-Za-z]+$/.test(this.lastName) || !/^\d{9,}$/.test(this.vatNumber))) {
             //fazer validaçoes com bd
             console.log("Nacionalidades", this.selectedNationalities.length);
             console.log("Erro 2");
@@ -319,16 +376,67 @@ export default {
             console.log("Erro 3");
             return;
           }
+          else if(this.step==4 && (!this.otp || this.otp.length != 6 || !/^\d{6}$/.test(this.otp))) {
+            // chamar método da API para verificar o OTP
+            console.log("Erro 4");
+            return;
+          }
 
           this.step++;
 
-          // If all steps are completed, show success alert
+          // If all steps are completed, try to register the user
           if(this.step > 3) {
-            alert("Sucesso!");
-            this.step = 3;
+            this.registerUser();
           }
 
           return;
+        },
+
+        async registerUser() {
+          const userStore = useUserStore();
+          const user ={
+            email: this.email_register,
+            password: this.password_resgister,
+            name: this.firstName + ' ' + this.lastName,
+            vat_number: this.vatNumber,
+            nationality: this.selectedNationalities[0],
+            languages: this.selectedLanguages.map(language => ({ language_id: language }))
+          };
+          try {
+            await userStore.createUser(user);
+          } catch (error) {
+            // Assume the error response is in the format { success: false, msg: [errorCode] }
+            const errorCode = error.response.data.msg[0];
+            let errorMessage;
+            console.log("ERROR CODE:",errorCode);
+            switch (errorCode) {
+              case 'email_UNIQUE must be unique':
+                errorMessage = 'Registration failed: This email is already registered.';
+                break;
+              case 'vat_number_UNIQUE must be unique':
+                errorMessage = 'Registration failed: This VAT number is already registered.';
+                break;
+              default:
+                errorMessage = 'Registration failed: An unknown error occurred.';
+            }
+
+            this.toast.error(errorMessage);
+            // Determine the step where the error occurred based on the error code
+            const errorStep = this.getErrorStep(errorCode);
+            this.step = errorStep;
+            return;
+          }
+        },
+
+        getErrorStep(errorCode) {
+          // Map error codes to step numbers
+          const errorStepMap = {
+            'email_UNIQUE': 1,
+            'vat_number_UNIQUE must be unique': 2,
+            // Add more error codes as needed
+          };
+
+          return errorStepMap[errorCode] || 1; // Default to step 1 if the error code is not recognized
         },
         
         },
@@ -341,9 +449,9 @@ export default {
   
 <style scoped>
 .outer-div {
-    width: 120rem;
-    height: 50rem;
-    border-radius: 5%; 
+    width: 70rem;
+    height: 40rem;
+    border-radius: 4%; 
 }
   
 .inner-div {
@@ -368,17 +476,17 @@ export default {
 }
   
 .overlay-right {
-    left: 55%; 
+    left: 45%; 
     border-radius: 0 5% 5% 0;
 }
   
 .tab-text {
     position: absolute;
     top: 5%; 
-    left: 28%; 
+    left: 32%; 
     color: #193D4E; 
     font-family: 'Montserrat', sans-serif;
-    font-size: 1.5rem;
+    font-size: 1rem;
     font-style: normal;
     font-weight: 300;
     line-height: normal;
@@ -389,21 +497,22 @@ export default {
 
 .tab-text-right {
   left: auto; 
-  right: 3%; 
+  right: 15%; 
   transition: left 0.4s; 
 }
   
 .tab-text .active-tab {
   font-family: 'Montserrat', sans-serif;
   text-decoration: underline; 
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-style: normal;
   font-weight: 800;
   line-height: normal;
+  text-underline-offset: 4px;
 }
 
 .lineLoginRegister {
-    font-size: 2rem;
+    font-size: 1.2rem;
 }
 
 .v-dialog > .v-overlay__content > .v-card, .v-dialog > .v-overlay__content > form > .v-card {
@@ -414,7 +523,7 @@ export default {
   position: fixed;
   z-index: 3;
   top: 25%;
-  left: 22.5%;
+  left: 26%;
   transform: translate(-50%, -50%);
   text-align: center;
 }
@@ -422,7 +531,7 @@ export default {
 .titleRegister {
   position: fixed;
   z-index: 3;
-  top: 22%;
+  top: 15%;
   left: 77.5%;
   transform: translate(-50%, -50%);
   text-align: center;
@@ -432,7 +541,7 @@ export default {
 .loginText {
   color: #193D4E!important;
   font-family: 'Montserrat', sans-serif;
-  font-size: 4rem;
+  font-size: 3rem;
   font-style: normal;
   font-weight: 600;
   line-height: normal;
@@ -441,7 +550,7 @@ export default {
 .registerText {
   color: #193D4E!important;
   font-family: 'Montserrat', sans-serif;
-  font-size: 4rem;
+  font-size: 3rem;
   font-style: normal;
   font-weight: 600;
   line-height: normal;
@@ -479,9 +588,9 @@ export default {
   z-index: 3;
   position: relative;
   bottom: 65%;
-  left: 55%;
+  left: 44%;
   max-width: 45%;
-  margin-top: 12em;
+  margin-top: 9em;
   background-color: transparent;
 }
 
@@ -512,6 +621,13 @@ export default {
     box-shadow: none;
 }
 
+
+
+::v-deep .v-stepper-window {
+    margin: 0 !important;
+    
+}
+
 .flag-icon {
   max-width: 1.5rem;
   height: auto;
@@ -524,6 +640,7 @@ export default {
   font-style: normal;
   font-weight: 600;
   line-height: normal;
+  margin-left: 5%;
 }
 
 .selectLanguages {
@@ -533,6 +650,7 @@ export default {
   font-style: normal;
   font-weight: 100;
   line-height: normal;
+  margin-left: 5%;
 }
 
 .privacyPolicy {
@@ -554,5 +672,14 @@ export default {
   font-weight: 200;
   line-height: normal;
 }
+
+.margin-42 {
+  margin-top: 2em;
+}
+
+.margin-5{
+  margin-left:5%;
+}
+
 </style>
   
