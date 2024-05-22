@@ -13,7 +13,6 @@ export default {
             password: '',
             confirmpassword: '',
             bannerImage: '/src/assets/img/banner/nature.png', // Default image   
-            newBannerImage: null, // New image before its saved     
             selectedItem: 'default',
             currentPage: 'BookingsComponent',
             rules: {
@@ -65,7 +64,6 @@ export default {
             this.bannerImage = selectedItem ? selectedItem.image : null;
         },
         saveChanges(){
-
         },
         deleteAccount(){
 
@@ -653,7 +651,7 @@ export default {
 .profile-stats {
     margin-left: 10%;
     margin-right: 10%;
-    margin-top: 8%;
+    margin-top: 6%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
