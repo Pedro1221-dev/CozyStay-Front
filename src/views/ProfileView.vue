@@ -4,61 +4,79 @@ import Navbar from '@/components/Navbar.vue';
 
 <script>
 export default {
-  data() {
-    return {
-        isModalOpen: false,
-        selectedFile: null,
-        email: '',
-        password: '',
-        confirmpassword: '',
-        bannerImage: null,
-        selectedItem: 'default',
-        currentPage: 'BookingsComponent',
-        rules: {
-            required: value => !!value || 'Required Field.',
-            email: value => {
-                const pattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
-                return pattern.test(value) || 'Invalid e-mail.';
+    data() {
+        return {
+            isModalOpen: false,
+            isDeleteModalOpen: false,
+            selectedFile: null,
+            email: '',
+            password: '',
+            confirmpassword: '',
+            bannerImage: '/src/assets/img/banner/nature.png', // Default image   
+            newBannerImage: null, // New image before its saved     
+            selectedItem: 'default',
+            currentPage: 'BookingsComponent',
+            rules: {
+                required: value => !!value || 'Required Field.',
+                email: value => {
+                    const pattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
+                    return pattern.test(value) || 'Invalid e-mail.';
+                },
             },
-        },
-        items: [
-            { title: 'City', image: '/src/assets/img/banner/city.webp'},
-            { title: 'Beach', image: '/src/assets/img/banner/beach.webp' },
-            { title: 'Nature', image: '/src/assets/img/banner/nature.png' },
-        ],
-            
-    };
-  },
-  methods: {
-    openModal() {
-      this.isModalOpen = true;
-    },
-    closeModal() {
-      this.isModalOpen = false;
-    },
-    openFileInput() {
-        const fileInput = this.$refs.fileInput.$el.querySelector('input');
-        fileInput.click();
-        fileInput.onchange = (e) => {
-        this.selectedFile = URL.createObjectURL(e.target.files[0]);
+            items: [
+                { title: 'City', image: '/src/assets/img/banner/city.webp'},
+                { title: 'Beach', image: '/src/assets/img/banner/beach.webp' },
+                { title: 'Nature', image: '/src/assets/img/banner/nature.webp' },
+            ],
+                
         };
     },
-    changeBanner() {
-        const selectedItem = this.items.find(item => item.title === this.selectedItem);
-        this.bannerImage = selectedItem ? selectedItem.image : null;
+    methods: {
+        openModal() {
+        this.isModalOpen = true;
+        },
+        closeModal() {
+        this.isModalOpen = false;
+        },
+        openDeleteModal() {
+            this.isDeleteModalOpen = true;
+        },
+        closeDeleteModal() {
+            this.isDeleteModalOpen = false;
+        },
+        openFileInput() {
+            const fileInput = this.$refs.fileInput.$el.querySelector('input');
+            fileInput.click();
+            fileInput.onchange = (e) => {
+            this.selectedFile = URL.createObjectURL(e.target.files[0]);
+            };
+        },
+        changeBanner() {
+            const selectedItem = this.items.find(item => item.title === this.selectedItem);
+            this.bannerImage = selectedItem ? selectedItem.image : null;
+        }, 
+
+        showComponent(componentName) {
+            this.currentComponent = componentName;
+            this.currentPage = componentName;
+        },
+        changeBanner() {
+            const selectedItem = this.items.find(item => item.title === this.selectedItem);
+            this.bannerImage = selectedItem ? selectedItem.image : null;
+        },
+        saveChanges(){
+
+        },
+        deleteAccount(){
+
+        },
     },
-    showComponent(componentName) {
-        this.currentComponent = componentName;
-        this.currentPage = componentName;
-    },
-  },
     watch: {
         selectedItem() {
             this.changeBanner();
         },
     },
 };
-
 </script>
 
 <template>
@@ -69,7 +87,7 @@ export default {
 
         <div class="main">
             <div class="banner">
-                <img src="/src/assets/img/banner/nature.png" alt="">
+                <img :src="bannerImage" alt="bannerImage">
             </div>
             <div class="profile-pic">
                 <img src="/src/assets/img/propertie/image.png" alt="">
@@ -108,7 +126,11 @@ export default {
                         </div>
                         <div class="theme">
                             <div class="edit">
-                                <span class="material-symbols-outlined editIcon">edit</span>
+                                <span class="material-symbols-outlined editIcon hover-show">edit</span>
+
+                                <div v-if="bannerImage">
+                                    <img :src="bannerImage" class="theme-image" alt="Theme image">
+                                </div>
                             </div>
 
                             <select v-model="selectedItem" class="change-btn">
@@ -155,10 +177,27 @@ export default {
 
                 <div class="buttons">
                     <div class="save-btn">
-                        <button class="save-btn">Save</button>
+                        <button @click="saveChanges" class="save-btn">Save</button>
                     </div>
                     <div class="delete-btn">
-                        <button class="delete-btn">Delete Account</button>
+                        <button @click="openDeleteModal" class="delete-btn">Delete Account</button>
+                    </div>
+                </div>
+
+                <div class="overlay-2" v-if="isDeleteModalOpen"></div>
+
+                <div class="modal-2" v-if="isDeleteModalOpen">
+                    <div class="close" @click="closeDeleteModal">
+                        <span class="material-symbols-outlined close-icon">close</span>
+                    </div>
+                    <div class="modal-close-info">
+                        <span class="material-symbols-outlined cancelIcon">cancel</span>
+                        <h1>Are you sure?</h1>
+                        <h3>Do you really want to delete these records? This process cannot be undone</h3>
+                    </div>
+                    <div class="delete-modal-buttons">
+                        <button @click="closeDeleteModal" class="cancel-button-modal">Cancel</button>
+                        <button @click="DeleteAccount" class="delete-button-modal">Delete</button>
                     </div>
                 </div>
 
@@ -175,7 +214,6 @@ export default {
                         <p>Total Reviews</p>
                         <p>42</p>
                     </div>
-
                 </div>
 
                 <div class="average-rating">
@@ -242,9 +280,16 @@ export default {
     color: black;
 }
 
-.banner img{
+.banner{
     width: 100%;
     height: 180px;
+}
+
+.banner img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
 }
 
 .profile-pic img{
@@ -294,6 +339,87 @@ export default {
     }
 }
 
+/* Delete Confirmation Modal */
+
+.overlay-2 {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(5px);
+    z-index: 1; 
+}
+
+.modal-2{
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    background-color: rgba(255, 255, 255, 1);
+    border-radius: 40px;
+    border: 1px solid #193D4E;
+    margin-left: 20%;
+    margin-right: 20%;
+    padding: 4%;
+    width: 50%;
+    height: 65%;
+    top: 20%;
+
+}
+
+.modal-close-info{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    h1{
+        color: #193D4E;
+        font-weight: 400;
+    }
+    h3{
+        color: #193D4E;
+        font-weight: 200;
+        text-align: center;
+    
+    }
+}
+
+.delete-modal-buttons{
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    margin-top: 5%
+}
+
+.cancel-button-modal{
+    border-radius: 10px;
+    border: 1px solid #193D4E;
+    width: 150px;
+    height: 40px;
+
+}
+
+.delete-button-modal{
+    border-radius: 10px;
+    border: 1 solid #193D4E;
+    background-color: #AD1619;
+    color: #FFF;
+    width: 150px;
+    height: 40px
+
+}
+
+.cancelIcon{
+    font-size: 70px;
+    color: #AD1619;
+    align-items: center;
+    margin-bottom: 3%
+}
+
+/* */
+
 .container{
     margin-top: 5%;
     display: grid;
@@ -338,7 +464,7 @@ export default {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-/*     width: 60%;
+/*  width: 60%;
     height: 0; */
     padding: 30%;
     margin: auto;
@@ -347,7 +473,6 @@ export default {
     height: 150px;  
     border-radius: 50%;
     z-index: 1;
-
 }
 
 .photo-selected {
@@ -362,6 +487,20 @@ export default {
     justify-content: center;
     align-items: center;
 }
+
+.theme-image{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 150px;  
+    border-radius: 0%;
+    z-index: 1;
+    object-fit: cover;
+}
+
+
 
 .photo-input{
     display: flex;
@@ -378,18 +517,31 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #A5E8E2;
     border-radius: 50%;
     width: 150px;
     height: 150px;
     padding: 0;
     margin: auto;
     border: 1px solid #193D4E;
+    overflow: hidden;
+}
+
+.edit .edit-image {
+    width: 10px
+
+}
+
+.edit .hover-show {
+    visibility: hidden;
+}
+
+.edit:hover .hover-show {
+    visibility: visible;
 }
 
 .editIcon {    
     color: rgba(28, 27, 31, 0.6);
-    font-size: 24px;
+    font-size: 40px;
 }
 
 .change-btn{
@@ -442,7 +594,6 @@ export default {
     height: 40px;
     border-radius: 20px;
     font-weight: 500;
-
 }
 
 /* */
