@@ -8,10 +8,12 @@ export default {
     return {
         isModalOpen: false,
         selectedFile: null,
-        isPhotoSelected: false,
         email: '',
         password: '',
         confirmpassword: '',
+        bannerImage: null,
+        selectedItem: 'default',
+        currentPage: 'BookingsComponent',
         rules: {
             required: value => !!value || 'Required Field.',
             email: value => {
@@ -20,11 +22,11 @@ export default {
             },
         },
         items: [
-            { title: 'Click Me' },
-            { title: 'Click Me' },
-            { title: 'Click Me' },
-            { title: 'Click Me 2' },
+            { title: 'City', image: '/src/assets/img/banner/city.webp'},
+            { title: 'Beach', image: '/src/assets/img/banner/beach.webp' },
+            { title: 'Nature', image: '/src/assets/img/banner/nature.png' },
         ],
+            
     };
   },
   methods: {
@@ -41,39 +43,22 @@ export default {
         this.selectedFile = URL.createObjectURL(e.target.files[0]);
         };
     },
-    handlePhotoSelection() {
-        this.isPhotoSelected = true;
-  },
-  },
-};
-
-
-
-/* import BadgesComponent from './BadgesComponent.vue';
-import BookingsComponent from './BookingsComponent.vue';
-import FavoritesComponent from './FavoritesComponent.vue';
-import HistoryComponent from './HistoryComponent.vue';
-import PropertiesComponent from './PropertiesComponent.vue';
-
-export default {
-    components: {
-        BookingsComponent,
-        HistoryComponent,
-        PropertiesComponent,
-        BadgesComponent,
-        FavoritesComponent,
+    changeBanner() {
+        const selectedItem = this.items.find(item => item.title === this.selectedItem);
+        this.bannerImage = selectedItem ? selectedItem.image : null;
     },
-    data() {
-        return {
-            currentComponent: 'BookingsComponent',
-        };
+    showComponent(componentName) {
+        this.currentComponent = componentName;
+        this.currentPage = componentName;
     },
-    methods: {
-        showComponent(componentName) {
-            this.currentComponent = componentName;
+  },
+    watch: {
+        selectedItem() {
+            this.changeBanner();
         },
     },
-}; */
+};
+
 </script>
 
 <template>
@@ -84,7 +69,7 @@ export default {
 
         <div class="main">
             <div class="banner">
-                <img src="/src/assets/img/banner.png" alt="">
+                <img src="/src/assets/img/banner/nature.png" alt="">
             </div>
             <div class="profile-pic">
                 <img src="/src/assets/img/propertie/image.png" alt="">
@@ -125,32 +110,14 @@ export default {
                             <div class="edit">
                                 <span class="material-symbols-outlined editIcon">edit</span>
                             </div>
-<!--                        <button class="change-btn" @click="changePicture">Change Theme</button>
- -->                        
-                            <div class="text-center">
-                                <v-menu
-                                open-on-hover
-                                >
-                                <template v-slot:activator="{ props }">
-                                    <v-btn
-                                    v-bind="props"
-                                    class="change-btn"
-                                    >
-                                    Change Theme
-                                    </v-btn>
-                                </template>
 
-                                <v-list>
-                                    <v-list-item
-                                    v-for="(item, index) in items"
-                                    :key="index"
-                                    >
-                                    <v-list-item-title>{{ item.title }}</v-list-item-title>
-                                    </v-list-item>
-                                </v-list>
-                                </v-menu>
-                            </div>
-                        
+                            <select v-model="selectedItem" class="change-btn">
+                                <option disabled value="default" selected>Change Theme</option>
+                                <option v-for="item in items" :key="item.title" :value="item.title">
+                                    {{ item.title }}
+                                </option>
+                            </select>
+
                         </div>
                     </div>
 
@@ -185,6 +152,7 @@ export default {
                         ></v-text-field>
                     </div>
                 </div>
+
                 <div class="buttons">
                     <div class="save-btn">
                         <button class="save-btn">Save</button>
@@ -194,8 +162,8 @@ export default {
                     </div>
                 </div>
 
-                
             </div>
+
 
             <div class="profile-stats">
 
@@ -243,21 +211,20 @@ export default {
             </div>
 
             <div class="profile-navbar">
-                <a @click="showComponent('BookingsComponent')" class="current-page">Bookings</a>
-                <a @click="showComponent('HistoryComponent')">History</a>
-                <a @click="showComponent('PropertiesComponent')">Properties</a>
-                <a @click="showComponent('BadgesComponent')">Badges</a>
-                <a @click="showComponent('FavoritesComponent')">Favorites</a>
+                <a @click="showComponent('BookingsComponent')" :class="{ 'current-page': currentPage === 'BookingsComponent' }">Bookings</a>
+                <a @click="showComponent('HistoryComponent')" :class="{ 'current-page': currentPage === 'HistoryComponent' }">History</a>
+                <a @click="showComponent('PropertiesComponent')" :class="{ 'current-page': currentPage === 'PropertiesComponent' }">Properties</a>
+                <a @click="showComponent('BadgesComponent')" :class="{ 'current-page': currentPage === 'BadgesComponent' }">Badges</a>
+                <a @click="showComponent('FavoritesComponent')" :class="{ 'current-page': currentPage === 'FavoritesComponent' }">Favorites</a>
             </div>
             <hr>
             <div class="profile-content">
                 <component :is="currentComponent" />
             </div>
-
-
         </div>
 
-<!--         <div class="footer">   
+    <!--<div class="footer">   
+        <Footer />
         </div> -->
     </div>
     
@@ -289,8 +256,6 @@ export default {
     height: 20%;
     left: 45%;
     top: 25%;
-/*     border: 1px solid #A5E8E2;
-    border-radius: 50%;  */
 }
 
 /* Modal */
@@ -302,7 +267,7 @@ export default {
     width: 100%;
     height: 100%;
     backdrop-filter: blur(3px);
-    z-index: 1; /* Make sure the overlay is above other elements */
+    z-index: 1; 
 }
 
 .modal{
@@ -433,15 +398,15 @@ export default {
     border-radius: 40px;
     background-color: #FFF;
     width: 150px;
+    height: 35px;
     text-transform: none;
+    text-align: center
 }
 
-/* Drop Menu Vuetify */
-.v-list {
-    position: relative;
-    z-index: 2;
-}
+/* Drop Menu */
 
+
+/* Form Vuetify */
 .form-inputs{
     display: flex;
     flex-direction: column;
