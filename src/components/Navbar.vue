@@ -30,12 +30,29 @@
         <span class="material-symbols-outlined login-icon" @click="openModal">account_circle</span>
       </div>
       <div v-else>
-        <img :src="userPhoto" alt="User Photo" @click="openDropdown">
+        <div class="text-center">
+        <v-menu location="bottom">
+          <template v-slot:activator="{ props }">
+            <img src="../assets/img/icons/default_avatar.png" class="login-icon" alt="User Photo" v-bind="props">
+          </template>
+          <v-list>
+            <v-list-item @click="changeToProfile">
+              <v-list-item-title>Profile</v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="changeToRegisterProperty">
+              <v-list-item-title>Register Property</v-list-item-title>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-title @click="logout">Logout</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+        </div>
       </div>
+
     </div>
 
-      <LoginModal v-model="loginModal"></LoginModal>
-    
+    <LoginModal v-model="loginModal" @login-success="loginModal = false"></LoginModal>    
 
   </template>
   
@@ -55,14 +72,30 @@
       };
     },
     created() {
+        this.isLoggedIn = this.checkIfUserIsLoggedIn();
         this.setActiveSectionBasedOnRoute(this.$route);
+
+        // Verificar a cada segundo se o JWT mudou
+        this.jwtInterval = setInterval(() => {
+            const isLoggedInNow = this.checkIfUserIsLoggedIn();
+            if (this.isLoggedIn !== isLoggedInNow) {
+                this.isLoggedIn = isLoggedInNow;
+                console.log("Logged? ", this.isLoggedIn);
+            }
+        }, 1000);
+    },
+    beforeDestroy() {
+        // Limpar o intervalo quando o componente é destruído
+        clearInterval(this.jwtInterval);
     },
     watch: {
-        $route(to, from) {
-            this.setActiveSectionBasedOnRoute(to);
-        },
+      $route(to) {
+        this.setActiveSectionBasedOnRoute(to);
+    },
+        
     },
     methods: {
+      
       navigate(page) {
         this.currentPage = page;
       },
@@ -79,6 +112,19 @@
       setActiveSectionBasedOnRoute(route) {
         // Quando a rota muda, defina a seção ativa para a seção na URL, se houver uma, ou para a primeira seção da nova rota
         this.activeSection = window.location.hash ? window.location.hash.substring(1) : (route.name === 'home' ? 'home' : 'overview');
+      },
+      checkIfUserIsLoggedIn() {
+        return !!sessionStorage.getItem('jwt');
+      },
+      logout() {
+        sessionStorage.removeItem('jwt');
+        this.isLoggedIn = false;
+      },
+      changeToProfile() {
+        this.$router.push('/profile');
+      },
+      changeToRegisterProperty() {
+        this.$router.push('/property/register');
       },
     },
   };
@@ -115,11 +161,16 @@
     }
     .login-icon{
      font-size: 35px;
+     max-width: 35px;
+     cursor: pointer;
     }
     .navbar a.active {
         text-decoration: underline !important;
         text-decoration-color: #A5E8E2 !important;
         text-underline-offset: 10px !important;
+    }
+    ::v-deep .v-list-item__content {
+      cursor: pointer !important;
     }
   </style>
   
