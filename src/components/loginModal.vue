@@ -55,9 +55,9 @@
                       size="x-large"
                       rounded="lg"
                       color="white"
-                      type="submit" 
                       block 
                       class="loginButton"
+                      @click="login"
                       >Login</v-btn>
                     </v-form>
                   </v-sheet>
@@ -221,32 +221,33 @@
                       >Register</v-btn>
                   </template>
                   <template v-slot:item.4>
-                    <v-card 
-                    class="mt-n9 mb-5 custom-card-color" 
-                    flat>
+                    <span class="otp-title">Confirm Your Email</span>
+                    <div class="otp-subtitle">Fill in the code sent to the following email address: example@mail.com
+Confirm 'Spam' or Trash, as the e-mail can be found there</div>
+                    <v-card class="mt-n9 mb-5 custom-card-color" flat>
                       <v-sheet width="300" class="form-background mx-auto">
                         <v-form @submit.prevent="login" class="form">
-                          <v-text-field 
-                          clearable
-                          v-model="otp" 
-                          label="OTP" 
-                          variant="underlined"
-                          hint="Enter the OTP sent to your email"
-                          placeholder="123456"
-                          class="mt-15 text-h1 custom-class-text-input"
-                          :rules="[rules.required]"
-                          ></v-text-field>
+                          <v-otp-input 
+                            v-model="otp" 
+                            :length="6"
+                            :shouldAutoFocus="true"
+                            inputStyle="otp-input"
+                            min-height="90"
+                            min-width="400"
+                            class="mt-9"
+                          ></v-otp-input>
                           <v-btn variant="tonal"
-                      size="x-large"
-                      rounded="lg"
-                      color="white" 
-                      block 
-                      class="registerButton" @click="next">Confirm</v-btn>
+                            size="x-large"
+                            rounded="lg"
+                            color="white" 
+                            block 
+                            class="registerButton mt-16" 
+                            @click="next"
+                          >Confirm</v-btn>
                         </v-form>
-                    </v-sheet>
+                      </v-sheet>
                     </v-card>
                   </template>
-                  
                 </v-stepper>
               </v-window-item>
             </v-window>
@@ -270,6 +271,7 @@ export default {
   },
     data() {
       return {
+        user_id: null,
         step:1,
         privacyPolicyAccepted: false,
         loginDialog: false,
@@ -283,6 +285,7 @@ export default {
         firstName: "",
         lastName: "",
         vatNumber: "",
+        otp:"",
         rules: {
           required: value => !!value || 'Field is required',
           email: value => {
@@ -356,9 +359,6 @@ export default {
                 this.overlayToLeft = true;
             }
         },
-        login() {
-          console.log(this.email,this.password);
-        },
         next() {
           if(this.step==1 && (!this.email_register || !this.password_resgister || !this.confirmPassword || this.confirmPassword != this.password_resgister || this.password_resgister.length < 8 || !/[^A-Za-z0-9]/.test(this.password_resgister))) {
             //fazer validaçoes com bd
@@ -385,8 +385,12 @@ export default {
           this.step++;
 
           // If all steps are completed, try to register the user
-          if(this.step > 3) {
+          if(this.step == 4) {
             this.registerUser();
+          }
+
+          if(this.step == 5) {
+            this.validateOTPUser();
           }
 
           return;
@@ -399,11 +403,13 @@ export default {
             password: this.password_resgister,
             name: this.firstName + ' ' + this.lastName,
             vat_number: this.vatNumber,
-            nationality: this.selectedNationalities[0],
+            nationality: this.selectedNationalities,
             languages: this.selectedLanguages.map(language => ({ language_id: language }))
           };
           try {
-            await userStore.createUser(user);
+            const response = await userStore.createUser(user);
+            this.user_id = response.user_id
+            console.log("USER ID:",this.user_id);
           } catch (error) {
             // Assume the error response is in the format { success: false, msg: [errorCode] }
             const errorCode = error.response.data.msg[0];
@@ -428,6 +434,18 @@ export default {
           }
         },
 
+        async validateOTPUser() {
+          const userStore = useUserStore();
+          try {
+            await userStore.validateOTP(this.user_id, this.otp);
+            this.$emit('login-success');
+            this.toast.success('Registration successful!')
+          } catch (error) {
+            this.toast.error('OTP validation failed: An unknown error occurred.');
+            return;
+          }
+        },
+
         getErrorStep(errorCode) {
           // Map error codes to step numbers
           const errorStepMap = {
@@ -438,6 +456,18 @@ export default {
 
           return errorStepMap[errorCode] || 1; // Default to step 1 if the error code is not recognized
         },
+
+        async login(){
+          try {
+            const userStore = useUserStore();
+            await userStore.login(this.email_login, this.password_login);
+            this.$emit('login-success');
+            this.toast.success('Login successful!')
+          } catch (error) {
+            this.toast.error('Login failed: Email or Password Incorrect.');
+            return;
+          }
+        }
         
         },
         mounted () {
@@ -679,6 +709,26 @@ export default {
 
 .margin-5{
   margin-left:5%;
+}
+.otp-title{
+  color: #193D4E;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.4rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  margin-left: 5%;
+  margin-top:1%
+}
+
+.otp-subtitle{
+  color: #193D4E;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  font-style: normal;
+  font-weight: 100;
+  line-height: normal;
+  margin-left: 5%;
 }
 
 </style>
