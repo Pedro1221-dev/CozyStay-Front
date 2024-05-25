@@ -25,21 +25,21 @@ import Navbar from '../components/Navbar.vue';
                 <div class="search-bar">
                     <div class="search-input">
                         <label for="where-to">Where to</label>
-                        <input id="where-to" type="text" placeholder="Search Destination">
+                        <input id="where-to" type="text" v-model="whereTo" placeholder="Search Destination">
                     </div>
                     <div class="search-input">
                         <label for="check-in">Check-in</label>
-                        <input id="check-in" type="date" :min="today" placeholder="Arrival Date">
+                        <input id="check-in" type="date" v-model="checkIn" :min="today" placeholder="Arrival Date">
                     </div>
                     <div class="search-input">
                         <label for="check-out">Check-out</label>
-                        <input id="check-out" type="date" :min="today" placeholder="Leaving Date">
+                        <input id="check-out" type="date" v-model="checkOut" :min="today" placeholder="Leaving Date">
                     </div>
                     <div class="search-input">
                         <label for="guests">With who</label>
-                        <input id="guests" type="number" min="1" placeholder="How many Guests">
+                        <input id="guests" type="number" v-model="guests" min="1" placeholder="How many Guests">
                     </div>
-                    <span class="material-symbols-outlined">search</span>
+                    <span class="material-symbols-outlined" @click="search">search</span>
                 </div>
             </div>
 
@@ -206,8 +206,26 @@ import Navbar from '../components/Navbar.vue';
 
 <script>
 export default {
+    data() {
+  return {
+    whereTo: '',
+    checkIn: '',
+    checkOut: '',
+    guests: '',
+    today: new Date().toISOString().split('T')[0],
+    // seus outros dados aqui...
+  };
+},
   mounted() {
     this.setupAccordion();
+    var inputElement = document.getElementById('where-to');
+      var autocomplete = new google.maps.places.Autocomplete(inputElement);
+
+      autocomplete.addListener('place_changed', function() {
+        var place = autocomplete.getPlace();
+        console.log(place)
+        // Agora você pode acessar as informações do lugar selecionado através do objeto 'place'
+      });
   },
   methods: {
     setupAccordion() {
@@ -226,13 +244,28 @@ export default {
       }
 
       items.forEach(item => item.addEventListener('click', toggleAccordion));
-    }
+      
+    },
+    search() {
+        const whereTo = document.getElementById('where-to').value;
+        const checkIn = document.getElementById('check-in').value;
+        const checkOut = document.getElementById('check-out').value;
+        const guests = document.getElementById('guests').value;
+        
+        let query = {};
+
+        if (whereTo) query.whereTo = whereTo;
+        if (checkIn) query.checkIn = checkIn;
+        if (checkOut) query.checkOut = checkOut;
+        if (guests) query.guests = guests;
+
+        this.$router.push({
+            path: '/properties',
+            query
+        });
   },
-  data() {
-    return {
-      today: new Date().toISOString().split('T')[0],
-    }
-  }
+  },
+
 }
 </script>
 
@@ -321,7 +354,8 @@ export default {
     }
 
     .search-bar span {
-        font-size:50px
+        font-size:50px;
+        cursor: pointer;
     }
     
     /* Top Destinations */
