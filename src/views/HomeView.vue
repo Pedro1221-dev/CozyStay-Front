@@ -1,5 +1,5 @@
 <script setup>
-/* import CardPropriedade from '@/components/CardPropriedade.vue';*/
+import CardPropriedade from '@/components/CardPropriedade.vue';
 import Footer from '../components/Footer.vue';
 import Navbar from '../components/Navbar.vue';
 </script>
@@ -81,12 +81,21 @@ import Navbar from '../components/Navbar.vue';
 
                 <p>Lorem ipsum dolor sit amet consectetur. Sed cum urna orci ac accumsan. Et non congue morbi nisl lacus tristique faucibus odio eget. 
                     Elementum porta enim praesent ultrices aliquet. Viverra fermentum vulputate at et pellentesque suspendisse.</p>
+            
+                <div class="rental-cards">
+                    <CardPropriedade
+                        v-for="n in 6"
+                        :key="n"
+                        image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRYg2rNFiJzTCRPXETBxp80WLKVMxeLZZbxMGqdKlkAg&s"
+                        location="Lisbon, Portugal"
+                        title="Beautiful Apartment"
+                        rating="4.5"
+                        price="€100 per night"
+                        beds="2"
+                        rooms="1" /> 
+                </div>
             </div>
-
-<!--             <div>
-                <CardPropriedade></CardPropriedade> 
-            </div> -->
-
+            
             <div class="promo">
                 <h2>Ready to Cozy Up?</h2>
                 <p>Welcome to Cozystay, where cozy homes meet happy travelers! Got a spare room, a cozy cabin, or a chic apartment? Put it to work and let it earn for you. 
@@ -165,33 +174,33 @@ import Navbar from '../components/Navbar.vue';
                 <h1>Frequently Asked Questions</h1>
                     <div class="accordion">
                         <div class="accordion-item">
-                        <button id="accordion-button-1" aria-expanded="false"><span class="accordion-title">Why is the moon sometimes out during the day?</span><span class="icon" aria-hidden="true"></span></button>
+                        <button id="accordion-button-1" aria-expanded="false"><span class="accordion-title">How can I rent a property through Cozy Stay?</span><span class="icon" aria-hidden="true"></span></button>
                         <div class="accordion-content">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor pretium viverra suspendisse potenti.</p>
+                            <p>To rent a property through Cozy Stay, simply visit our website and use our search tool to find available properties. Once you've found a property that meets your needs, you can make a reservation directly through the website.</p>
                         </div>
                         </div>
                         <div class="accordion-item">
-                        <button id="accordion-button-2" aria-expanded="false"><span class="accordion-title">Why is the sky blue?</span><span class="icon" aria-hidden="true"></span></button>
+                        <button id="accordion-button-2" aria-expanded="false"><span class="accordion-title">What are the requirements for listing my property on Cozy Stay?</span><span class="icon" aria-hidden="true"></span></button>
                         <div class="accordion-content">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor pretium viverra suspendisse potenti.</p>
+                            <p>To list your property on Cozy Stay, you need to create an owner account and fill out all the necessary information about your property, including photos, descriptions, and pricing details. Our team will review your listing before making it public.</p>
                         </div>
                         </div>
                         <div class="accordion-item">
-                        <button id="accordion-button-3" aria-expanded="false"><span class="accordion-title">Will we ever discover aliens?</span><span class="icon" aria-hidden="true"></span></button>
+                        <button id="accordion-button-3" aria-expanded="false"><span class="accordion-title">How are payments and financial transactions managed on Cozy Stay?</span><span class="icon" aria-hidden="true"></span></button>
                         <div class="accordion-content">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor pretium viverra suspendisse potenti.</p>
+                            <p>Payments and financial transactions on Cozy Stay are securely managed through our platform. Renters pay through the website, and owners receive payments directly into their registered bank accounts.</p>
                         </div>
                         </div>
                         <div class="accordion-item">
-                        <button id="accordion-button-4" aria-expanded="false"><span class="accordion-title">How much does the Earth weigh?</span><span class="icon" aria-hidden="true"></span></button>
+                        <button id="accordion-button-4" aria-expanded="false"><span class="accordion-title">Is there any service fee associated with using Cozy Stay, for either owners or renters?</span><span class="icon" aria-hidden="true"></span></button>
                         <div class="accordion-content">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor pretium viverra suspendisse potenti.</p>
+                            <p>Yes, there is a service fee associated with using Cozy Stay. This fee varies depending on the type of transaction and is detailed during the booking or property listing process.</p>
                         </div>
                         </div>
                         <div class="accordion-item">
-                        <button id="accordion-button-5" aria-expanded="false"><span class="accordion-title">How do airplanes stay up?</span><span class="icon" aria-hidden="true"></span></button>
+                        <button id="accordion-button-5" aria-expanded="false"><span class="accordion-title">What should I do in case of problems during my stay in a property rented through Cozy Stay?</span><span class="icon" aria-hidden="true"></span></button>
                         <div class="accordion-content">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor pretium viverra suspendisse potenti.</p>
+                            <p>If you encounter any problems during your stay in a property rented through Cozy Stay, please contact us immediately. We are available 24 hours a day to help resolve any issues that may arise and ensure a comfortable stay for all our customers.</p>
                         </div>
                         </div>
                     </div>
@@ -273,7 +282,7 @@ export default {
     .landing-page {
         display: grid;
         grid-template-columns: 1fr;
-        grid-template-rows: 0vh 100vh 80vh 200vh 70vh 140vh 60vh 70vh 10vh;
+        grid-template-rows: 0vh 100vh 80vh 150vh 70vh 110vh 60vh 100vh 10vh;
         background-color: #FFF;
     }
 
@@ -314,16 +323,18 @@ export default {
         display: flex;
         flex-direction: row;
         justify-content: space-around;
-        width: 1336px;
-        height: 112px;
+        width: 1000px;
+        height: 100px;
         border: 1px solid #193D4E;
         color: #193D4E;
         align-items: center;
         border-radius: 70px;
+        border: none;
         position: absolute;
         background-color: white;
-        bottom: 7%;
+        bottom: 12%;
         opacity: 0.7;
+
     }
 
     .search-input {
@@ -341,14 +352,14 @@ export default {
     .search-input label {
         font-family: 'Montserrat', sans-serif;
         font-weight: 500;
-        font-size: 24px;
+        font-size: 20px;
         color: #193D4E;
     }
 
     .search-input input {
         font-family: 'Montserrat', sans-serif;
         font-weight: 300;
-        font-size: 20px;
+        font-size: 16px;
         color: #193D4E;
         border: none;
     }
@@ -456,7 +467,7 @@ export default {
         width: 15rem;
         height: 2.75rem;
         opacity: 0.8;
-        border-radius: 40px; /* Adiciona cantos arredondados ao fundo da localização */
+        border-radius: 40px; 
     }
 
     .icon-location{
@@ -496,10 +507,15 @@ export default {
             align-items: center;
             text-align: center;
 
-            margin-top: 3%;
-            margin-left: 20%;
-            margin-right: 20%;
+            margin: 3% 20% 3% 20%;
         }
+    }
+
+    .rental-cards {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 50px;
     }
 
     /* Promotion */ 
