@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 import * as api from '../api/api.js';
 
-
 export const usePropertiesStore = defineStore('properties', {
   state: () => ({
     properties: [],
@@ -10,11 +9,11 @@ export const usePropertiesStore = defineStore('properties', {
     getProperties: (state) => state.properties,
   },
   actions: {
-      async fetchProperties() {
+      async fetchProperties(searchOptions) {
           try {
-              const data = await api.get('/properties');
+              const data = await api.get('/properties', searchOptions );
               this.properties = data.data;
-              console.log(this.properties);
+              return data;
           } catch (error) {
               console.error('Error in store fetching objects:', error);
               // Handle error gracefully

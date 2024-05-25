@@ -4,13 +4,13 @@ const api = axios.create({
   baseURL: 'http://127.0.0.1:3000/', // URL do seu servidor back-end
 });
 
-export async function get(endpoint){
-    try {
-        const response= await api.get(endpoint);
-        return handleResponse(response);
-    } catch (error) {
-        throw error;
-    }
+export async function get(endpoint, params){
+  try {
+    const response= await api.get(endpoint, { params });
+    return handleResponse(response);
+  } catch (error) {
+      throw error;
+  }
 }
 
 export async function post(endpoint, data, token = null) {
