@@ -99,16 +99,19 @@ export default {
     },
     methods: {
         changePage(page) {
-        this.currentPage = page;
-        this.fetchData();
-    },
+            this.currentPage = page;
+            this.fetchData();
+        },
+        goToProperty(propertyId) {
+            this.$router.push({ path: `/property/${propertyId}` });
+        },
     async fetchData() {
-    const response = await this.propertyStore.fetchProperties({ page: this.currentPage });
-    if (response) {
-        this.totalPages = Math.ceil(response.pagination.total / response.pagination.limit);
-        this.$router.push({ path: '/properties', query: { page: this.currentPage } });
-    }
-},
+        const response = await this.propertyStore.fetchProperties({ page: this.currentPage });
+        if (response) {
+            this.totalPages = Math.ceil(response.pagination.total / response.pagination.limit);
+            this.$router.push({ path: '/properties', query: { page: this.currentPage } });
+        }
+    },
 },
 created() {
     this.fetchData();
@@ -163,6 +166,7 @@ created() {
         :price="`€${property.price} per night`"
         :beds="property.number_beds"
         :rooms="property.number_bedrooms"
+        @click="goToProperty(property.property_id)"
         />
     </div>
     <div class="promotation">
@@ -183,6 +187,7 @@ Join our community of hosts and unlock the potential of your space</p>
         :price="`€${property.price} per night`"
         :beds="property.number_beds"
         :rooms="property.number_bedrooms"
+        @click="goToProperty(property.property_id)"
         />
     </div>
     <div class="pagination">

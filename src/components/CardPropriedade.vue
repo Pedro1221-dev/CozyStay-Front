@@ -43,6 +43,7 @@
     width: 20rem;
     height: 22rem;
     color: black;
+    cursor: pointer;
 }
 
 .card-image {

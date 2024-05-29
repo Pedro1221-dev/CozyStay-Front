@@ -1,6 +1,100 @@
-<script setup>
+<script>
+import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { usePropertiesStore } from "@/stores/property";
 import Footer from '@/components/Footer.vue';
 import Navbar from '../components/Navbar.vue';
+
+export default {
+  components: {
+    Footer,
+    Navbar
+  },
+  setup() {
+    // Variables
+    const facilitySymbols = {
+        lift: 'elevator',
+        "wi-fi": 'wifi',
+        parking: 'local_parking',
+        tv: 'desktop_windows',
+        kitchen: 'skillet',
+        "laundry machine": 'local_laundry_service',
+        fridge: 'kitchen',
+        microwave:'microwave_gen'
+        
+        // adicione mais pares de chave-valor conforme necessário
+    };
+    const route = useRoute();
+    const propertyId = ref(route.params.id);
+    const property = ref(null);  // create a reactive reference
+
+    // Methods
+    const fetchProperty = async () => {
+      const response = await usePropertiesStore().fetchOneProperty(propertyId.value);
+      property.value = response.data;  // assuming the API response has a 'data' field
+      console.log(property.value);
+    };
+
+    const logFacilitySymbol = (facilityName) => {
+        console.log(facilityName);
+        console.log(facilitySymbols[facilityName]);
+        return facilitySymbols[facilityName];
+    };
+
+    // Lifecycle hooks
+    onMounted(fetchProperty);
+
+
+    return {
+      propertyId,
+      fetchProperty,
+      property,  // return the property reference from setup
+      facilitySymbols,
+      logFacilitySymbol
+    };
+  },
+  computed: {
+    today() {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const day = String(today.getDate()).padStart(2, '0');
+
+      return `${year}-${month}-${day}`;
+    },
+  },
+  data() {
+    return {
+      isOpen: false,
+      selectedOption: 'Sort',
+      options: ['Latest', 'Oldest', 'Highest Rated', 'Lowest Rated'],
+      checkInDate: '',
+      checkOutDate: '',
+      errorMessage: null,
+      reviews: []
+    };
+  },
+  methods: {
+    selectOption(option) {
+      this.selectedOption = option;
+      this.isOpen = false;
+    },
+    validateDates() {
+      const checkIn = new Date(this.checkInDate);
+      const checkOut = new Date(this.checkOutDate);
+
+      if (checkOut <= checkIn) {
+        this.errorMessage = 'Check-out date must be after the check-in date.';
+      } else {
+        this.errorMessage = null;
+      }
+    },
+    formatFacilityName(name) {
+        return name.charAt(0).toUpperCase() + name.slice(1);
+    },
+  },
+};
+
 </script>
 
 <template>
@@ -18,7 +112,7 @@ import Navbar from '../components/Navbar.vue';
         <p>Property ID: {{ $route.params.id }}</p>
     </div> -->
 
-    <div class="property-page"> 
+    <div class="property-page" v-if="property"> 
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
         <div class="navbar">
@@ -27,14 +121,14 @@ import Navbar from '../components/Navbar.vue';
 
         <div class="overview" id="overview">
             <div class="name-location">
-                <p class="local">Birmingham, United Kingdom</p>
-                <p class="name">Birmingham City Centre</p>
+                <p class="local">{{ property.city }}, {{ property.country }}</p>
+                <p class="name">{{property.title}}</p>
             </div>
 
             <div class="main-info">
                 <div class="info">
                     <div class="price">
-                        <p class="price-number">€ 122</p>
+                        <p class="price-number">€ {{property.price}}</p>
                         <p class="price-per">night</p>
                     </div>
 
@@ -47,29 +141,25 @@ import Navbar from '../components/Navbar.vue';
                             <span class="material-symbols-outlined">star</span>
                             <span class="material-symbols-outlined">star</span>
                         </div>
-                        <p class="rating">4.8</p>
+                        <p class="rating">{{property.averageRating}}</p>
 
                     </div> 
                 </div>
             </div>
 
             <div class="description">
-                <p>Are you looking for a skyscraper view in the heart of Birmingham City Centre? 
-                   This flat offers exceptional cleanliness and breathtaking views of the skyline from a high-rise perspective,
-                   offering guests an immersive urban experience. 
-                   The space is not only aesthetically pleasing but also highly functional, featuring a comfortable double bed 
-                   and versatile sofa bed that can comfortably accommodate up to three guests.</p>
+                <p>{{property.description}}</p>
             </div>
 
             <div class="host-info">
                 <p class="host-title">Host</p>
-                <p class="host-name">John Doe</p>
+                <p class="host-name">{{property.host.name}}</p>
             </div>
-            <p class="host-years">2 Year Hosting</p>
+            <p class="host-years">2 Year Hosting since {{property.host.since_host}}</p>
 
             <div class="images">
                 <div class="left">
-                    <img src="/src/assets/img/propertie/2092a005-6ff9-4a63-a355-cac12c980dab.webp" alt="Image1">
+                    <img :src="property.photos[0].url_photo" alt="Image1">
 
                 </div>
                 <div class="middle">
@@ -117,17 +207,10 @@ import Navbar from '../components/Navbar.vue';
                 <div class="bedroom">
                     <div class="bedroom"> 
                         <span class="material-symbols-outlined bed-icon">bed</span>                                                        
-                        <p>1 Quarto</p>
-                        <p>1 Cama de Casal</p>
-                        <p>2 Pessoas</p>
+                        <p>{{property.number_bedrooms}} Bedrooms</p>
+                        <p>{{property.number_beds}} Beds</p>
+                        <p>{{property.number_guests_allowed}} Guest Allowed</p>
                     </div>
-                </div>
-
-                <div class="bedroom"> 
-                    <span class="material-symbols-outlined bed-icon">bed</span>                                                        
-                    <p>1 Quarto</p>
-                    <p>1 Cama de Casal</p>
-                    <p>2 Pessoas</p>
                 </div>
             </div>   
         </div>
@@ -138,11 +221,11 @@ import Navbar from '../components/Navbar.vue';
                         <img src="/src/assets/img/propertie/2092a005-6ff9-4a63-a355-cac12c980dab.webp" alt="Image1">
                     </div>
                     <div class="form-city">
-                            <p>Birmingham City Centre</p>
-                            <p>Birmingham, United Kingdom</p>
+                            <p>{{property.title}}</p>
+                            <p>{{property.city}}, {{property.country}}</p>
                             <div class="form-rating">
                                 <span class="material-symbols-outlined form-star">star</span>
-                                <p>4,60 (130)</p>
+                                <p>{{property.averageRating}} (130)</p>
                             </div>
                     </div>
                 </div>
@@ -166,7 +249,7 @@ import Navbar from '../components/Navbar.vue';
 
                 <div class="form-prices">
                     <div class="price-night">
-                        <p>€ 122 x 1 night</p>
+                        <p>€ {{property.price}} x 1 night</p>
                         <p>€ 122</p>
                     </div>
 
@@ -192,44 +275,9 @@ import Navbar from '../components/Navbar.vue';
 
             <div class="convens">
                 <div class="column-1">
-                    <div class="lift">
-                        <span class="material-symbols-outlined">elevator</span>
-                        <p>Lift</p>
-                    </div>    
-                    <div class="wifi">
-                        <span class="material-symbols-outlined">wifi</span>
-                        <p>Wi-Fi</p>
-                    </div>
-                    <div class="parking">
-                        <span class="material-symbols-outlined">local_parking</span>
-                        <p>Parking</p>
-                    </div>
-                    <div class="tv">
-                        <span class="material-symbols-outlined">tv</span>
-                        <p>TV</p>
-                    </div>
-                    <div class="ac">
-                        <span class="material-symbols-outlined">ac_unit</span>
-                        <p>Air Conditioning</p>
-                    </div>
-                </div>
-
-                <div class="column-2">
-                    <div class="kitchen">
-                        <span class="material-symbols-outlined">kitchen</span>
-                        <p>Kitchen</p>
-                    </div>
-                    <div class="laundry">
-                        <span class="material-symbols-outlined">laundry</span>
-                        <p>Laundry Machine</p>
-                    </div>
-                    <div class="fridge"> 
-                        <span class="material-symbols-outlined">kitchen</span>
-                        <p>Fridge</p>
-                    </div>
-                    <div class="microwave">
-                        <span class="material-symbols-outlined">microwave</span>
-                        <p>Microwave</p>
+                    <div v-for="facility in property.facilities" :key="facility.name" class="icon-text">
+                        <span class="material-symbols-outlined">{{ logFacilitySymbol(facility.name) }}</span>
+                        <p>{{ formatFacilityName(facility.name) }}</p>
                     </div>
                 </div>
             </div>
@@ -254,190 +302,28 @@ import Navbar from '../components/Navbar.vue';
             </div>
             
             <div class="grid-reviews">
-                <div class="review-card-1">
+                <div class="review-card-1" v-for="(review, index) in property.rating" :key="index">
                     <div class="top">
                         <div class="icon">
                             <span class="material-symbols-outlined review-icon">account_circle</span>                
                         </div>
                         <div class="top-right">
                             <div class="author">
-                                <h3>John Doe</h3>
+                                <h3>{{ review.User.name }}</h3>
                             </div>
                             <div class="country">
-                                <p>Portugal</p>
+                                <p>{{ review.User.nationality }}</p>
                             </div>
                         </div>
                     </div>
                     <div class="rate">
                         <div class="stars">
-                            <span class="material-symbols-outlined review-star">star</span>
-                            <span class="material-symbols-outlined review-star">star</span>                
-                            <span class="material-symbols-outlined review-star">star</span>                
-                            <span class="material-symbols-outlined review-star">star</span>                
-                            <span class="material-symbols-outlined review-star">star</span>
+                            <span class="material-symbols-outlined review-star" v-for="n in review.number_stars">star</span>
                         </div>
-                        <p class="time">Two Weeks Ago</p>
+                        <p class="time">{{ review.time }}</p>
                     </div>
                     <div class="desc">
-                        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. 
-                        Odit corporis provident libero dignissimos harum, at facere 
-                        similique veniam quas assumenda eius reprehenderit iste id eligendi 
-                        odio nulla natus earum. Sint!</p>
-                    </div> 
-                </div>
-                <div class="review-card-2">
-                    <div class="top">
-                        <div class="icon">
-                            <span class="material-symbols-outlined review-icon">account_circle</span>                
-                        </div>
-                        <div class="top-right">
-                            <div class="author">
-                                <h3>John Doe</h3>
-                            </div>
-                            <div class="country">
-                                <p>Portugal</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="rate">
-                        <div class="stars">
-                            <span class="material-symbols-outlined review-star">star</span>
-                            <span class="material-symbols-outlined review-star">star</span>                
-                            <span class="material-symbols-outlined review-star">star</span>                
-                            <span class="material-symbols-outlined review-star">star</span>                
-                            <span class="material-symbols-outlined review-star">star</span>
-                        </div>
-                        <p class="time">Two Weeks Ago</p>
-                    </div>
-                    <div class="desc">
-                        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. 
-                        Odit corporis provident libero dignissimos harum, at facere 
-                        similique veniam quas assumenda eius reprehenderit iste id eligendi 
-                        odio nulla natus earum. Sint!</p>
-                    </div> 
-                </div>
-                <div class="review-card-1">
-                    <div class="top">
-                        <div class="icon">
-                            <span class="material-symbols-outlined review-icon">account_circle</span>                
-                        </div>
-                        <div class="top-right">
-                            <div class="author">
-                                <h3>John Doe</h3>
-                            </div>
-                            <div class="country">
-                                <p>Portugal</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="rate">
-                        <div class="stars">
-                            <span class="material-symbols-outlined review-star">star</span>
-                            <span class="material-symbols-outlined review-star">star</span>                
-                            <span class="material-symbols-outlined review-star">star</span>                
-                            <span class="material-symbols-outlined review-star">star</span>                
-                            <span class="material-symbols-outlined review-star">star</span>
-                        </div>
-                        <p class="time">Two Weeks Ago</p>
-                    </div>
-                    <div class="desc">
-                        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. 
-                        Odit corporis provident libero dignissimos harum, at facere 
-                        similique veniam quas assumenda eius reprehenderit iste id eligendi 
-                        odio nulla natus earum. Sint!</p>
-                    </div> 
-                </div>
-                <div class="review-card-2">
-                    <div class="top">
-                        <div class="icon">
-                            <span class="material-symbols-outlined review-icon">account_circle</span>                
-                        </div>
-                        <div class="top-right">
-                            <div class="author">
-                                <h3>John Doe</h3>
-                            </div>
-                            <div class="country">
-                                <p>Portugal</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="rate">
-                        <div class="stars">
-                            <span class="material-symbols-outlined review-star">star</span>
-                            <span class="material-symbols-outlined review-star">star</span>                
-                            <span class="material-symbols-outlined review-star">star</span>                
-                            <span class="material-symbols-outlined review-star">star</span>                
-                            <span class="material-symbols-outlined review-star">star</span>
-                        </div>
-                        <p class="time">Two Weeks Ago</p>
-                    </div>
-                    <div class="desc">
-                        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. 
-                        Odit corporis provident libero dignissimos harum, at facere 
-                        similique veniam quas assumenda eius reprehenderit iste id eligendi 
-                        odio nulla natus earum. Sint!</p>
-                    </div> 
-                </div>
-                <div class="review-card-1">
-                    <div class="top">
-                        <div class="icon">
-                            <span class="material-symbols-outlined review-icon">account_circle</span>                
-                        </div>
-                        <div class="top-right">
-                            <div class="author">
-                                <h3>John Doe</h3>
-                            </div>
-                            <div class="country">
-                                <p>Portugal</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="rate">
-                        <div class="stars">
-                            <span class="material-symbols-outlined review-star">star</span>
-                            <span class="material-symbols-outlined review-star">star</span>                
-                            <span class="material-symbols-outlined review-star">star</span>                
-                            <span class="material-symbols-outlined review-star">star</span>                
-                            <span class="material-symbols-outlined review-star">star</span>
-                        </div>
-                        <p class="time">Two Weeks Ago</p>
-                    </div>
-                    <div class="desc">
-                        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. 
-                        Odit corporis provident libero dignissimos harum, at facere 
-                        similique veniam quas assumenda eius reprehenderit iste id eligendi 
-                        odio nulla natus earum. Sint!</p>
-                    </div> 
-                </div>
-                <div class="review-card-2">
-                    <div class="top">
-                        <div class="icon">
-                            <span class="material-symbols-outlined review-icon">account_circle</span>                
-                        </div>
-                        <div class="top-right">
-                            <div class="author">
-                                <h3>John Doe</h3>
-                            </div>
-                            <div class="country">
-                                <p>Portugal</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="rate">
-                        <div class="stars">
-                            <span class="material-symbols-outlined review-star">star</span>
-                            <span class="material-symbols-outlined review-star">star</span>                
-                            <span class="material-symbols-outlined review-star">star</span>                
-                            <span class="material-symbols-outlined review-star">star</span>                
-                            <span class="material-symbols-outlined review-star">star</span>
-                        </div>
-                        <p class="time">Two Weeks Ago</p>
-                    </div>
-                    <div class="desc">
-                        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. 
-                        Odit corporis provident libero dignissimos harum, at facere 
-                        similique veniam quas assumenda eius reprehenderit iste id eligendi 
-                        odio nulla natus earum. Sint!</p>
+                        <p>{{ review.comment }}</p>
                     </div> 
                 </div>
             </div>
@@ -446,9 +332,15 @@ import Navbar from '../components/Navbar.vue';
         <div class="location" id="location">
             <hr>
             <h1>Location</h1>
-            <p>West Midlands, England, Reino Unido</p>
+            <p>{{property.address}}, {{property.city}}, {{property.country}}</p>
 
-            <img src="/src/assets/img/propertie/map.png" class="map-img" alt="map">
+            <iframe
+            width="1200"
+            height="400"
+            style="border:0"
+            loading="lazy"
+            :src="`https://www.google.com/maps/embed/v1/place?key=AIzaSyD2zlZkwjQo-ipvO5NX4hDD75bXMX_3sK0&q=${property.address},${property.city}+${property.country}`">
+            </iframe>
         </div>
 
         <div class="host" id="host">
@@ -458,27 +350,27 @@ import Navbar from '../components/Navbar.vue';
             <div class="host-card">
                 <div class="host-personal">
                     <div class="host-left">
-                        <P>John Doe</P>
+                        <P>{{property.host.name}}</P>
                         <img src="/src/assets/img/propertie/image.png" alt="">
                         <span class="material-symbols-outlined user-verified">verified_user</span>
                     </div>
 
                     <div class="host-stats">
                         <div>
-                            <p>180</p>
+                            <p>{{property.host.total_reviews}}</p>
                             <p>Reviews</p>  
                         </div>
                         <hr>
                         <div class="rating-reverse">
                             <div class="star">
                                 <span class="material-symbols-outlined star-icon">star</span>
-                                <p class="host-stats-title">4.9</p>
+                                <p class="host-stats-title">{{ property.host.userRating.average_rating ? parseFloat(property.host.userRating.average_rating).toFixed(1) : '0.0' }}</p>
                             </div>
                             <p>Rating</p>
                         </div>
                         <hr>
                         <div>
-                            <p>2</p>
+                            <p>{{ Math.floor((new Date() - new Date(property.host.host_since)) / (1000 * 60 * 60 * 24 * 365)) }}</p>
                             <p>Years Hosting</p>
                         </div>
                     </div>
@@ -489,7 +381,11 @@ import Navbar from '../components/Navbar.vue';
                         <p>Host Details</p>
                         <p>Response rate: 100%</p>
                         <p>Responds within an hour</p>
-                        <p>Languages spoken: English, Portuguese, French</p>
+                        <p>Languages spoken: 
+                            <span v-for="(languageObj, index) in property.host.language" :key="index" style="text-transform: capitalize;">
+                                {{ languageObj.language }}{{ index < property.host.language.length - 1 ? ', ' : '' }}
+                            </span>
+                        </p>
                     </div>
                     <div class="profile-btn">
                         <router-link class="profile-btn" to="/profile">Visit Profile</router-link>
@@ -508,7 +404,7 @@ import Navbar from '../components/Navbar.vue';
                     <h2>House Rules</h2>
                     <p>Check-in: between 14:00 and 00:00</p>
                     <p>Check-out till 12:00</p>
-                    <p>Maximum of 2 Guest</p>
+                    <p>Maximum of {{property.number_guests_allowed}} Guest</p>
                 </div>
 
                 <div class="info-card">
@@ -520,7 +416,7 @@ import Navbar from '../components/Navbar.vue';
 
                 <div class="info-card">
                     <h2>Cancellation Policy</h2>
-                    <p>Free cancellation until 16/02.</p>
+                    <p>Free cancellation up to 7 days in advance.</p>
                     <p>Please see this applicable host's full cancellation policy even if you cancel due to illness or COVID-19 related reasons.</p>
                 </div>
             </div>
@@ -534,49 +430,7 @@ import Navbar from '../components/Navbar.vue';
 
 </template>
 
-<script>
-export default {
-  computed: {
-    today() {
-      const today = new Date();
-      const year = today.getFullYear();
-      const month = String(today.getMonth() + 1).padStart(2, '0');
-      const day = String(today.getDate()).padStart(2, '0');
 
-      return `${year}-${month}-${day}`;
-    }
-  },
-
-  data() {
-    return {
-      isOpen: false,
-      selectedOption: 'Sort',
-      options: ['Latest', 'Oldest', 'Highest Rated', 'Lowest Rated'],
-      checkInDate: '',
-      checkOutDate: '',
-      errorMessage: null,
-    };
-  },
-
-  methods: {
-    selectOption(option) {
-      this.selectedOption = option;
-      this.isOpen = false;
-    },
-    validateDates() {
-      const checkIn = new Date(this.checkInDate);
-      const checkOut = new Date(this.checkOutDate);
-
-      if (checkOut <= checkIn) {
-        this.errorMessage = 'Check-out date must be after the check-in date.';
-      } else {
-        this.errorMessage = null;
-      }
-    },
-  },
-
-};
-</script>
 
 <style scoped>
 
@@ -828,7 +682,7 @@ h1{
     border: 1px solid #193D4E;
     float: right;
     grid-column: 2;
-    
+    min-width: 400px;
 }
 
 .form-place {
@@ -971,15 +825,7 @@ h1{
     gap: 25px;
 }
 
-.lift,
-.wifi,
-.parking,
-.tv,
-.ac,
-.kitchen,
-.laundry,
-.fridge,
-.microwave{
+.icon-text{
     display: flex;
     flex-direction: row;
     gap: 20px;
