@@ -1,12 +1,15 @@
 import { defineStore } from 'pinia';
 import { post } from '../api/api.js';
+import * as api from '../api/api.js';
 
 export const useUserStore = defineStore('users', {
   state: () => ({
     users: [],
+    user: null,
   }),
   getters: {
     getUsers: (state) => state.users,
+    getUser: (state) => state.user,
   },
   actions: {
     async fetchUsers() {
@@ -52,5 +55,28 @@ export const useUserStore = defineStore('users', {
         // Handle error gracefully
       }
     },
+    async getLoggedUser(token) {
+      try {
+          const response = await api.get(`/users/current`, {}, token);
+          this.user = response.data;
+          return response.data;
+      } catch (error) {
+          console.error('Error in store getting logged user:', error);
+          throw error; 
+          // Handle error gracefully
+      }
+    },
+    async updateUser(updates, token) {
+      try {
+        const response = await api.patch(`/users/current`, updates, token);
+        console.log('Response:', response);
+        this.user = response.data;
+        return response.data;
+    } catch (error) {
+        console.error('Error response:', error.response);
+        console.error('Error in store updating user:', error);
+        throw error; 
+    }
+  }
   },
 });

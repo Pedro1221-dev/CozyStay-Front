@@ -33,7 +33,7 @@
         <div class="text-center">
         <v-menu location="bottom">
           <template v-slot:activator="{ props }">
-            <img src="../assets/img/icons/default_avatar.png" class="login-icon" alt="User Photo" v-bind="props">
+            <img :src="userPhoto" class="login-icon" alt="User Photo" v-bind="props">
           </template>
           <v-list>
             <v-list-item @click="changeToProfile">
@@ -58,6 +58,7 @@
   
   <script>
   import LoginModal from '../components/loginModal.vue';
+  import { useUserStore } from "@/stores/user";
 
   export default {
     components: {
@@ -83,6 +84,8 @@
                 console.log("Logged? ", this.isLoggedIn);
             }
         }, 1000);
+        this.fetchLoggedUser();
+
     },
     beforeDestroy() {
         // Limpar o intervalo quando o componente é destruído
@@ -125,6 +128,26 @@
       },
       changeToRegisterProperty() {
         this.$router.push('/property/register');
+      },
+      async fetchLoggedUser() {
+        const token = sessionStorage.getItem('jwt'); // get token from session storage
+        try {
+          const response = await useUserStore().getLoggedUser(token);
+          console.log("RESPONSE NAVBAR:",response);
+          this.userPhoto= response.url_avatar;
+          this.user = response;
+          console.log("USER:",this.user);
+        } catch (error) {
+          console.error('Error getting logged user:', error);
+          if (error.response && error.response.data.msg === 'Your token has expired. Please login again.') {
+            this.logout();
+          }
+        }
+      },
+      logout() {
+        // implement your logout logic here
+        // for example, you might want to remove the jwt token from session storage
+        sessionStorage.removeItem('jwt');
       },
     },
   };

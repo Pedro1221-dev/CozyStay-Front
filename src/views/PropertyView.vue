@@ -71,7 +71,9 @@ export default {
       checkInDate: '',
       checkOutDate: '',
       errorMessage: null,
-      reviews: []
+      reviews: [],
+      nights: 0,
+      total: 0,
     };
   },
   methods: {
@@ -88,10 +90,25 @@ export default {
       } else {
         this.errorMessage = null;
       }
+      this.calculateNights(this.checkInDate, this.checkOutDate);
+      this.calculateTotal(this.property.price);
     },
     formatFacilityName(name) {
         return name.charAt(0).toUpperCase() + name.slice(1);
     },
+    calculateWeeks(rating_date) {
+        const weeks = Math.floor((new Date() - new Date(rating_date)) / (1000 * 60 * 60 * 24 * 7));
+        return weeks === 1 ? weeks + ' week ago' : weeks + ' weeks ago';
+    },
+    calculateNights(checkInDate, checkOutDate) {
+        this.nights = Math.floor((new Date(checkOutDate) - new Date(checkInDate)) / (1000 * 60 * 60 * 24));
+        if (isNaN(this.nights)) {
+            this.nights = 0;
+        }
+    },
+    calculateTotal(pricePerNight) {
+        this.total = this.nights * pricePerNight;
+    }
   },
 };
 
@@ -155,7 +172,7 @@ export default {
                 <p class="host-title">Host</p>
                 <p class="host-name">{{property.host.name}}</p>
             </div>
-            <p class="host-years">2 Year Hosting since {{property.host.since_host}}</p>
+            <p class="host-years">{{ Math.floor((new Date() - new Date(property.host.host_since)) / (1000 * 60 * 60 * 24 * 365)) }} Year Hosting</p>
 
             <div class="images">
                 <div class="left">
@@ -225,7 +242,7 @@ export default {
                             <p>{{property.city}}, {{property.country}}</p>
                             <div class="form-rating">
                                 <span class="material-symbols-outlined form-star">star</span>
-                                <p>{{property.averageRating}} (130)</p>
+                                <p>{{property.averageRating}} ({{ property.rating.length }})</p>
                             </div>
                     </div>
                 </div>
@@ -249,8 +266,8 @@ export default {
 
                 <div class="form-prices">
                     <div class="price-night">
-                        <p>€ {{property.price}} x 1 night</p>
-                        <p>€ 122</p>
+                        <p>€ {{property.price}} x {{ nights }} nights</p>
+                        <p>€ {{ total }}</p>
                     </div>
 
                     <div class="tax">
@@ -260,7 +277,7 @@ export default {
                     <hr>
                     <div class="total">
                         <p>Total</p>
-                        <p>€ 132</p>
+                        <p>€ {{ parseFloat(total)+10 }}</p>
                     </div>
                 </div>
 
@@ -305,14 +322,15 @@ export default {
                 <div class="review-card-1" v-for="(review, index) in property.rating" :key="index">
                     <div class="top">
                         <div class="icon">
-                            <span class="material-symbols-outlined review-icon">account_circle</span>                
+                            <!-- <span class="material-symbols-outlined review-icon">account_circle</span> --> 
+                            <img :src="review.User.url_avatar" alt="" class="review-icon">             
                         </div>
                         <div class="top-right">
                             <div class="author">
                                 <h3>{{ review.User.name }}</h3>
                             </div>
                             <div class="country">
-                                <p>{{ review.User.nationality }}</p>
+                                <p style="text-transform: capitalize;">{{ review.User.nationality }}</p>
                             </div>
                         </div>
                     </div>
@@ -320,7 +338,9 @@ export default {
                         <div class="stars">
                             <span class="material-symbols-outlined review-star" v-for="n in review.number_stars">star</span>
                         </div>
-                        <p class="time">{{ review.time }}</p>
+                        <p class="time">
+                            {{ calculateWeeks(review.rating_date) }}
+                        </p>
                     </div>
                     <div class="desc">
                         <p>{{ review.comment }}</p>
@@ -351,7 +371,7 @@ export default {
                 <div class="host-personal">
                     <div class="host-left">
                         <P>{{property.host.name}}</P>
-                        <img src="/src/assets/img/propertie/image.png" alt="">
+                        <img :src="property.host.url_avatar" alt="">
                         <span class="material-symbols-outlined user-verified">verified_user</span>
                     </div>
 
@@ -959,7 +979,7 @@ h1{
 }
 
 .review-icon{
-    font-size: 50px;
+    width: 60px;
 }
 
 .sort-btn{

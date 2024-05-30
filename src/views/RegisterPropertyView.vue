@@ -215,7 +215,7 @@
                                 @click:append="menu1 = !menu1"
                               ></v-text-field>
                             </template>
-                            <v-date-picker v-model="seasonStartDate" no-title @input="date => { menu1 = false; seasonStartDate = formatDate(date) }"></v-date-picker>
+                            <v-date-picker v-model="seasonStartDate" no-title @input="date => { menu1 = false; seasonStartDate = formatDate(date) }" class="start-date-picker" width="290px" height="380px"></v-date-picker>
                           </v-menu>
                         </v-col>
                         <v-col cols="12" sm="6">
@@ -493,5 +493,17 @@ export default {
   cursor: pointer;
   text-align: center;
   padding: 20px;
+}
+
+.start-date-picker{
+  margin-left:145%;
+  margin-top: 110%;
+}
+::v-deep .v-date-picker-month__day {
+  width: 30px;
+  height: 30px;
+}
+::v-deep .v-date-picker-header__content {
+  font-size: 25px;
 }
   </style>
