@@ -1,9 +1,22 @@
 <script setup>
 import Navbar from '@/components/Navbar.vue';
+import { useUserStore } from "@/stores/user";
 </script>
 
 <script>
+import BookingsComponent from '@/components/BookingsComponent.vue';
+import HistoryComponent from '@/components/HistoryComponent.vue';
+import PropertiesComponent from '@/components/PropertiesComponent.vue';
+import BadgesComponent from '@/components/BadgesComponent.vue';
+import FavoritesComponent from '@/components/FavoritesComponent.vue';
 export default {
+    components: {
+        BookingsComponent,
+        HistoryComponent,
+        PropertiesComponent,
+        BadgesComponent,
+        FavoritesComponent,
+    },
     data() {
         return {
             isModalOpen: false,
@@ -12,9 +25,9 @@ export default {
             email: '',
             password: '',
             confirmpassword: '',
-            bannerImage: '/src/assets/img/banner/nature.png', // Default image   
+            bannerImage: 'https://res.cloudinary.com/dc8ckrwlq/image/upload/v1716975931/banner/nature.webp', // Default image   
             selectedItem: 'default',
-            currentPage: 'BookingsComponent',
+            currentComponent: 'BookingsComponent',
             rules: {
                 required: value => !!value || 'Required Field.',
                 email: value => {
@@ -23,12 +36,18 @@ export default {
                 },
             },
             items: [
-                { title: 'City', image: '/src/assets/img/banner/city.webp'},
-                { title: 'Beach', image: '/src/assets/img/banner/beach.webp' },
-                { title: 'Nature', image: '/src/assets/img/banner/nature.webp' },
+                { title: 'City', image: 'https://res.cloudinary.com/dc8ckrwlq/image/upload/v1716975933/banner/city.webp'},
+                { title: 'Beach', image: 'https://res.cloudinary.com/dc8ckrwlq/image/upload/v1716975932/banner/beach.webp' },
+                { title: 'Nature', image: 'https://res.cloudinary.com/dc8ckrwlq/image/upload/v1716975931/banner/nature.webp' },
             ],
+            user:null,
+            apiRequestComplete: false,
                 
         };
+    },
+    async created() {
+        await this.fetchLoggedUser();
+        this.apiRequestComplete = true;
     },
     methods: {
         openModal() {
@@ -57,16 +76,47 @@ export default {
 
         showComponent(componentName) {
             this.currentComponent = componentName;
-            this.currentPage = componentName;
         },
         changeBanner() {
             const selectedItem = this.items.find(item => item.title === this.selectedItem);
             this.bannerImage = selectedItem ? selectedItem.image : null;
         },
-        saveChanges(){
+        async saveChanges() {
+            const updates = new FormData();
+            if (this.email) updates.append('email', this.email);
+            if (this.password) updates.append('password', this.password);
+            if (this.bannerImage) updates.append('url_banner', this.bannerImage);
+            if (this.selectedFile) {
+                updates.append('url_avatar', this.selectedFile, this.selectedFile.name);
+                console.log('Selected file:', this.selectedFile);
+            }
+            try {
+                const token = sessionStorage.getItem('jwt'); // get token from session storage
+                const response = await useUserStore().updateUser(updates, token);
+                console.log('User updated:', response)
+                // Handle the response here, e.g. show a success message
+            } catch (error) {
+                // Handle the error here, e.g. show an error message
+            }
+            this.fetchLoggedUser();
+            this.isModalOpen = false;
+        },
+        fileSelected(event) {
+            this.selectedFile = event.target.files[0];
         },
         deleteAccount(){
 
+        },
+        async fetchLoggedUser() {
+            const token = sessionStorage.getItem('jwt'); // get token from session storage
+            try {
+                const response = await useUserStore().getLoggedUser(token);
+                this.user = response;
+                this.bannerImage = this.user.url_banner;
+                console.log("USER:",this.user);
+            } catch (error) {
+                console.error('Error getting logged user:', error);
+            }
         },
     },
     watch: {
@@ -77,24 +127,24 @@ export default {
 };
 </script>
 
-<template>
-    <div class="profile">
+<template >
+    <div class="profile" v-if="apiRequestComplete">
         <div class="navbar">
             <Navbar />
         </div>
 
         <div class="main">
             <div class="banner">
-                <img :src="bannerImage" alt="bannerImage">
+                <img :src="user.url_banner" alt="bannerImage">
             </div>
             <div class="profile-pic">
-                <img src="/src/assets/img/propertie/image.png" alt="">
+                <img :src="user.url_avatar" alt="">
             </div>
             <div class="profile-owner">
-                <p class="profile-name">John Doe</p>
-                <p>Guest</p>
+                <p class="profile-name">{{ user.name }}</p>
+                <p style="text-transform: capitalize;">{{ user.userType }}</p>
                 <div class="profile-history">
-                    <p>33 Reviews</p>
+                    <p>{{ user.totalPropertyReviews }} Reviews</p>
                     <p>10 Years</p>
                 </div>
             </div>
@@ -119,7 +169,7 @@ export default {
                             <div class="photo">
                                 <img :class="{ 'photo-selected': selectedFile }" :src="selectedFile" alt="Selected picture">                            
                             </div>
-                            <v-file-input label="File input" ref="fileInput" v-model="selectedFile" style="display: none" class="photo-input"></v-file-input>
+                            <v-file-input label="File input" ref="fileInput" @change="fileSelected" style="display: none" class="photo-input"></v-file-input>
                             <button class="change-btn" @click="openFileInput">Change Picture</button>
                         </div>
                         <div class="theme">
@@ -210,7 +260,7 @@ export default {
                     </div>
                     <div class="reviews-info">
                         <p>Total Reviews</p>
-                        <p>42</p>
+                        <p>{{ user.totalGuestReviews }}</p>
                     </div>
                 </div>
 
@@ -220,7 +270,7 @@ export default {
                     </div>
                     <div class="rating-info">
                         <p>Average Rating</p>
-                        <p>42</p>
+                        <p>{{ user.averagePropertyRating }}</p>
                     </div>
                 </div>
 
@@ -230,7 +280,7 @@ export default {
                     </div>
                     <div class="rented-info">
                         <p>Rented Propreties</p>
-                        <p>42</p>
+                        <p>{{ user.totalRentedProperties }}</p>
                     </div>
                 </div>
 
@@ -240,18 +290,18 @@ export default {
                     </div>
                     <div class="registered-info">
                         <p>Registered Propreties</p>
-                        <p>42</p>
+                        <p>{{ user.totalOwnedProperties }}</p>
                     </div>
                 </div>
 
             </div>
 
             <div class="profile-navbar">
-                <a @click="showComponent('BookingsComponent')" :class="{ 'current-page': currentPage === 'BookingsComponent' }">Bookings</a>
-                <a @click="showComponent('HistoryComponent')" :class="{ 'current-page': currentPage === 'HistoryComponent' }">History</a>
-                <a @click="showComponent('PropertiesComponent')" :class="{ 'current-page': currentPage === 'PropertiesComponent' }">Properties</a>
-                <a @click="showComponent('BadgesComponent')" :class="{ 'current-page': currentPage === 'BadgesComponent' }">Badges</a>
-                <a @click="showComponent('FavoritesComponent')" :class="{ 'current-page': currentPage === 'FavoritesComponent' }">Favorites</a>
+                <a @click="showComponent('BookingsComponent')" :class="{ 'current-page': currentComponent === 'BookingsComponent' }">Bookings</a>
+                <a @click="showComponent('HistoryComponent')" :class="{ 'current-page': currentComponent === 'HistoryComponent' }">History</a>
+                <a @click="showComponent('PropertiesComponent')" :class="{ 'current-page': currentComponent === 'PropertiesComponent' }">Properties</a>
+                <a @click="showComponent('BadgesComponent')" :class="{ 'current-page': currentComponent === 'BadgesComponent' }">Badges</a>
+                <a @click="showComponent('FavoritesComponent')" :class="{ 'current-page': currentComponent === 'FavoritesComponent' }">Favorites</a>
             </div>
             <hr>
             <div class="profile-content">

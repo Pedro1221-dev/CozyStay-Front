@@ -6,96 +6,116 @@ import Footer from '../components/Footer.vue';
 import CardPropriedade from '../components/CardPropriedade.vue';
 import { usePropertiesStore } from "@/stores/property";
 
-
 export default {
-  components: {
-    Navbar,
-    Footer,
-    CardPropriedade
-  },
-  setup() {
-    const router = useRouter();
+    data() {
+        return {
+            currentPage: 1,
+            totalPages: 0,
+        };
+    },
+    components: {
+        Navbar,
+        Footer,
+        CardPropriedade
+    },
+    setup() {
+        let totalPages =0;
+        const router = useRouter();
+        const propertyStore = usePropertiesStore();
 
-    const campo1 = ref('');
-    const campo2 = ref('');
-    const campo3 = ref('');
-    const campo4 = ref('');
+        const campo1 = ref('');
+        const campo2 = ref('');
+        const campo3 = ref('');
+        const campo4 = ref('');
 
-    let focusInput = (id) => {
-      let inputElement = document.getElementById(id);
-      if (inputElement) {
-        inputElement.focus();
-      }
-    }
+        let focusInput = (id) => {
+            let inputElement = document.getElementById(id);
+            if (inputElement) {
+                inputElement.focus();
+            }
+        }
 
-    let search = () => {
-        const whereTo = document.getElementById('where-to').value;
-        const checkIn = document.getElementById('check-in').value;
-        const checkOut = document.getElementById('check-out').value;
-        const guests = document.getElementById('guests').value;
+        let search = () => {
+            const destination = document.getElementById('where-to').value;
+            const checkIn = document.getElementById('check-in').value;
+            const checkOut = document.getElementById('check-out').value;
+            const guests = document.getElementById('guests').value;
 
-        let query = {};
+            let query = {};
 
-        if (whereTo) query.whereTo = whereTo;
-        if (checkIn) query.checkIn = checkIn;
-        if (checkOut) query.checkOut = checkOut;
-        if (guests) query.guests = guests;
+            if (destination) query.destination = destination;
+            if (checkIn) query.checkIn = checkIn;
+            if (checkOut) query.checkOut = checkOut;
+            if (guests) query.guests = guests;
 
-        router.push({
-            path: '/properties',
-            query
+            router.push({
+                path: '/properties',
+                query
+            });
+            propertyStore.fetchProperties(query);
+        }
+
+        let updateMinCheckoutDate = () => {
+            const checkIn = document.getElementById('check-in').value;
+            const checkOutInput = document.getElementById('check-out');
+
+            let checkInDate = new Date(checkIn);
+            checkInDate.setDate(checkInDate.getDate() + 1);
+
+            let minCheckoutDate = checkInDate.toISOString().split('T')[0];
+            checkOutInput.min = minCheckoutDate;
+        }
+
+        onMounted(async () => {
+            let query = router.currentRoute._rawValue.query;
+            campo1.value = router.currentRoute._rawValue.query.destination || '';
+            campo2.value = router.currentRoute._rawValue.query.checkIn || '';
+            campo3.value = router.currentRoute._rawValue.query.checkOut || '';
+            campo4.value = router.currentRoute._rawValue.query.guests || ''; 
+            const response = await propertyStore.fetchProperties(query);
+            
+            totalPages = Math.ceil(response.pagination.total / response.pagination.limit);
+            console.log("TOTAL PAGES",totalPages);
         });
-    }
 
-    let updateMinCheckoutDate = () => {
-        const checkIn = document.getElementById('check-in').value;
-        const checkOutInput = document.getElementById('check-out');
-
-        let checkInDate = new Date(checkIn);
-        checkInDate.setDate(checkInDate.getDate() + 1);
-
-        let minCheckoutDate = checkInDate.toISOString().split('T')[0];
-        checkOutInput.min = minCheckoutDate;
-    }
-
-    onMounted(() => {
-      console.log("ROUTER MOUNTED", router.currentRoute._rawValue.query.whereTo)
-
-      var inputElement = document.getElementById('where-to');
-      var autocomplete = new google.maps.places.Autocomplete(inputElement);
-
-      autocomplete.addListener('place_changed', function() {
-        var place = autocomplete.getPlace();
-        console.log(place)
-        // Agora você pode acessar as informações do lugar selecionado através do objeto 'place'
-      });
-
-      console.log("Campo", campo1.value)
-      campo1.value = router.currentRoute._rawValue.query.whereTo || '';
-      campo2.value = router.currentRoute._rawValue.query.checkIn || '';
-      campo3.value = router.currentRoute._rawValue.query.checkOut || '';
-      campo4.value = router.currentRoute._rawValue.query.guests || ''; 
-    });
-
-    return {
-      propertyStore: usePropertiesStore(),
-      campo1,
-      campo2,
-      campo3,
-      campo4,
-      focusInput,
-      search,
-      updateMinCheckoutDate,
-    }
-  },
-  computed: {
-    properties() {
-        return this.propertyStore.getProperties; 
-    }
-  },
-  created() {
-        this.propertyStore.fetchProperties();
-  }
+        return {
+            propertyStore,
+            campo1,
+            campo2,
+            campo3,
+            campo4,
+            focusInput,
+            search,
+            updateMinCheckoutDate,
+        }
+    },
+    computed: {
+        properties() {
+            return this.propertyStore.getProperties; 
+        },
+        pages() {
+            return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+        },
+    },
+    methods: {
+        changePage(page) {
+            this.currentPage = page;
+            this.fetchData();
+        },
+        goToProperty(propertyId) {
+            this.$router.push({ path: `/property/${propertyId}` });
+        },
+    async fetchData() {
+        const response = await this.propertyStore.fetchProperties({ page: this.currentPage });
+        if (response) {
+            this.totalPages = Math.ceil(response.pagination.total / response.pagination.limit);
+            this.$router.push({ path: '/properties', query: { page: this.currentPage } });
+        }
+    },
+},
+created() {
+    this.fetchData();
+},
 }
 </script>
 
@@ -137,7 +157,7 @@ export default {
     </div>
     <div class="containt">
         <CardPropriedade
-        v-for="property in properties"
+        v-for="property in properties.slice(0,12)"
         :key="property.property_id"
         image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRYg2rNFiJzTCRPXETBxp80WLKVMxeLZZbxMGqdKlkAg&s"
         :location="`${property.city}, ${property.country}`"
@@ -146,7 +166,8 @@ export default {
         :price="`€${property.price} per night`"
         :beds="property.number_beds"
         :rooms="property.number_bedrooms"
-    />
+        @click="goToProperty(property.property_id)"
+        />
     </div>
     <div class="promotation">
         <h2>Ready to Cozy Up?</h2>
@@ -157,27 +178,24 @@ Join our community of hosts and unlock the potential of your space</p>
     </div>
     <div class="containt">
         <CardPropriedade
-            v-for="n in 12"
-            :key="n"
-            image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRYg2rNFiJzTCRPXETBxp80WLKVMxeLZZbxMGqdKlkAg&s"
-            location="Lisbon, Portugal"
-            title="Beautiful Apartment"
-            rating="4.5"
-            price="€100 per night"
-            beds="2"
-            rooms="1" />
+        v-for="property in properties.slice(12,24)"
+        :key="property.property_id"
+        image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRYg2rNFiJzTCRPXETBxp80WLKVMxeLZZbxMGqdKlkAg&s"
+        :location="`${property.city}, ${property.country}`"
+        :title="property.title"
+        :rating="property.averageRating"
+        :price="`€${property.price} per night`"
+        :beds="property.number_beds"
+        :rooms="property.number_bedrooms"
+        @click="goToProperty(property.property_id)"
+        />
     </div>
     <div class="pagination">
-        <button>First</button>
-        <button>&lt; Previous</button>
-        <button>1</button>
-        <button>2</button>
-        <button>3</button>
-        <span>...</span>
-        <button>36</button>
-        <button>37</button>
-        <button>Next ></button>
-        <button>Last</button>
+        <button @click="changePage(1)" :disabled="currentPage === 1">First</button>
+        <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1">&lt; Previous</button>
+        <button v-for="page in pages" @click="changePage(page)" :disabled="currentPage === page">{{ page }}</button>
+        <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages">Next ></button>
+        <button @click="changePage(totalPages)" :disabled="currentPage === totalPages">Last</button>
     </div>
     <Footer />
 </template>
