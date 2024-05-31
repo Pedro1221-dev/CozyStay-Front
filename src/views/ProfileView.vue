@@ -4,11 +4,11 @@ import { useUserStore } from "@/stores/user";
 </script>
 
 <script>
+import BadgesComponent from '@/components/BadgesComponent.vue';
 import BookingsComponent from '@/components/BookingsComponent.vue';
+import FavoritesComponent from '@/components/FavoritesComponent.vue';
 import HistoryComponent from '@/components/HistoryComponent.vue';
 import PropertiesComponent from '@/components/PropertiesComponent.vue';
-import BadgesComponent from '@/components/BadgesComponent.vue';
-import FavoritesComponent from '@/components/FavoritesComponent.vue';
 export default {
     components: {
         BookingsComponent,
@@ -305,7 +305,9 @@ export default {
             </div>
             <hr>
             <div class="profile-content">
-                <component :is="currentComponent" />
+                <component :is="currentComponent"  />        
+                    <!-- v-for="property in properties.slice(0,3)"-->
+                    <!-- <BookingsComponent v-for="property in properties.slice(0,3)"/> -->
             </div>
         </div>
 
