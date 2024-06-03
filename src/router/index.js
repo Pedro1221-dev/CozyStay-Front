@@ -5,9 +5,11 @@ import AdminPropertiesView from '@/views/AdminPropertiesView.vue'
 import AdminUsersView from '@/views/AdminUsersView.vue'
 import HomeView from '@/views/HomeView.vue'
 import ProfileView from '@/views/ProfileView.vue'
+import ProfileOtherView from '@/views/ProfileOtherView.vue'
 import PropertyListView from '@/views/PropertyListView.vue'
 import PropertyView from '@/views/PropertyView.vue'
 import RegisterPropertyView from '@/views/RegisterPropertyView.vue'
+
 
 
 const router = createRouter({
@@ -42,6 +44,11 @@ const router = createRouter({
       path: '/profile',
       name: 'profile',
       component: ProfileView,
+    },
+    {
+      path: '/profile/:id',
+      name: 'profileOther',
+      component: ProfileOtherView,
     },
     {
       path: '/properties',
