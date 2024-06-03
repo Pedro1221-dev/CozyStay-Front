@@ -1,5 +1,6 @@
 <template>
     <Sidebar />
+
     <div class="main"> 
         <h1>Analytics</h1>
         <div class="analytics-card" style="border: 1px black solid;">
@@ -35,8 +36,6 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import Sidebar from '../components/Sidebar.vue';
-
-
 </script>
