@@ -12,7 +12,7 @@
             <div class="badge-icon">
             </div>
             <div class="badge-info">
-                <h2>{{ Nome }}Property  Debut</h2>
+                <h2>{{ Nome }}Property Debut</h2>
                 <p>{{ Desc }}Register 1st property</p>
             </div>
         </div>
@@ -21,8 +21,8 @@
             <div class="badge-icon">
             </div>
             <div class="badge-info">
-                <h2>{{ Nome }}</h2>
-                <p>{{ Desc }}</p>
+                <h2>{{ Nome }}First Time Booker</h2>
+                <p>{{ Desc }}First Booking</p>
             </div>
         </div>
 
@@ -30,8 +30,8 @@
             <div class="badge-icon">
             </div>
             <div class="badge-info">
-                <h2>{{ Nome }}</h2>
-                <p>{{ Desc }}</p>
+                <h2>{{ Nome }}Favourite Finder</h2>
+                <p>{{ Desc }}Add 1st property to favourites</p>
             </div>
         </div>
 
@@ -39,8 +39,8 @@
             <div class="badge-icon">
             </div>
             <div class="badge-info">
-                <h2>{{ Nome }}</h2>
-                <p>{{ Desc }}</p>
+                <h2>{{ Nome }}Review Rookie</h2>
+                <p>{{ Desc }}Register 1st review</p>
             </div>
         </div>
     </div>
@@ -54,6 +54,16 @@
 </script>
 
 <style scoped>
+    .badge-info p{
+        font-size: 12px;
+        font-weight: lighter;
+
+    }
+    .badge-info h2{
+        font-size: 17px;
+        font-weight: 500;
+    }
+
     .badges{
         display: flex;
         flex-direction: row;
