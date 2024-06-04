@@ -116,8 +116,8 @@
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 0;
-    border-left: 7px solid #193D4E;
+    left: -70px;
+    border-left: 10px solid #193D4E;
 }
 
 </style>
