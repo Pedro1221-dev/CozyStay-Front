@@ -31,16 +31,35 @@
         <div class="overlay" v-if="showModal"></div>
 
         <div class="badges-modal" v-if="showModal">
-            <h1>Badges</h1>
 
             <img :src="activeImage" alt="Badge Image">
 
-            <div v-if="activeBadge === 'property'">Property Badge </div>
-            <div v-if="activeBadge === 'booking'">Booking Badge </div>
-            <div v-if="activeBadge === 'favorite'">Favorite Badge </div>
-            <div v-if="activeBadge === 'review'">Review Badge </div>
-            <div v-if="activeBadge === 'country'">Country Badge</div>
+            <div v-if="activeBadge === 'property'">
+                <span class="badge-text">Property Badge</span>
+                <div class="badge-description">{{ description }}</div>
+            </div>
+            <div v-if="activeBadge === 'booking'">
+                <span class="badge-text">Booking Badge</span>
+                <div class="badge-description">{{ description }}</div>
+            </div>
+            <div v-if="activeBadge === 'favorite'">
+                <span class="badge-text">Favorite Badge</span>
+                <div class="badge-description">{{ description }}</div>
+            </div>
+            <div v-if="activeBadge === 'review'">
+                <span class="badge-text">Review Badge</span>
+                <div class="badge-description">{{ description }}</div>
+            </div>
+            <div v-if="activeBadge === 'country'">
+                <span class="badge-text">Country Badge</span>
+                <div class="badge-description">{{ description }}</div>
+            </div>
             
+            <v-progress-linear color="primary" model-value="33" :height="20" class="progress-badges"></v-progress-linear>
+            <div class="progress-description">
+                {{ progressDescription }}
+            </div>
+
             <div class="close" @click="closeModal">
                 <span class="material-symbols-outlined close-icon">close</span>
             </div>
@@ -63,6 +82,8 @@ export default {
                 review: 'https://res.cloudinary.com/dc8ckrwlq/image/upload/v1716974274/badges/property/property_silver_lsvvin.png',
                 country: 'https://res.cloudinary.com/dc8ckrwlq/image/upload/v1716975260/badges/review/review_silver_hhdg8v.png',
             },
+            description: "Congratulations! You've registered your first property!",
+            progressDescription: "Register two more properties to get to next level!",
         }
     },
     methods: {
@@ -84,14 +105,12 @@ export default {
 </script>
 
 <style scoped>
-
-
     .badges {
         margin: 2% 15% 0% 15%;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-
+        cursor: pointer;
     }
 
     .badge-card{
@@ -103,11 +122,11 @@ export default {
 
     .badges-modal{
         position: fixed;
-        top: 60%;
+        top: 50%;
         left: 50%;
         transform: translate(-50%, -50%); 
-        width: 50%;
-        height: 50%;
+        width: 40%;
+        height: 60%;
         border: 1px solid black;
         border-radius: 20px;
         background-color: white;
@@ -115,6 +134,40 @@ export default {
         display: flex;
         flex-direction: column;
         z-index: 1000; 
+        padding: 3%;   
+        img{
+            width: 120px;
+            margin-bottom: 5%;
+        }    
+    }
+
+    .badge-text{
+        font-size: 28px;
+        font-weight: 700;
+        color: #193D4E;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 5%;
+    }
+
+    .badge-description{
+        font-size: 18px;
+        font-weight: 300;
+        color: #193D4E;
+        text-align: center;
+    }
+
+    .progress-badges{
+        margin-top: 7%;
+        width: 50%;
+        border-radius: 20px;
+    }
+
+    .progress-description{
+        font: 16px;
+        font-weight: 100;
+        margin-top: 2%;
+
     }
 
     .close-icon{
