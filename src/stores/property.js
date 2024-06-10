@@ -13,6 +13,7 @@ export const usePropertiesStore = defineStore('properties', {
   actions: {
       async fetchProperties(searchOptions) {
           try {
+            console.log('search options:', searchOptions)
               const data = await api.get('/properties', searchOptions );
               this.properties = data.data;
               return data;

@@ -1,7 +1,87 @@
-<script setup>
+<script>
+import { useHomeStore } from '@/stores/home'; 
 import CardPropriedade from '@/components/CardPropriedade.vue';
 import Footer from '../components/Footer.vue';
 import Navbar from '../components/Navbar.vue';
+
+export default {
+  components: {
+    CardPropriedade,
+    Footer,
+    Navbar
+  },
+  data() {
+    return {
+      whereTo: '',
+      checkIn: '',
+      checkOut: '',
+      guests: '',
+      cityImage: {},
+      today: new Date().toISOString().split('T')[0],
+      homeStore: useHomeStore()
+    };
+  },
+  mounted() {
+    this.homeStore.fetchHome();
+    this.setupAccordion();
+    var inputElement = document.getElementById('where-to');
+    var autocomplete = new google.maps.places.Autocomplete(inputElement);
+
+    autocomplete.addListener('place_changed', function() {
+      var place = autocomplete.getPlace();
+      console.log(place)
+      // Agora você pode acessar as informações do lugar selecionado através do objeto 'place'
+    });
+  },
+  methods: {
+    setupAccordion() {
+      const items = document.querySelectorAll(".accordion button");
+
+      function toggleAccordion() {
+        const itemToggle = this.getAttribute('aria-expanded');
+
+        for (let i = 0; i < items.length; i++) {
+          items[i].setAttribute('aria-expanded', 'false');
+        }
+
+        if (itemToggle == 'false') {
+          this.setAttribute('aria-expanded', 'true');
+        }
+      }
+
+      items.forEach(item => item.addEventListener('click', toggleAccordion));
+    },
+    search() {
+      const whereTo = document.getElementById('where-to').value;
+      const checkIn = document.getElementById('check-in').value;
+      const checkOut = document.getElementById('check-out').value;
+      const guests = document.getElementById('guests').value;
+      
+      let query = {};
+
+      if (whereTo) query.destination = whereTo;
+      if (checkIn) query.checkIn = checkIn;
+      if (checkOut) query.checkOut = checkOut;
+      if (guests) query.guests = guests;
+
+      this.$router.push({
+        path: '/properties',
+        query
+      });
+    },
+    goToPropertyList(city, country) {
+        let query ={};
+        query.destination = city;
+      this.$router.push({ path: '/properties', query});
+    },
+    goToProperty(propertyId) {
+        this.$router.push({ path: `/property/${propertyId}` });
+    },
+    goToRegister() {
+      this.$router.push('/property/register');
+    }
+  },
+};
 </script>
 
 <template>
@@ -49,30 +129,15 @@ import Navbar from '../components/Navbar.vue';
                 <p class="top-destinations-text">Lorem ipsum dolor sit amet consectetur. Sed cum urna orci ac accumsan. Et non congue morbi nisl lacus tristique faucibus odio eget. 
                     Elementum porta enim praesent ultrices aliquet. Viverra fermentum vulputate at et pellentesque suspendisse.</p>
 
-                <div class="grid-destinations">
-                    <div class="destination">
-                        <img class="destination-img" src="/src/assets/img/destinations/barcelona.webp" alt="Barcelona"/>
-                        <div class="location">
-                            <span class="material-symbols-outlined icon-location">location_on</span>
-                            <p class="city">Barcelona, Spain</p>
+                    <div class="grid-destinations">
+                        <div class="destination" v-for="destination in homeStore.home.topDestinations" :key="destination.id" @click="goToPropertyList(destination.city, destination.country)" style="cursor: pointer;">
+                            <img class="destination-img" :src="homeStore.cityImages[destination.city]" :alt="destination.city" />
+                            <div class="location">
+                                <span class="material-symbols-outlined icon-location">location_on</span>
+                                <p class="city">{{ destination.city }}, {{ destination.country }}</p>
+                            </div>
                         </div>
                     </div>
-                    <div class="destination">
-                        <img class="destination-img" src="/src/assets/img/destinations/iceland.webp" alt="Iceland"/>
-                        <div class="location">
-                            <span class="material-symbols-outlined icon-location">location_on</span>
-                            <p class="city"> Reykjavik, Iceland</p>
-                        </div>
-                    </div>
-                    <div class="destination">
-                        <img class="destination-img" src="/src/assets/img/destinations/dubai.webp" alt="Dubai"/>
-                        <div class="location">
-                            <span class="material-symbols-outlined icon-location">location_on</span>
-                            <p class="city">Dubai, UAE</p>
-                        </div>
-
-                    </div>
-                </div>
 
             </div>
 
@@ -84,15 +149,17 @@ import Navbar from '../components/Navbar.vue';
             
                 <div class="rental-cards">
                     <CardPropriedade
-                        v-for="n in 6"
-                        :key="n"
-                        image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRYg2rNFiJzTCRPXETBxp80WLKVMxeLZZbxMGqdKlkAg&s"
-                        location="Lisbon, Portugal"
-                        title="Beautiful Apartment"
-                        rating="4.5"
-                        price="€100 per night"
-                        beds="2"
-                        rooms="1" /> 
+                        v-for="property in homeStore.home.topProperties"
+                        :key="property.property_id"
+                        :image="property.photo"
+                        :location="`${property.city}, ${property.country}`"
+                        :title="property.title"
+                        :rating="property.rating"
+                        :price="`${property.price} €/night`"
+                        :beds="property.number_beds"
+                        :rooms="property.number_bedrooms"
+                        @click="goToProperty(property.property_id)"
+                    /> 
                 </div>
             </div>
             
@@ -100,7 +167,7 @@ import Navbar from '../components/Navbar.vue';
                 <h2>Ready to Cozy Up?</h2>
                 <p>Welcome to Cozystay, where cozy homes meet happy travelers! Got a spare room, a cozy cabin, or a chic apartment? Put it to work and let it earn for you. 
                     Join our community of hosts and unlock the potential of your space</p>
-                <button class="btn-promo">List Your Space Now !</button>
+                <button class="btn-promo" @click="goToRegister">List Your Space Now !</button>
                 <img src="../assets/img/house_1.png" alt="">
             </div>
 
@@ -139,28 +206,28 @@ import Navbar from '../components/Navbar.vue';
                 <h1>Overview</h1>
                 <div class="overview-content">
                     <div class="overview-properties">
-                        <div class="number">140</div>
+                        <div class="number">{{ homeStore.home.totalProperties }}</div>
                         <div class="description">
                             <span>Registered</span>
                             <span>Properties</span>
                         </div>
                     </div>
                     <div class="overview-rentals">
-                        <div class="number">1324</div>
+                        <div class="number">{{ homeStore.home.totalReservations}}</div>
                         <div class="description"> 
                             <span>Total</span>
                             <span>Rentals</span>
                         </div>
                     </div>
                     <div class="overview-rating">
-                        <div class="number">4.7</div>
+                        <div class="number">{{ homeStore.home.totalAverageRating }}</div>
                         <div class="description"> 
                             <span>Average</span>
                             <span>Rating</span>
                         </div>
                     </div>
                     <div class="overview-users">
-                        <div class="number">798</div>
+                        <div class="number">{{ homeStore.home.totalUsers }}</div>
                         <div class="description"> 
                             <span>Registered</span>
                             <span>Users</span>
@@ -213,70 +280,6 @@ import Navbar from '../components/Navbar.vue';
     </div>
 </template>
 
-<script>
-export default {
-    data() {
-  return {
-    whereTo: '',
-    checkIn: '',
-    checkOut: '',
-    guests: '',
-    today: new Date().toISOString().split('T')[0],
-    // seus outros dados aqui...
-  };
-},
-  mounted() {
-    this.setupAccordion();
-    var inputElement = document.getElementById('where-to');
-      var autocomplete = new google.maps.places.Autocomplete(inputElement);
-
-      autocomplete.addListener('place_changed', function() {
-        var place = autocomplete.getPlace();
-        console.log(place)
-        // Agora você pode acessar as informações do lugar selecionado através do objeto 'place'
-      });
-  },
-  methods: {
-    setupAccordion() {
-      const items = document.querySelectorAll(".accordion button");
-
-      function toggleAccordion() {
-        const itemToggle = this.getAttribute('aria-expanded');
-
-        for (let i = 0; i < items.length; i++) {
-          items[i].setAttribute('aria-expanded', 'false');
-        }
-
-        if (itemToggle == 'false') {
-          this.setAttribute('aria-expanded', 'true');
-        }
-      }
-
-      items.forEach(item => item.addEventListener('click', toggleAccordion));
-      
-    },
-    search() {
-        const whereTo = document.getElementById('where-to').value;
-        const checkIn = document.getElementById('check-in').value;
-        const checkOut = document.getElementById('check-out').value;
-        const guests = document.getElementById('guests').value;
-        
-        let query = {};
-
-        if (whereTo) query.whereTo = whereTo;
-        if (checkIn) query.checkIn = checkIn;
-        if (checkOut) query.checkOut = checkOut;
-        if (guests) query.guests = guests;
-
-        this.$router.push({
-            path: '/properties',
-            query
-        });
-  },
-  },
-
-}
-</script>
 
 <style scoped>
     .landing-page {

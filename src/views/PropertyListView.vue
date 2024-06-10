@@ -105,13 +105,24 @@ export default {
         goToProperty(propertyId) {
             this.$router.push({ path: `/property/${propertyId}` });
         },
-    async fetchData() {
-        const response = await this.propertyStore.fetchProperties({ page: this.currentPage });
-        if (response) {
-            this.totalPages = Math.ceil(response.pagination.total / response.pagination.limit);
-            this.$router.push({ path: '/properties', query: { page: this.currentPage } });
-        }
-    },
+        async fetchData() {
+            const response = await this.propertyStore.fetchProperties({ 
+                ...this.$route.query, 
+                page: this.currentPage 
+            });
+            console.log('Resposta Fetch:',response);
+            if (response) {
+                this.totalPages = Math.ceil(response.pagination.total / response.pagination.limit);
+                // Keep the old queries and only update the page query
+                this.$router.push({ 
+                    path: '/properties', 
+                    query: { 
+                        ...this.$route.query, 
+                        page: this.currentPage 
+                    } 
+                });
+            }
+        },
 },
 created() {
     this.fetchData();

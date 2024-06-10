@@ -165,7 +165,6 @@
 
             <template v-slot:item.3>
               <v-container class="mt-8">
-              <span class="base-price">Base Price</span>
               <v-text-field
                 v-model="basePrice"
                 variant="underlined"
@@ -177,89 +176,69 @@
               <span class="section-price">Section Price</span>
               <v-row justify="center" dense class="text-left mt-8">
                 <v-col cols="6">
-                  <v-card class="price-option" @click="openModal('fixed')">
-                    Preço Fixo
+                  <v-card class="price-option" @click="openModal('fixed')" :class="{ 'selected': selectedOption === 'fixed' }">
+                    <v-card-title class="justify-center">
+                      <h3 class="title">Fixed Price</h3>
+                    </v-card-title>
+                    <v-card-text class="justify-center">
+                      <span class="material-symbols-outlined" style="font-size:85px">bedroom_parent</span>
+                      <p class="price">{{basePrice}}€</p>
+                    </v-card-text>
                   </v-card>
                 </v-col>
                 <v-col cols="6">
-                  <v-card class="price-option" @click="openModal('seasonal')">
-                    Preço por Época
+                  <v-card class="price-option" @click="openModal('seasonal')" :class="{ 'selected': selectedOption === 'seasonal' }">
+                    <v-card-title class="justify-center">
+                      <h3 class="title">Seasonal Price</h3>
+                    </v-card-title>
+                    <v-card-text class="justify-center">
+                      <span class="material-symbols-outlined" style="font-size:85px">sunny_snowing</span>
+                      <v-btn color="#193D4E" class="mt-7">Configure</v-btn>
+                    </v-card-text>
                   </v-card>
                 </v-col>
               </v-row>
 
-              <v-dialog v-model="dialog" persistent max-width="600px">
+              <v-dialog v-model="dialog" persistent max-width="800px">
                 <v-card>
                   <v-card-title>
-                    <span class="headline">Definir Preço por Época</span>
+                    <span class="headline">Define Seasonal Price Parameters</span>
                   </v-card-title>
                   <v-card-text>
                     <v-container>
                       <v-row>
-                        <v-col cols="12" sm="6">
-                          <v-menu
-                            ref="menu"
-                            v-model="menu1"
-                            :close-on-content-click="false"
-                            :nudge-right="40"
-                            transition="scale-transition"
-                            min-width="290px"
-                          >
-                            <template v-slot:activator="{ attrs }">
-                              <v-text-field
-                                v-model="seasonStartDate"
-                                label="Data de Início"
-                                append-icon="mdi-calendar"
-                                readonly
-                                v-bind="attrs"
-                                @click:append="menu1 = !menu1"
-                              ></v-text-field>
-                            </template>
-                            <v-date-picker v-model="seasonStartDate" no-title @input="date => { menu1 = false; seasonStartDate = formatDate(date) }" class="start-date-picker" width="290px" height="380px"></v-date-picker>
-                          </v-menu>
+                        <v-col cols="12" sm="4">
+                          <Datepicker
+                            v-model="seasonStartDate"
+                            :enable-time-picker="false"
+                          />
                         </v-col>
-                        <v-col cols="12" sm="6">
-                          <v-menu
-                            ref="menu"
-                            v-model="menu2"
-                            :close-on-content-click="false"
-                            :nudge-right="40"
-                            transition="scale-transition"
-                            offset-y
-                            min-width="290px"
-                          >
-                            <template v-slot:activator="{ attrs }">
-                              <v-text-field
-                                v-model="seasonEndDate"
-                                label="Data de Fim"
-                                append-icon="mdi-calendar"
-                                readonly
-                                v-bind="attrs"
-                                @click:append="menu2 = !menu2"
-                              ></v-text-field>
-                            </template>
-                            <v-date-picker v-model="seasonEndDate" no-title @input="menu2 = false"></v-date-picker>
-                          </v-menu>
+                        <v-col cols="12" sm="4">
+                          <Datepicker
+                            v-model="seasonEndDate"
+                            :enable-time-picker="false"
+                          />
                         </v-col>
-                      </v-row>
-
-                      <v-text-field
-                        v-model="priceIncrease"
-                        label="Acréscimo de Preço (%)"
-                        type="number"
-                        :rules="[v => !!v || 'Campo obrigatório']"
-                      ></v-text-field>
+                        <v-col cols="12" sm="4">
+                          <v-text-field
+                            v-model="priceIncrease"
+                            label="Acréscimo de Preço (%)"
+                            type="number"
+                            :rules="[v => !!v || 'Campo obrigatório']"
+                          ></v-text-field>
+                        </v-col>
+                      </v-row>    
                     </v-container>
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="dialog = false">Cancelar</v-btn>
-                    <v-btn color="blue darken-1" text @click="confirmSeasonalPrice">Confirmar</v-btn>
+                    <v-btn color="#193D4E" class="cancelButton" @click="dialog = false">Cancelar</v-btn>
+                    <v-btn color="white" class="registerButton" @click="confirmSeasonalPrice">Confirmar</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>
 
-              <v-btn variant="tonal" size="x-large" rounded="lg" color="white" block class="registerButton button-316" @click="register">
+              <v-btn variant="tonal" size="x-large" rounded="lg" color="white" block class="registerButton" @click="register">
                 Register
               </v-btn>
             </v-container>
@@ -273,14 +252,19 @@
   import Navbar from '../components/Navbar.vue';
   import VueGoogleAutocomplete from 'vue-google-autocomplete'
   import { format } from 'date-fns'
+  import { ref } from 'vue';
+  import Datepicker from '@vuepic/vue-datepicker';
+  import '@vuepic/vue-datepicker/dist/main.css';
   
 export default {
   components: {
     Navbar,
     VueGoogleAutocomplete,
+    Datepicker,
   },
   data() {
     return {
+      date : ref(),
       step: 1,
     name: '',
     city: '',
@@ -324,6 +308,7 @@ export default {
       menu2: false,
       seasonStartDate: null,
       seasonEndDate: null,
+      selectedOption: 'fixed',
       priceIncrease: '',
     rules: {
       required: value => !!value || 'Required.'
@@ -352,9 +337,13 @@ export default {
       }
       this.step++;
     },
-    openModal(priceType) {
-      if (priceType === 'seasonal') {
+    openModal(selectedOption) {
+      if (selectedOption === 'seasonal') {
         this.dialog = true;
+        this.selectedOption = 'seasonal';
+      }
+      else{
+        this.selectedOption = 'fixed';	
       }
     },
     confirmSeasonalPrice() {
@@ -366,7 +355,7 @@ export default {
       alert('Registo Feito!');
     },
     formatDate(date) {
-      return format(date, 'yyyy-MM-dd')
+      return format(date, 'dd-MM-yyyy');
     },
     getAddressData: function (addressData, placeResultData, id) {
       this.address = addressData;
@@ -375,6 +364,18 @@ export default {
       this.country = addressData.country;
     },
   },
+  watch: {
+  /* seasonStartDate(newStartDate, oldStartDate) {
+    newStartDate = this.formatDate(newStartDate);
+    this.seasonStartDate = newStartDate
+    console.log('Season start date changed from', oldStartDate, 'to', newStartDate);
+  },
+  seasonEndDate(newEndDate, oldEndDate) {
+    newEndDate = this.formatDate(newEndDate);
+    this.seasonEndDate = newEndDate
+    console.log('Season end date changed from', oldEndDate, 'to', newEndDate);
+  } */
+}
 };
   </script>
   
@@ -395,6 +396,9 @@ export default {
   .v-stepper-header {
     box-shadow:none;
   }
+  ::v-deep .v-container[data-v-2042d686]{
+    margin-left:20%;
+  }
   .registerButton {
     background-color: #193D4E!important;
     font-family: 'Montserrat', sans-serif;
@@ -403,6 +407,19 @@ export default {
     font-weight: 400;
     line-height: normal;
     margin-top:46px !important;
+    width: 316px !important;
+  }
+  .cancelButton {
+    background-color: #ffffff!important;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin-top:46px !important;
+  }
+  .cancelButton:hover {
+    border: 2px solid #193D4E;
   }
   .field-426 {
     width: 426px !important;
@@ -496,14 +513,75 @@ export default {
 }
 
 .start-date-picker{
-  margin-left:145%;
-  margin-top: 110%;
+  margin-left:160%;
+  margin-top: 130%;
 }
+
+.end-date-picker{
+  margin-left:260%;
+  margin-top: 130%;
+}
+
 ::v-deep .v-date-picker-month__day {
   width: 30px;
   height: 30px;
 }
 ::v-deep .v-date-picker-header__content {
   font-size: 25px;
+}
+
+::v-deep .v-picker-title{
+  padding-bottom: 0px;
+}
+
+::v-deep .v-date-picker-month__day .v-btn.v-date-picker-month__day-btn {
+    --v-btn-height: 15px;
+    --v-btn-size: 0.85rem;
+}
+
+::v-deep .dp__input{
+  background-color: #f6f7f8 !important;
+  height: 56px;  
+}
+
+::v-deep .dp__menu_inner {
+  z-index: 9999 !important;
+}
+
+::v-deep .v-card-text {
+    height:365px !important;
+}
+
+::v-deep .v-card{
+  border-radius: 20px !important;
+}
+
+.price-option {
+  width: 267px;
+  height: 267px;
+  background-color: rgba(165, 232, 226, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.price-option.selected {
+  border: 3px solid #193D4E;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.price {
+  font-size: 24px;
+  font-weight: 600;
+  margin-top: 20px;
+}
+.price-option.selected {
+  border: 3px solid #193D4E;
 }
   </style>
