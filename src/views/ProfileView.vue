@@ -311,9 +311,7 @@ export default {
             </div>
         </div>
 
-    <!--<div class="footer">   
-        <Footer />
-        </div> -->
+  
     </div>
     
 </template>
@@ -323,7 +321,7 @@ export default {
     background-color: #FFF;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 10vh 100vh 10vh;
+    grid-template-rows: 10vh 120vh;
 }
 
 .main{

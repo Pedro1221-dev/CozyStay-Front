@@ -8,97 +8,184 @@
      -->
 
     <div class="badges">
-        <div class="badge-card" v-for="badge in badges" :key="badge.id">
-        <div class="badge-icon">
-            <img :src="getUserBadgeLevel(badge.id)" :alt="badge.name">
+        <div class="badge-card" @click="toggleModal('property')">
+            <img src="https://res.cloudinary.com/dc8ckrwlq/image/upload/v1716974613/badges/booking/booking_silver_aedxru.png" alt="">
         </div>
-        <div class="badge-info">
-            <h2>{{ badge.name }}</h2>
-            <p>{{ badge.description }}</p>
+
+        <div class="badge-card" @click="toggleModal('booking')">
+            <img src="https://res.cloudinary.com/dc8ckrwlq/image/upload/v1716975473/badges/country/country_silver_i7ya65.png" alt="">
         </div>
+
+        <div class="badge-card" @click="toggleModal('favorite')">
+            <img src="https://res.cloudinary.com/dc8ckrwlq/image/upload/v1716974913/badges/favorite/favourite_silver_taxqsi.png" alt="">
         </div>
+
+        <div class="badge-card" @click="toggleModal('review')">
+            <img src="https://res.cloudinary.com/dc8ckrwlq/image/upload/v1716974274/badges/property/property_silver_lsvvin.png" alt="">
+        </div>
+
+        <div class="badge-card" @click="toggleModal('country')">
+            <img src="https://res.cloudinary.com/dc8ckrwlq/image/upload/v1716975260/badges/review/review_silver_hhdg8v.png" alt="">
+        </div>
+
+        <div class="overlay" v-if="showModal"></div>
+
+        <div class="badges-modal" v-if="showModal">
+
+            <img :src="activeImage" alt="Badge Image">
+
+            <div v-if="activeBadge === 'property'">
+                <span class="badge-text">Property Badge</span>
+                <div class="badge-description">{{ description }}</div>
+            </div>
+            <div v-if="activeBadge === 'booking'">
+                <span class="badge-text">Booking Badge</span>
+                <div class="badge-description">{{ description }}</div>
+            </div>
+            <div v-if="activeBadge === 'favorite'">
+                <span class="badge-text">Favorite Badge</span>
+                <div class="badge-description">{{ description }}</div>
+            </div>
+            <div v-if="activeBadge === 'review'">
+                <span class="badge-text">Review Badge</span>
+                <div class="badge-description">{{ description }}</div>
+            </div>
+            <div v-if="activeBadge === 'country'">
+                <span class="badge-text">Country Badge</span>
+                <div class="badge-description">{{ description }}</div>
+            </div>
+            
+            <v-progress-linear color="primary" model-value="33" :height="20" class="progress-badges"></v-progress-linear>
+            <div class="progress-description">
+                {{ progressDescription }}
+            </div>
+
+            <div class="close" @click="closeModal">
+                <span class="material-symbols-outlined close-icon">close</span>
+            </div>
+        </div>
+
     </div>
 
 </template>
 
 <script>
-import { useUserStore } from "@/stores/user";
-    export default {
-        data() {
-            return{
-                user:null,
-                apiRequestComplete:false,
-            }
-        },
-        methods: {
-            async fetchLoggedUser() {
-                const token = sessionStorage.getItem('jwt'); // get token from session storage
-                try {
-                const response = await useUserStore().getLoggedUser(token);
-                this.user = response;
-                this.apiRequestComplete = true;
-                console.log()
-                } catch (error) {
-                console.error('Error getting logged user:', error);
-                if (error.response && error.response.data.msg === 'Your token has expired. Please login again.') {
-                    this.logout();
-                }
-                }
+export default {
+    data() {
+        return {
+            showModal: false,
+            activeBadge: null, 
+            badgeImages: { 
+                property: 'https://res.cloudinary.com/dc8ckrwlq/image/upload/v1716974613/badges/booking/booking_silver_aedxru.png',
+                booking: 'https://res.cloudinary.com/dc8ckrwlq/image/upload/v1716975473/badges/country/country_silver_i7ya65.png',
+                favorite: 'https://res.cloudinary.com/dc8ckrwlq/image/upload/v1716974913/badges/favorite/favourite_silver_taxqsi.png',
+                review: 'https://res.cloudinary.com/dc8ckrwlq/image/upload/v1716974274/badges/property/property_silver_lsvvin.png',
+                country: 'https://res.cloudinary.com/dc8ckrwlq/image/upload/v1716975260/badges/review/review_silver_hhdg8v.png',
             },
+            description: "Congratulations! You've registered your first property!",
+            progressDescription: "Register two more properties to get to next level!",
+        }
+    },
+    methods: {
+        toggleModal(badge) {
+            this.showModal = !this.showModal;
+            this.activeBadge = badge; // Set the active badge when a badge-card is clicked
+            this.activeImage = imageUrl;
         },
-        created () {
-            this.fetchLoggedUser();
+        closeModal() {
+            this.showModal = false;
         },
-    };
+    },
+    computed: {
+        activeImage() {
+            return this.badgeImages[this.activeBadge];
+        },
+},
+}
 </script>
 
 <style scoped>
-    .badge-info p{
-        font-size: 12px;
-        font-weight: lighter;
-
-    }
-    .badge-info h2{
-        font-size: 17px;
-        font-weight: 500;
-    }
-
-    .badges{
+    .badges {
+        margin: 2% 15% 0% 15%;
         display: flex;
         flex-direction: row;
-        justify-content: space-around;
-        margin: 2% 10% 0% 10%;
+        justify-content: space-between;
+        cursor: pointer;
     }
 
     .badge-card{
-        display: flex;
-        flex-direction: row;
-        background-color: #c0c0c0;
-        width: 270px;
-        padding: 10px;
-        border-radius: 7px;
-        gap: 20px;
+        img{
+            width: 120px;
+            /* opacity: 0.5; */
+        }
     }
 
-    .badge-info {
+    .badges-modal{
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%); 
+        width: 40%;
+        height: 60%;
+        border: 1px solid black;
+        border-radius: 20px;
+        background-color: white;
+        align-items: center;
         display: flex;
         flex-direction: column;
-        justify-content: flex-start;
-        align-items: flex-start;
-        align-content: flex-start;
+        z-index: 1000; 
+        padding: 3%;   
+        img{
+            width: 120px;
+            margin-bottom: 5%;
+        }    
     }
 
-    .badge-icon {
-        font-size: 10px;
-        font-weight: 400 ;
-        color: #FFF;
-        background-color: #193D4E;
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
+    .badge-text{
+        font-size: 28px;
+        font-weight: 700;
+        color: #193D4E;
         display: flex;
-        justify-content: center; 
-        align-items: center; 
+        justify-content: center;
+        margin-bottom: 5%;
+    }
+
+    .badge-description{
+        font-size: 18px;
+        font-weight: 300;
+        color: #193D4E;
+        text-align: center;
+    }
+
+    .progress-badges{
+        margin-top: 7%;
+        width: 50%;
+        border-radius: 20px;
+    }
+
+    .progress-description{
+        font: 16px;
+        font-weight: 100;
+        margin-top: 2%;
+
+    }
+
+    .close-icon{
+        position: absolute;
+        right: 50px;
+        top: 40px;
+        cursor: pointer;
+        color: #193D4E;
+    }
+
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        backdrop-filter: blur(2px);
+        z-index: 1; 
     }
 
 </style>
