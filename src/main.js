@@ -15,6 +15,9 @@ import Toast from "vue-toastification";
 // Import the CSS or use your own!
 import "vue-toastification/dist/index.css";
 
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
+
 const vuetify = createVuetify({
   components,
   directives,
@@ -30,6 +33,10 @@ const options = {
   // You can set your default options here
 };
 
+
+
 app.use(Toast, options);
+
+app.use('VueDatePicker', VueDatePicker);
 
 app.mount('#app')

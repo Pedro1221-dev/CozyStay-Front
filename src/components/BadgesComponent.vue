@@ -8,49 +8,48 @@
      -->
 
     <div class="badges">
-        <div class="badge-card">
-            <div class="badge-icon">
-            </div>
-            <div class="badge-info">
-                <h2>{{ Nome }}Property Debut</h2>
-                <p>{{ Desc }}Register 1st property</p>
-            </div>
+        <div class="badge-card" v-for="badge in badges" :key="badge.id">
+        <div class="badge-icon">
+            <img :src="getUserBadgeLevel(badge.id)" :alt="badge.name">
         </div>
-
-        <div class="badge-card">
-            <div class="badge-icon">
-            </div>
-            <div class="badge-info">
-                <h2>{{ Nome }}First Time Booker</h2>
-                <p>{{ Desc }}First Booking</p>
-            </div>
+        <div class="badge-info">
+            <h2>{{ badge.name }}</h2>
+            <p>{{ badge.description }}</p>
         </div>
-
-        <div class="badge-card">
-            <div class="badge-icon">
-            </div>
-            <div class="badge-info">
-                <h2>{{ Nome }}Favourite Finder</h2>
-                <p>{{ Desc }}Add 1st property to favourites</p>
-            </div>
-        </div>
-
-        <div class="badge-card">
-            <div class="badge-icon">
-            </div>
-            <div class="badge-info">
-                <h2>{{ Nome }}Review Rookie</h2>
-                <p>{{ Desc }}Register 1st review</p>
-            </div>
         </div>
     </div>
 
 </template>
 
 <script>
+import { useUserStore } from "@/stores/user";
     export default {
-    
-    }
+        data() {
+            return{
+                user:null,
+                apiRequestComplete:false,
+            }
+        },
+        methods: {
+            async fetchLoggedUser() {
+                const token = sessionStorage.getItem('jwt'); // get token from session storage
+                try {
+                const response = await useUserStore().getLoggedUser(token);
+                this.user = response;
+                this.apiRequestComplete = true;
+                console.log()
+                } catch (error) {
+                console.error('Error getting logged user:', error);
+                if (error.response && error.response.data.msg === 'Your token has expired. Please login again.') {
+                    this.logout();
+                }
+                }
+            },
+        },
+        created () {
+            this.fetchLoggedUser();
+        },
+    };
 </script>
 
 <style scoped>

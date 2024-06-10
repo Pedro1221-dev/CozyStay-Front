@@ -31,22 +31,22 @@
       </div>
       <div v-else>
         <div class="text-center">
-        <v-menu location="bottom">
-          <template v-slot:activator="{ props }">
-            <img :src="userPhoto" class="login-icon" alt="User Photo" v-bind="props">
-          </template>
-          <v-list>
-            <v-list-item @click="changeToProfile">
-              <v-list-item-title>Profile</v-list-item-title>
-            </v-list-item>
-            <v-list-item @click="changeToRegisterProperty">
-              <v-list-item-title>Register Property</v-list-item-title>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-title @click="logout">Logout</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
+          <v-menu location="bottom">
+            <template v-slot:activator="{ props }">
+              <img v-if="apiRequestComplete" :src="userPhoto" class="login-icon" alt="User Photo" v-bind="props">
+            </template>
+            <v-list>
+              <v-list-item @click="changeToProfile">
+                <v-list-item-title>Profile</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="changeToRegisterProperty">
+                <v-list-item-title>Register Property</v-list-item-title>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-title @click="logout">Logout</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
         </div>
       </div>
 
@@ -67,25 +67,27 @@
     data() {
       return {
         isLoggedIn: false, // Altere isso para refletir o status de login real
+        apiRequestComplete: false,
         userPhoto: '', // Altere isso para a URL da foto do usuário real
         activeSection: 'home',
         loginModal: false
       };
     },
     created() {
-        this.isLoggedIn = this.checkIfUserIsLoggedIn();
-        this.setActiveSectionBasedOnRoute(this.$route);
+      this.isLoggedIn = this.checkIfUserIsLoggedIn();
+      this.setActiveSectionBasedOnRoute(this.$route);
 
-        // Verificar a cada segundo se o JWT mudou
-        this.jwtInterval = setInterval(() => {
-            const isLoggedInNow = this.checkIfUserIsLoggedIn();
-            if (this.isLoggedIn !== isLoggedInNow) {
-                this.isLoggedIn = isLoggedInNow;
-                console.log("Logged? ", this.isLoggedIn);
-            }
-        }, 1000);
-        this.fetchLoggedUser();
-
+      // Verificar a cada segundo se o JWT mudou
+      this.jwtInterval = setInterval(() => {
+        const isLoggedInNow = this.checkIfUserIsLoggedIn();
+        if (this.isLoggedIn !== isLoggedInNow) {
+          this.isLoggedIn = isLoggedInNow;
+          console.log("Logged? ", this.isLoggedIn);
+          if (this.isLoggedIn) {
+            this.fetchLoggedUser();
+          }
+        }
+      }, 1000);
     },
     beforeDestroy() {
         // Limpar o intervalo quando o componente é destruído
@@ -109,11 +111,7 @@
       openModal() {
         this.loginModal = true;
       },
-      openDropdown() {
-        // Abra o menu dropdown aqui
-      },
       setActiveSectionBasedOnRoute(route) {
-        // Quando a rota muda, defina a seção ativa para a seção na URL, se houver uma, ou para a primeira seção da nova rota
         this.activeSection = window.location.hash ? window.location.hash.substring(1) : (route.name === 'home' ? 'home' : 'overview');
       },
       checkIfUserIsLoggedIn() {
@@ -136,6 +134,8 @@
           console.log("RESPONSE NAVBAR:",response);
           this.userPhoto= response.url_avatar;
           this.user = response;
+          this.apiRequestComplete = true;
+          console.log("API REQUEST COMPLETE:",this.apiRequestComplete);
           console.log("USER:",this.user);
         } catch (error) {
           console.error('Error getting logged user:', error);
@@ -145,8 +145,6 @@
         }
       },
       logout() {
-        // implement your logout logic here
-        // for example, you might want to remove the jwt token from session storage
         sessionStorage.removeItem('jwt');
       },
     },

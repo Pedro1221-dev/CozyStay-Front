@@ -20,7 +20,8 @@ export default {
         kitchen: 'skillet',
         "laundry machine": 'local_laundry_service',
         fridge: 'kitchen',
-        microwave:'microwave_gen'
+        microwave:'microwave_gen',
+        "air conditioning": "mode_fan"
         
         // adicione mais pares de chave-valor conforme necessário
     };
