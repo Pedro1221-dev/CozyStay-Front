@@ -2,7 +2,7 @@
     <div class="sidebar"> 
 
         <div class="admin-user-info">
-            <!-- <img src="#" alt="me">-->                    
+            <!-- <img src="#" alt="me" class="profile">-->                    
             <i class="material-icons profile">account_circle</i>
             <p class="user-name">John Doe</p>
             <p class="user-rank">Administrator</p>
@@ -74,9 +74,8 @@
     width: 20%;
     padding: 2%;
     justify-content: space-between;
-    border-right: 1px solid black;
-    background-color: white;
-    
+    border-right: 2px solid #193D4E;
+    background-color: white;   
 }
 
 .admin-analytics,
@@ -116,8 +115,12 @@
     position: absolute;
     top: 0;
     bottom: 0;
-    left: -70px;
-    border-left: 10px solid #193D4E;
+    left: -74px;
+    border-left: 8px solid #193D4E;
+}
+
+a{
+    color: #193D4E;
 }
 
 </style>
