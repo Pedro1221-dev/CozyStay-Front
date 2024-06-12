@@ -188,4 +188,9 @@ export default {
         z-index: 1; 
     }
 
+    ::v-deep #my-chart-id {
+        background-color: #193D4E !important;
+        height: 1px !important;
+    }
+
 </style>
