@@ -12,7 +12,7 @@
                 <div class="search-bar-container">
                     <div class="search-bar-admin">
                         <span class="material-icons searchIcon">search</span>
-                        <input type="text" v-model="searchInput" placeholder="Search a User">                    
+                        <input type="text" v-model="searchInput" placeholder="Search for a User">                    
                     </div>
                 </div>
             
@@ -70,7 +70,7 @@ export default {
                 { title: 'Email', key: 'email', align: 'start' },
                 { title: 'Properties', key: 'properties', align: 'start' },
                 { title: 'Rentals', key: 'rentals', align: 'start' },
-                { title: 'Status', key: 'status', align: 'center' },
+                { title: 'Status', key: 'status', align: 'start' },
                 { title: 'Actions', key: 'actions', sortable: false, align: 'start' }
             ],
             serverItems: [],
@@ -119,10 +119,14 @@ export default {
 
 
 
-<style>
+<style scoped>
     .main{
         margin-left: 20%;
     }
+
+/*     .v-data-table {
+        height: 540px; 
+    } */
 
     h1 {
         color: #193D4E;

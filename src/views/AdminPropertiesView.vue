@@ -18,7 +18,10 @@
             
                 <div class="filterBtn">
                     <span class="material-icons">tune</span>
-                    <button>Filter</button>
+                    <button v-if="!isFilterClicked" @click="isFilterClicked = true">Filter</button>
+                    <button v-else @click="isFilterClicked = false">
+                        <input type="checkbox" v-model="isChecked"> Check me
+                    </button>
                 </div>
             </div>    
         </div>
@@ -68,14 +71,16 @@ export default {
     },
     data() {
         return {
+            isFilterClicked: false,
+            isChecked: false,
             itemsPerPage: 5,
             headers: [
                 { title: 'Photo', align: 'center', sortable: false, key: 'photo' },
-                { title: 'Name', key: 'name', align: 'center' },
-                { title: 'Username', key: 'username', align: 'center' },
-                { title: 'Reviews', key: 'reviews', align: 'center' },
-                { title: 'Rented', key: 'rented', align: 'center' },
-                { title: 'Status', key: 'status', align: 'center' },
+                { title: 'Name', key: 'name', align: 'start' },
+                { title: 'Username', key: 'username', align: 'start' },
+                { title: 'Reviews', key: 'reviews', align: 'start' },
+                { title: 'Rented', key: 'rented', align: 'start' },
+                { title: 'Status', key: 'status', align: 'start' },
                 { title: 'Actions', key: 'actions', sortable: false, align: 'start' }
             ],
             serverItems: [],
@@ -125,8 +130,11 @@ export default {
 </script>
 
 
+<style scoped>
+    .v-data-table {
+        height: 540px;
+    }
 
-<style>
     .main{
         margin-left: 20%;
     }
@@ -262,7 +270,6 @@ export default {
         border-radius: 20px;
         background-color: #F5EB9B ;
     }
-
 
     ::v-deep .v-data-table__th{
         font-weight: bold !important;
