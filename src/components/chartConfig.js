@@ -1,9 +1,9 @@
 export const data = {
-    labels: ['Apartment','Beach House','Cottage'],
+    labels: ['House','Apartment','Guest House','Hotel'],
     datasets: [
         {
-            backgroundColor: ['#193D4E', '#A5E8E2', '#20A89C'],
-            data: [60, 25, 15]
+            backgroundColor: ['#193D4E', '#A5E8E2', '#20A89C', '#26726B'],
+            data: [52, 25, 15,25]
         }
     ]
 }
@@ -30,7 +30,7 @@ export const options = {
             display: true, 
             position: 'right',
             labels: {
-                padding: 30,
+                padding: 25,
                 font: {
                     size: 14, // Adjust this value as needed
                     weight: 'bold',

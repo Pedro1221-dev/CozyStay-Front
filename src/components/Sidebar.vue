@@ -31,7 +31,7 @@
                     
             <div class="admin-logout">
                 <i class="material-icons">logout</i>
-                <router-link to="/logout">Logout</router-link>
+                <router-link to="/">Logout</router-link>
             </div>
         </div>
        
@@ -59,12 +59,12 @@
 }
 
 .user-name{
-    font-size: 32px;
+    font-size: 28px;
     font-weight: 600;
 }
 
 .user-rank{
-    font-size: 18px;
+    font-size: 16px;
     font-weight: lighter;
 }
 
@@ -86,7 +86,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    font-size: 22px;
+    font-size: 20px;
     color: #193D4E;
     margin-bottom: 15%;
     i{

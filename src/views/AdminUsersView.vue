@@ -2,7 +2,6 @@
     <Sidebar />
     <div class="main">
         <h1>Users</h1>
-        
         <div class="container">
             <div class="usersCounter">
                 <p><b>Total Users:</b> <span>{{ filteredItems.length }}</span></p>
@@ -16,10 +15,20 @@
                     </div>
                 </div>
             
-                <div class="filterBtn">
-                    <span class="material-icons">tune</span>
-                    <button>Filter</button>
+                <div class="filterBtn" 
+                    :class="{ 'expanded': expanded }" 
+                    v-click-outside="closeFilter" 
+                    @click.stop="toggleFilter($event)">
+                    <div class="filter">
+                        <span class="material-icons">tune</span>
+                        <span>Filter</span>
+                    </div>
+                
+                    <div v-if="expanded">
+                        <input type="checkbox" class="checkbox" v-model="isChecked">Blocked
+                    </div>
                 </div>
+
             </div>    
         </div>
         
@@ -44,9 +53,9 @@
                 </template>
                 <template v-slot:item.actions="{ item }">
                     <div class="actions">
-                        <span class="material-icons">admin_panel_settings</span>  
-                        <span class="material-icons">block</span>
-                        <span class="material-icons">delete</span>                
+                        <span class="material-icons" :class="{ disable: item.status === 'blocked' }" @click="grantAdmin(item)">admin_panel_settings</span> 
+                        <span class="material-icons" @click="blockUser(item)">block</span>
+                        <span class="material-icons" @click="deleteUser(item)">delete</span>                    
                     </div>
                 </template>
             </v-data-table>
@@ -63,15 +72,18 @@ export default {
     },
     data() {
         return {
+            expanded: false,
+            isChecked: false,
             itemsPerPage: 5,
             headers: [
                 { title: 'Photo', align: 'center', sortable: false, key: 'photo' },
-                { title: 'Name', key: 'name', align: 'start' },
-                { title: 'Email', key: 'email', align: 'start' },
-                { title: 'Properties', key: 'properties', align: 'start' },
-                { title: 'Rentals', key: 'rentals', align: 'start' },
-                { title: 'Status', key: 'status', align: 'start' },
-                { title: 'Actions', key: 'actions', sortable: false, align: 'start' }
+                { title: 'Name', key: 'name', align: 'center' },
+                { title: 'Email', key: 'email', align: 'center' },
+                { title: 'Role', key: 'role', align: 'center' },
+                { title: 'Properties', key: 'properties', align: 'center' },
+                { title: 'Rentals', key: 'rentals', align: 'center' },
+                { title: 'Status', key: 'status', align: 'center' },
+                { title: 'Actions', key: 'actions', sortable: false, align: 'center' }
             ],
             serverItems: [],
             loading: true,
@@ -82,20 +94,70 @@ export default {
     methods: {
         loadItems(options) {
             // Here you can request new data from the server using options
-            // For now, we just leave it empty
         },
+        toggleFilter(event) {
+            if (event.target.type !== 'checkbox') {
+                this.expanded = !this.expanded;
+            }
+        },
+        closeFilter(event) {
+            if (!this.$el.contains(event.target)) {
+                this.expanded = false;
+            }
+        },
+        deleteUser(item) {
+            const index = this.serverItems.indexOf(item);
+            if (index !== -1) {
+                this.serverItems.splice(index, 1);
+            }
+        },
+        blockUser(user) {
+            user.status = 'blocked';
+        },
+        grantAdmin(user) {
+            if (user.status !== 'blocked') {
+                if (user.role === 'admin') {
+                    user.role = 'user';
+                } else {
+                    user.role = 'admin';
+                }
+            }
+        },
+            
+    /*         async deleteUser(item) {
+            try {
+                const response = await axios.delete(`https://your-api-url/users/${item.id}`);
+                if (response.status === 200) {
+                    const index = this.serverItems.indexOf(item);
+                    if (index !== -1) {
+                        this.serverItems.splice(index, 1);
+                    }
+                } else {
+                    console.error('Failed to delete user:', response);
+                }
+            } catch (error) {
+                console.error('Failed to delete user:', error);
+            }
+        }, */
+
     },
     computed: {
         filteredItems() {
-            if (!this.searchInput) {
-                return this.serverItems;
+            let items = this.serverItems;
+
+            if (this.searchInput) {
+                const searchLower = this.searchInput.toLowerCase();
+                items = items.filter(item => 
+                    item.name.toLowerCase().includes(searchLower) ||
+                    item.email.toLowerCase().includes(searchLower)      
+                );
             }
-            const searchLower = this.searchInput.toLowerCase();
-            return this.serverItems.filter(item => 
-                item.name.toLowerCase().includes(searchLower) ||
-                item.email.toLowerCase().includes(searchLower) ||
-                item.status.toLowerCase().includes(searchLower)
-            );
+
+            if (this.isChecked) {
+                items = items.filter(item => item.status === 'blocked');
+            }
+
+            return items;
         },
         usersTotal() {
             return this.serverItems.length;
@@ -103,12 +165,12 @@ export default {
     },
     mounted() {
         const users = [
-            { photo: '', name: 'John Doe', email: 'useremail@gmail.com', properties: 15, rentals: 4, status: 'active' },
-            { photo: '', name: 'Jane Doe', email: 'janeemail@gmail.com', properties: 10, rentals: 2, status: 'blocked' },
-            { photo: '', name: 'Jim Beam', email: 'jimemail@gmail.com', properties: 22, rentals: 7, status: 'active' },
-            { photo: '', name: 'Jack Daniels', email: 'jackemail@gmail.com', properties: 8, rentals: 1, status: 'active' },
-            { photo: '', name: 'Johnny Walker', email: 'johnnyemail@gmail.com', properties: 12, rentals: 3, status: 'blocked' },
-            { photo: '', name: 'Jill Scott', email: 'jillemail@gmail.com', properties: 20, rentals: 5, status: 'active' }
+            { photo: '', name: 'John Doe', email: 'useremail@gmail.com', role: 'admin', properties: 15, rentals: 4, status: 'active' },
+            { photo: '', name: 'Jane Doe', email: 'janeemail@gmail.com', role: 'user', properties: 10, rentals: 2, status: 'blocked' },
+            { photo: '', name: 'Jim Beam', email: 'jimemail@gmail.com', role: 'admin', properties: 22, rentals: 7, status: 'active' },
+            { photo: '', name: 'Jack Daniels', email: 'jackemail@gmail.com', role: 'user', properties: 8, rentals: 1, status: 'active' },
+            { photo: '', name: 'Johnny Walker', email: 'johnnyemail@gmail.com', role: 'user', properties: 12, rentals: 3, status: 'blocked' },
+            { photo: '', name: 'Jill Scott', email: 'jillemail@gmail.com', role: 'admin', properties: 20, rentals: 5, status: 'active' }
         ];
         this.serverItems = users;
         this.totalItems = users.length;
@@ -124,15 +186,17 @@ export default {
         margin-left: 20%;
     }
 
-/*     .v-data-table {
+    .v-data-table {
         height: 540px; 
-    } */
+    } 
 
     h1 {
         color: #193D4E;
         font-size: 32px;
         font-weight: 800;
         padding: 2%;
+        margin-left: 1%;
+        
     }
 
     h3{
@@ -187,6 +251,24 @@ export default {
         margin: 0 40px 10px 0;
     }
 
+    .filter{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .filterBtn.expanded {
+        display: flex;
+        flex-direction: column;
+        height: 80px;  
+        z-index: 3; 
+    }
+
+    .checkbox{
+        margin-right: 10px;
+    }
+
     .usersCounter{
         margin: 0 45px 10px 0;
         p{
@@ -220,6 +302,14 @@ export default {
         color: #193D4E;
         display: flex;
         gap: 5px;
+        cursor: pointer;
+        justify-content: space-evenly;
+
+    }
+
+    .disable{
+        color: rgba(25, 61, 78, 0.5); 
+        cursor: not-allowed;
     }
 
     .status{
@@ -249,7 +339,21 @@ export default {
         background-color: #F5D0CD ;
     }
 
-    ::v-deep .v-data-table__th{
+    ::v-deep .v-data-table-header__content span{
         font-weight: bold !important;
+        color: #193D4E;
+    }
+
+    ::v-deep .v-data-table__td {
+        text-align: center !important;
+    }
+
+    ::v-deep tbody tr:nth-of-type(odd) {
+        background-color: rgba(165, 232, 226, 0.20) !important;    
+    }
+
+    ::v-deep .v-data-table{
+        border-radius: 15px;
+        background-color: rgba(165, 232, 226, 0.10) !important;
     }
 </style>

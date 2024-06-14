@@ -2,8 +2,7 @@
     <Sidebar />
 
     <div class="main"> 
-        <h1>Analytics</h1>
-
+<br>
         <div class="analytics-cards">
             
             <div class="usersCard">
@@ -61,6 +60,7 @@ import PieChart from '../components/PieChartComponent.vue';
         font-size: 32px;
         font-weight: 800;
         padding: 2%;
+        margin-left: 1%;
     }
 
     h3{
