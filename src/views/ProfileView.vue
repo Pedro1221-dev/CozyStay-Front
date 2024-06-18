@@ -42,11 +42,15 @@ export default {
             ],
             user:null,
             apiRequestComplete: false,
-                
+            bookings: null,
+            past_bookings: null,
+            favorites_properties: null,
         };
     },
     async created() {
+        const token = sessionStorage.getItem('jwt');
         await this.fetchLoggedUser();
+        await useUserStore().fetchBookingsUser(token);
         this.apiRequestComplete = true;
     },
     methods: {
@@ -74,8 +78,23 @@ export default {
             this.bannerImage = selectedItem ? selectedItem.image : null;
         }, 
 
-        showComponent(componentName) {
+        async showComponent(componentName) {
+            const token = sessionStorage.getItem('jwt');
+            let query= {};
             this.currentComponent = componentName;
+            if (componentName === 'BookingsComponent') {
+                query.status = 'upcoming'
+                this.bookings = await useUserStore().fetchBookingsUser(token, query);
+                console.log('bookings no upcomming', this.bookings)
+            }
+            if (componentName === 'HistoryComponent') {
+                query.status = 'past'
+                this.past_bookings = await useUserStore().fetchBookingsUser(token, query);
+            }
+            if (componentName === 'FavoritesComponent') {
+                this.favorites_properties = await useUserStore().fetchFavoritesProperties(token);
+            }
+            
         },
         changeBanner() {
             const selectedItem = this.items.find(item => item.title === this.selectedItem);
@@ -145,7 +164,7 @@ export default {
                 <p style="text-transform: capitalize;">{{ user.userType }}</p>
                 <div class="profile-history">
                     <p>{{ user.totalPropertyReviews }} Reviews</p>
-                    <p>10 Years</p>
+                    <p v-if="user.host_since">{{ new Date().getFullYear() - new Date(user.host_since).getFullYear() }} Years</p>
                 </div>
             </div>
 
@@ -305,7 +324,7 @@ export default {
             </div>
             <hr>
             <div class="profile-content">
-                <component :is="currentComponent"  />        
+                <component :is="currentComponent" :bookings="this.bookings" :past_bookings="this.past_bookings" :favorites_properties="this.favorites_properties" />       
                     <!-- v-for="property in properties.slice(0,3)"-->
                     <!-- <BookingsComponent v-for="property in properties.slice(0,3)"/> -->
             </div>

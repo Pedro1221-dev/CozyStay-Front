@@ -1,10 +1,10 @@
 <template>
     <div class="cards">
-        <div class="card">
+        <div class="card" v-for="property in favorites_properties" :key="property.property_id">
             <div class="card-image">
                 <div class="location">
                     <span class="material-symbols-outlined icon-location">location_on</span>
-                    <span>{{ location }}</span>
+                    <span>{{ property.city }},{{ property.country }}</span>
                 </div>
                 <div class="favorite">
                     <span class="material-symbols-outlined icon-favorite">favorite</span>
@@ -13,60 +13,14 @@
             </div>
             <div class="card-content">
                 <div class="title-rating">
-                    <h2>{{ title }}</h2>
+                    <h2>{{ property.title }}</h2>
                     <div class="rating">
                         <i class="fas fa-star"></i>
                         <span>{{ rating }}</span>
                     </div>
                 </div>
-                <p class="price">{{ price }}</p>
-                <p class="info">{{ beds }} beds • {{ rooms }} rooms</p>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-image">
-                <div class="location">
-                    <span class="material-symbols-outlined icon-location">location_on</span>
-                    <span>{{ location }}</span>
-                </div>
-                <div class="favorite">
-                    <span class="material-symbols-outlined icon-favorite">favorite</span>
-                </div>
-                <img :src="image" alt="Property Image">
-            </div>
-            <div class="card-content">
-                <div class="title-rating">
-                    <h2>{{ title }}</h2>
-                    <div class="rating">
-                        <i class="fas fa-star"></i>
-                        <span>{{ rating }}</span>
-                    </div>
-                </div>
-                <p class="price">{{ price }}</p>
-                <p class="info">{{ beds }} beds • {{ rooms }} rooms</p>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-image">
-                <div class="location">
-                    <span class="material-symbols-outlined icon-location">location_on</span>
-                    <span>{{ location }}</span>
-                </div>
-                <div class="favorite">
-                    <span class="material-symbols-outlined icon-favorite">favorite</span>
-                </div>
-                <img :src="image" alt="Property Image">
-            </div>
-            <div class="card-content">
-                <div class="title-rating">
-                    <h2>{{ title }}</h2>
-                    <div class="rating">
-                        <i class="fas fa-star"></i>
-                        <span>{{ rating }}</span>
-                    </div>
-                </div>
-                <p class="price">{{ price }}</p>
-                <p class="info">{{ beds }} beds • {{ rooms }} rooms</p>                
+                <p class="price">{{ property.price }} €</p>
+                <p class="info">{{ property.number_beds }} beds • {{ property.number_bedrooms }} rooms</p>
             </div>
         </div>
     </div>
@@ -77,8 +31,13 @@
 
 <script>
     export default {
-        props: ['image', 'location', 'title', 'rating', 'price', 'beds', 'rooms']
-    }
+        props: {
+            favorites_properties: {
+                type: Array,
+                required: true,
+            },
+        },
+    };
 </script>
 
 <style scoped>

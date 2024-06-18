@@ -4,14 +4,17 @@ import { useRoute } from 'vue-router';
 import { usePropertiesStore } from "@/stores/property";
 import Footer from '@/components/Footer.vue';
 import Navbar from '../components/Navbar.vue';
+import Datepicker from '@vuepic/vue-datepicker';
+import BookingForm from '@/components/FormBookingComponent.vue';
 
 export default {
   components: {
     Footer,
-    Navbar
+    Navbar,
+    Datepicker,
+    BookingForm
   },
   setup() {
-    // Variables
     const facilitySymbols = {
         lift: 'elevator',
         "wi-fi": 'wifi',
@@ -22,8 +25,6 @@ export default {
         fridge: 'kitchen',
         microwave:'microwave_gen',
         "air conditioning": "mode_fan"
-        
-        // adicione mais pares de chave-valor conforme necessário
     };
     const route = useRoute();
     const propertyId = ref(route.params.id);
@@ -34,6 +35,13 @@ export default {
       const response = await usePropertiesStore().fetchOneProperty(propertyId.value);
       property.value = response.data;  // assuming the API response has a 'data' field
       console.log(property.value);
+
+      const bookedDates = response.data.bookedDates;
+      // Convert the booked dates to the format required by vuejs-datepicker
+      /* this.disabledDates.ranges = bookedDates.map(date => ({
+        from: new Date(date.checkInDate),
+        to: new Date(date.checkOutDate)
+      })); */
     };
 
     const logFacilitySymbol = (facilityName) => {
@@ -54,27 +62,14 @@ export default {
       logFacilitySymbol
     };
   },
-  computed: {
-    today() {
-      const today = new Date();
-      const year = today.getFullYear();
-      const month = String(today.getMonth() + 1).padStart(2, '0');
-      const day = String(today.getDate()).padStart(2, '0');
-
-      return `${year}-${month}-${day}`;
-    },
-  },
+  
   data() {
     return {
       isOpen: false,
       selectedOption: 'Sort',
       options: ['Latest', 'Oldest', 'Highest Rated', 'Lowest Rated'],
-      checkInDate: '',
-      checkOutDate: '',
       errorMessage: null,
       reviews: [],
-      nights: 0,
-      total: 0,
     };
   },
   methods: {
@@ -82,18 +77,7 @@ export default {
       this.selectedOption = option;
       this.isOpen = false;
     },
-    validateDates() {
-      const checkIn = new Date(this.checkInDate);
-      const checkOut = new Date(this.checkOutDate);
-
-      if (checkOut <= checkIn) {
-        this.errorMessage = 'Check-out date must be after the check-in date.';
-      } else {
-        this.errorMessage = null;
-      }
-      this.calculateNights(this.checkInDate, this.checkOutDate);
-      this.calculateTotal(this.property.price);
-    },
+    
     formatFacilityName(name) {
         return name.charAt(0).toUpperCase() + name.slice(1);
     },
@@ -101,35 +85,19 @@ export default {
         const weeks = Math.floor((new Date() - new Date(rating_date)) / (1000 * 60 * 60 * 24 * 7));
         return weeks === 1 ? weeks + ' week ago' : weeks + ' weeks ago';
     },
-    calculateNights(checkInDate, checkOutDate) {
-        this.nights = Math.floor((new Date(checkOutDate) - new Date(checkInDate)) / (1000 * 60 * 60 * 24));
-        if (isNaN(this.nights)) {
-            this.nights = 0;
-        }
-    },
-    calculateTotal(pricePerNight) {
-        this.total = this.nights * pricePerNight;
-    }
+    
   },
+
+  computed: {
+        bookedDates() {
+        return this.property.bookedDates;
+        },
+    },
 };
 
 </script>
 
 <template>
-<!--     <Navbar />
-    <div class="navbar">
-        <div class="lettering-logo">CozyStay</div>
-        <p class="selected">Overview</p>
-        <p>Accomodation</p>
-        <p>Reviews</p>
-        <p>Location</p>
-        <p>Host</p>
-    </div>
-    <div>
-        <h1>Property View</h1>
-        <p>Property ID: {{ $route.params.id }}</p>
-    </div> -->
-
     <div class="property-page" v-if="property"> 
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
@@ -233,59 +201,19 @@ export default {
             </div>   
         </div>
 
-        <div class="booking-form">
-                <div class="form-place">
-                    <div class="form-image">
-                        <img src="/src/assets/img/propertie/2092a005-6ff9-4a63-a355-cac12c980dab.webp" alt="Image1">
-                    </div>
-                    <div class="form-city">
-                            <p>{{property.title}}</p>
-                            <p>{{property.city}}, {{property.country}}</p>
-                            <div class="form-rating">
-                                <span class="material-symbols-outlined form-star">star</span>
-                                <p>{{property.averageRating}} ({{ property.rating.length }})</p>
-                            </div>
-                    </div>
-                </div>
 
-                <div class="form-dates">
-                    <div class="check-in">
-                        <p>Check-in</p>
-                        <input type="date" :min="today" @change="validateDates" v-model="checkInDate">
-                    </div>
-                    <div class="vertical-line"></div>
-                    <div class="check-out">
-                        <p>Check-out</p>
-                        <input type="date" :min="today" @change="validateDates" v-model="checkOutDate">                    
-                    </div>                
-                </div>
-
-                <div class="form-guests">
-                    <p>Guests</p>
-                    <input type="number" min="1" max="10" placeholder="01">
-                </div>
-
-                <div class="form-prices">
-                    <div class="price-night">
-                        <p>€ {{property.price}} x {{ nights }} nights</p>
-                        <p>€ {{ total }}</p>
-                    </div>
-
-                    <div class="tax">
-                        <p>Tax</p>
-                        <p>€ 10</p>
-                    </div>
-                    <hr>
-                    <div class="total">
-                        <p>Total</p>
-                        <p>€ {{ parseFloat(total)+10 }}</p>
-                    </div>
-                </div>
-
-                <div class="form-btn">
-                    <button class="bookNow-btn" type="button">Book Now</button>
-                </div>
-        </div>
+            <BookingForm
+                :property="property"
+                :checkInDate="checkInDate"
+                :checkOutDate="checkOutDate"
+                :disabledDates="disabledDates"
+                :today="today"
+                :markers="markers"
+                :minCheckoutDate="minCheckoutDate"
+                :dateOutMax="dateOutMax"
+                :nights="nights"
+                :total="total"
+            />
 
         <div class="conveniences" id="conveniences">
             <hr>
@@ -704,124 +632,11 @@ h1{
     float: right;
     grid-column: 2;
     min-width: 400px;
+    min-height: 650px;
+    max-width: 420px;
 }
 
-.form-place {
-    display: flex;
-    flex-direction: row;
-    gap: 30px;
-}
 
-.form-image img{
-    border-radius: 20px;
-    width: 100px;
-    height: 130px;
-}
-
-.form-city{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;    
-}
-.form-city p:first-child {
-    font-size: 22px;
-    gap: 20px;
-}
-
-.form-city p:nth-child(2) {
-    font-size: 14px;
-}
-
-.form-rating{
-    display: flex;
-    flex-direction: row;
-    gap: 5px;
-    align-items: center;
-    p {
-        font-size: 14px;
-    
-    }
-}
-
-.form-star{
-    font-size: 20px;
-}
-
-.form-dates {
-    margin-top: 5%;
-    border: 1px solid #193D4E;
-    border-radius: 20px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;    
-    align-items: center;
-    height: 75px;
-}
-
-.check-in p, .check-out p {
-  font-weight: bold;
-  text-align: center;
-}
-
-.vertical-line {
-    position: absolute;
-    border-left: 1px solid #000;
-    height: 10%;
-}
-
-.form-guests{
-    margin-top: 5%;
-    border: 1px solid #193D4E;
-    border-radius: 20px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;    
-    align-items: center;
-    height: 75px;
-    p {
-        font-weight: bold;
-        text-align: center;
-    }
-}
-
-.form-btn{
-    margin-bottom: 5%;
-    margin-top: 7%;
-    text-align: center;
-}
-.bookNow-btn {
-    color: white;
-    background-color: #193D4E;
-    border-radius: 40px;
-    width: 230px;
-    height: 50px;
-    font-size: 16px;
-    font-weight: lighter;
-}
-
-.form-prices {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin-top: 5%;
-    padding: 10px;
-    div {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        p {
-            font-weight: bold;
-        }
-    }
-    hr {
-        width: 100%;
-    }
-    .total p:nth-child(2) {
-        font-weight: bold;
-        font-size: 20px;
-    }
-
-}
 
 /* Conveniences */
 
@@ -1219,4 +1034,8 @@ h1{
     gap: 5px;
 }
 
+::v-deep .dp__input{
+    width: 137px;
+    height: 26px;
+}
 </style>

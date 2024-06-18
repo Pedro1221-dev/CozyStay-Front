@@ -54,7 +54,8 @@ export async function patch(endpoint, data, token = null) {
 }
 
 async function handleResponse(response) {
-  if (response.status === 200) {
+  console.log('response.', response.status)
+  if (response.status === 200 || response.status === 201) {
     return response.data;
   } else {
     const errorBody = await response.json();
