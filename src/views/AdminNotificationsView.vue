@@ -17,7 +17,7 @@
                 </div>
 
                 <div class="notificationContainer">
-                    <div v-for="(item, index) in filteredItems" :key="item.id">
+                    <div v-for="(item, index) in filteredItems" :key="item.id" :class="{ 'read-notification': item.read }">                        
                         <div class="notification">
                             <div class="notificationLeft">
                                 <div class="iconBackground">
@@ -33,7 +33,9 @@
                                 <div class="notificationDesc">{{ item.description }}</div>
                             </div>
                             <div class="checkIconR">
-                                <span class="material-icons checkIcon">bookmark_added</span>
+                                <span class="material-icons checkIcon" @click="markAsRead(item)">
+                                    {{ item.read ? 'bookmark_added' : 'bookmark_border' }}
+                                </span>                            
                             </div>
                         </div>
                         <hr v-if="index < filteredItems.length - 1">
@@ -47,20 +49,26 @@
                         <span class="material-icons">tune</span>
                         <span>Filter</span>
                     </div>
+
                     <div class="filters">
-                        <div class="checkbox"><input type="checkbox"> Filter 1</div>
-                        <div class="checkbox"><input type="checkbox"> Filter 2</div>
-                        <div class="checkbox"><input type="checkbox"> Filter 3</div>
+                        <div class="checkbox">
+                            <input type="checkbox" v-model="filters.read" @change="applyFilters"> Read
+                        </div>
+                        <div class="checkbox">
+                            <input type="checkbox" v-model="filters.unread" @change="applyFilters"> Unread
+                        </div>                    
+                        <div>
+                            <input type="date" v-model="filters.startDate" @change="applyFilters"> Start Date
+                        </div>
+                        <div>
+                            <input type="date" v-model="filters.endDate" @change="applyFilters"> End Date
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </template>
-
-
-
-
 
 <script>
 import Sidebar from '../components/Sidebar.vue';
@@ -72,44 +80,90 @@ export default {
     data() {
         return {
             searchInput: '',
+            filters: {
+                read: false,
+                unread: false,
+                category1: false,
+                category2: false,
+                category3: false,
+                startDate: '',
+                endDate: ''
+            },
             serverItems: [
                 {
                     id: 1,
                     title: 'Notification 1',
-                    date: '25/12/2000',
+                    date: '2024-06-18',
                     age: '12h',
                     description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus magnam et itaque',
-                    icon: 'cottage'
+                    icon: 'cottage',
+                    category: 'Category 1',
+                    read: true
                 },
                 {
                     id: 2,
                     title: 'Notification 2',
-                    date: '25/12/2000',
+                    date: '2024-06-17',
                     age: '12h',
                     description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus magnam et itaque',
-                    icon: 'cottage'
+                    icon: 'cottage',
+                    category: 'Category 2',
+                    read: false
                 },
                 {
                     id: 3,
                     title: 'Notification 3',
-                    date: '25/12/2000',
+                    date: '2024-05-12',
                     age: '12h',
                     description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus magnam et itaque',
-                    icon: 'cottage'
+                    icon: 'cottage',
+                    category: 'Category 3',
+                    read: true
                 }
             ]
         };
     },
     computed: {
         filteredItems() {
-            if (!this.searchInput) {
-                return this.serverItems;
+            let items = this.serverItems;
+
+            if (this.filters.read && !this.filters.unread) {
+                items = items.filter(item => item.read);
             }
-            const searchInputLower = this.searchInput.toLowerCase();
-            return this.serverItems.filter(item =>
-                item.title.toLowerCase().includes(searchInputLower) ||
-                item.description.toLowerCase().includes(searchInputLower)
-            );
+
+            if (!this.filters.read && this.filters.unread) {
+                items = items.filter(item => !item.read);
+            }
+
+            const startDate = new Date(this.filters.startDate);
+            const endDate = new Date(this.filters.endDate);
+
+            items = items.filter(item => {
+                const itemDate = new Date(item.date);
+                return (!this.filters.startDate || itemDate >= startDate) &&
+                    (!this.filters.endDate || itemDate <= endDate);
+            });
+
+            if (this.searchInput) {
+                const searchInputLower = this.searchInput.toLowerCase();
+                items = items.filter(item =>
+                    item.title.toLowerCase().includes(searchInputLower) ||
+                    item.description.toLowerCase().includes(searchInputLower)
+                );
+            }
+
+            // Sort items so that read notifications are at the end.
+            items.sort((a, b) => a.read - b.read);
+
+            return items;
+        }
+    },
+    methods: {
+        markAsRead(notification) {
+            notification.read = !notification.read;
+        },
+        applyFilters() {
+            // This method triggers the computed property to recalculate the filtered items.
         }
     }
 };
@@ -135,14 +189,14 @@ export default {
     width: 70%;
     height: auto;
     border-radius: 10px;
-    padding: 20px;
+    padding: 0px;
     position: relative; /* Ensure relative positioning */
 }
 
 .notification {
     display: flex;
     flex-direction: row;
-    padding: 10px 0;
+    padding: 0px;
 }
 
 .notificationInfo {
@@ -164,9 +218,13 @@ export default {
     gap: 20px;
 }
 
-.notificationDate, .notificationAge {
+.notificationDate{
     font-size: 14px;
     font-weight: lighter;
+}
+
+.notificationAge{
+    font-size: 14px;
 }
 
 .notificationDesc {
@@ -245,21 +303,18 @@ h1 {
     flex-direction: column;
     gap: 10px;
     color: #193D4E;
-    background-color: #F3F3F3;
+    background-color: rgba(165, 232, 226, 0.40); /* #F3F3F3 */
     border-radius: 10px;
-    width: 250px;
+    width: 255px;
     height: auto;
     font-size: 16px;
     font-weight: 400;
     padding: 20px;
-    position: absolute;
-    right: 3%;
-    top: -14px;
 }
 
 .filterContainer {
     position: fixed;
-    top: 20%;
+    top: 18%;
     right: 3%;
 }
 
@@ -297,10 +352,16 @@ h1 {
     }
 }
 
+.read-notification { 
+    opacity: 0.5;
+}
+
 hr {
     border: 0;
-    height: 1px;
+    height: 0.5px;
     background-color: #193D4E;
-    margin: 10px 0;
+    margin: 10px auto;  /* Centering the hr */
+    width: 65%;  /* Adjust this value as needed */
 }
+
 </style>
