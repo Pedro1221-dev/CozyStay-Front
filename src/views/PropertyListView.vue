@@ -663,7 +663,6 @@ Join our community of hosts and unlock the potential of your space</p>
         z-index: 10000;
         display: flex;
         flex-direction: column;
-        /* align-items: center; */
         position: absolute;
         background-color: rgba(255, 255, 255, 1);
         border-radius: 40px;
@@ -681,8 +680,6 @@ Join our community of hosts and unlock the potential of your space</p>
     .modal-filter-info{
         display: flex;
         flex-direction: column;
-        /* align-items: center;
-        justify-content: center; */
         h1{
             color: #193D4E;
         }
@@ -744,9 +741,6 @@ Join our community of hosts and unlock the potential of your space</p>
     }
 
     /* Buttons */
-
-
-
     .optionNumbers{
         margin-top: 2%;
         display: flex;
@@ -812,9 +806,6 @@ Join our community of hosts and unlock the potential of your space</p>
     .icon {
         font-size: 45px;
         color: #193D4E;
-    }
-
-    .amenities{
     }
 
     .facility-style {
