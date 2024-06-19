@@ -11,6 +11,52 @@ export default {
         return {
             currentPage: 1,
             totalPages: 0,
+            isOpen: false,
+            selectedOption: 'Sort',
+            options: ['Latest', 'Oldest', 'Highest Rated', 'Lowest Rated'],
+            isModalOpen: false,
+            isFilterModalOpen: false,
+            value: [10, 100],
+            optionNumbers: ['Any', 1, 2, 3, 4, 5, '6+'],
+            numberBedrooms: 'Any',
+            numberBeds: 'Any',
+            numberBathrooms: 'Any',
+            selectedPropertyType: '',
+            propertyTypes: [
+                { name: 'House', icon: 'cottage' },
+                { name: 'Apartment', icon: 'apartment' },
+                { name: 'Guest House', icon: 'house_siding' },
+                { name: 'Hotel', icon: 'villa' },
+            ],
+            selectedFacilities: [],
+            facilities: [
+                { name: 'Free Wi-Fi', icon: 'wifi' },
+                { name: 'Parking', icon: 'local_parking' },
+                { name: 'Swimming Pool', icon: 'pool' },
+                { name: 'Fitness Center', icon: 'fitness_center' },
+                { name: 'Restaurant', icon: 'restaurant' },
+                { name: 'Non-smoking Rooms', icon: 'smoke_free' },
+                { name: 'Airport Shuttle', icon: 'airport_shuttle' },
+                { name: 'Facilities for Disabled Guests', icon: 'accessible' },
+                { name: 'Family Rooms', icon: 'family_restroom' },
+                { name: 'Spa and Wellness Center', icon: 'spa' },
+                { name: 'Bar', icon: 'local_bar' },
+                { name: '24-hour Front Desk', icon: 'hotel' }
+            ],
+            selectedLanguages: [],
+            languages: [
+                { name: 'English', icon: 'gb' },
+                { name: 'French', icon: 'fr' },
+                { name: 'German', icon: 'de' },
+                { name: 'Portuguese', icon: 'pt' },
+                { name: 'Spanish', icon: 'es' },
+                { name: 'Italian', icon: 'it' },
+                { name: 'Russian', icon: 'ru' },
+                { name: 'Mandarin', icon: 'cn' },
+            ],
+            rating: 5,
+            location: 100,
+                
         };
     },
     components: {
@@ -98,6 +144,23 @@ export default {
         },
     },
     methods: {
+        selectPropertyType(name) {
+            if (this.selectedPropertyType !== name) {
+                this.selectedPropertyType = name;
+            } else {
+                this.selectedPropertyType = name;
+            }
+        },
+        openFilterModal() {
+            this.isFilterModalOpen = true;
+        },
+        closeFilterModal() {
+            this.isFilterModalOpen = false;
+        },
+        selectOption(option) {
+            this.selectedOption = option;
+            this.isOpen = false;
+        },
         changePage(page) {
             this.currentPage = page;
             this.fetchData();
@@ -123,16 +186,14 @@ export default {
                 });
             }
         },
-},
-created() {
-    this.fetchData();
-},
+    },
+    created() {
+        this.fetchData();
+    },
 }
 </script>
 
-
 <template>
-    
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
     <Navbar />
     <div class="search-bar">
@@ -150,22 +211,206 @@ created() {
         </div>
         <div class="search-input" @click="focusInput('guests')">
             <label for="guests">With who</label>
-            <input id="guests" type="number" placeholder="How many Guests" v-model="campo4">
+            <input id="guests" type="number" placeholder="How many Guests" v-model="campo4" min="1">
         </div>
         <span class="material-symbols-outlined" @click="search">search</span>
     </div>
     <hr /> <!-- Linha de separação -->
-    <div class="home-types">
-        <div class="home-type">
-            <span class="material-symbols-outlined">houseboat</span>
-            <p>Beach House</p>
+    <div class="optionsLine">
+        <div class="houseTypes">
+            <div class="house-type">
+                <span class="material-symbols-outlined">houseboat</span>
+                <p>House</p>
+            </div>
+            <div class="house-type">
+                <span class="material-symbols-outlined">apartment</span>
+                <p>Apartment</p>
+            </div>
+            <div class="house-type">
+                <span class="material-symbols-outlined">house_siding</span>
+                <p>Guest House</p>
+            </div>
+            <div class="house-type">
+                <span class="material-symbols-outlined">villa</span>
+                <p>Hotel</p>
+            </div>
         </div>
-        <div class="home-type">
-            <span class="material-symbols-outlined">apartment</span>
-            <p>Apartment</p>
+
+
+        <div class="overlay" v-if="isFilterModalOpen"></div>
+
+        <div class="modal" v-if="isFilterModalOpen">
+            <div class="close" @click="closeFilterModal">
+                <span class="material-symbols-outlined close-icon">close</span>
+            </div>
+            <div class="modal-filter-info">
+                <h1 class="ModalTitle">Filters</h1>
+                <br><hr>
+                <div class="priceRange">
+                    <h2>Price Range</h2>
+                    <p>Prices include fees and taxes</p>
+                    <v-range-slider
+                        v-model="value"
+                        step="10"
+                        thumb-label="always"
+                    ></v-range-slider>
+                </div>
+                <hr>
+                <div class="optionsNumber">
+                    <h2>Rooms and Beds</h2>
+                    <div>
+                        <div class="bedrooms">
+                            <br>
+                            <h4>Bedrooms</h4>
+                            <div class="optionNumbers">
+                                <button
+                                    v-for="(option, index) in optionNumbers"
+                                    :key="index"
+                                    class="number"
+                                    :class="{ 'selected-option': numberBedrooms === option }"
+                                    @click="numberBedrooms = option"
+                                    >
+                                    {{ option }}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="beds">
+                            <h4>Beds</h4>
+                            <div class="optionNumbers">
+                                <button
+                                    v-for="(option, index) in optionNumbers"
+                                    :key="index"
+                                    class="number"
+                                    :class="{ 'selected-option': numberBeds === option }"
+                                    @click="numberBeds = option"
+                                    >
+                                    {{ option }}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="bathrooms">
+                            <h4>Bathrooms</h4>
+                            <div class="optionNumbers">
+                                <button
+                                    v-for="(option, index) in optionNumbers"
+                                    :key="index"
+                                    class="number"
+                                    :class="{ 'selected-option': numberBathrooms === option }"
+                                    @click="numberBathrooms = option"
+                                    >
+                                    {{ option }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="propertyType">
+                    <h2>Property Type</h2>
+                    <div class="propertyTypes">
+                        <div
+                            v-for="(propertyType, index) in propertyTypes"
+                            :key="index"
+                            class="type"
+                            :class="{ 'selected-option': selectedPropertyType === propertyType.name }"
+                            @click="selectPropertyType(propertyType.name)"
+                        >
+                            <span class="material-symbols-outlined icon">{{ propertyType.icon }}</span>
+                            <p>{{ propertyType.name }}</p>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="amenities">
+                    <h2>Amenities</h2>
+                    <p>Select your property's amenities</p>
+                    <v-container class="mt-8 d-flex justify-center align-center">                        
+                        <v-row justify="center" dense class="text-left mt-8">
+                            <v-col
+                                v-for="(facility, index) in facilities"
+                                :key="index"
+                                cols="6"
+                                class="d-flex align-center mt-n9 ml-n9 mr-n9 privacyPolicyCheckbox"
+                            >
+                                <v-checkbox
+                                    class="ml-1 mr-1 mb-5 facility-style"
+                                    :label="facility.name"
+                                >
+                                    <template v-slot:prepend>
+                                        <span class="material-symbols-outlined facility-icon">{{ facility.icon }}</span>
+                                  </template>
+                                </v-checkbox>                    
+                            </v-col>
+                        </v-row>
+                    </v-container>
+                </div>
+                <hr>
+                <div class="languages">
+                    <h2>Host Languages</h2>
+                    <v-container class="mt-8 d-flex justify-center align-center">                        
+                        <v-row justify="center" dense class="text-left mt-8">
+                            <v-col
+                                v-for="(language, index) in languages"
+                                :key="index"
+                                cols="6"
+                                class="d-flex align-center mt-n9 ml-n9 mr-n9 privacyPolicyCheckbox"
+                            >
+                                <v-checkbox
+                                    class="ml-1 mr-1 mb-5 facility-style"
+                                    :label="language.name"
+                                >
+                                    <template v-slot:prepend>
+                                        <i :class="`flag-icon flag-icon-${language.icon}`"></i>
+                                    </template>
+                                </v-checkbox>                  
+                            </v-col>
+                        </v-row>
+                    </v-container>
+                </div>
+                <hr>
+
+                <div class="rating">
+                    <h2>Average Rating</h2>
+                    <v-slider
+                        show-ticks="always"
+                        step="1"
+                        max="5"
+                        tick-size="4"
+                        thumb-label
+                    ></v-slider>
+                </div>
+                <hr>
+
+                <div class="location">
+                    <h2>Location</h2>
+                    <v-slider v-model="location" thumb-label></v-slider>
+                </div>
+               
+            </div>
         </div>
-        <!-- Adicione mais tipos de casa aqui -->
+
+        <div class="sort-btn">
+            <div class="filterBtn">
+                <button @click="openFilterModal" class="filterBtn">
+                    <span class="material-symbols-outlined filter-icon">tune</span>
+                    <span class="sort-text">Filters</span>
+                </button>            
+            </div>
+            <div class="dropdown">
+                <button class="dropdown" @click="isOpen = !isOpen">
+                    <span class="material-symbols-outlined dropdown-icon">swap_vert</span>
+                    <span class="sort-text">{{ selectedOption }}</span>
+                </button>
+                <ul v-if="isOpen">
+                <li v-for="option in options" :key="option" @click="selectOption(option)">
+                    {{ option }}
+                </li>
+                </ul>
+            </div>
+        </div>
+
     </div>
+
     <div class="containt">
         <CardPropriedade
         v-for="property in properties.slice(0,12)"
@@ -212,6 +457,7 @@ Join our community of hosts and unlock the potential of your space</p>
 </template>
 
 <style scoped>
+@import '../assets/flag-icons.min.css';    
     body{
         background-color: #fff;
     }
@@ -276,7 +522,13 @@ Join our community of hosts and unlock the potential of your space</p>
         border: 0px;
     }
     
-    .home-types {
+    .optionsLine{
+        display: flex;
+        flex-direction: row;
+    }
+
+    .houseTypes {
+        width: 80%;
         display: flex;
         justify-content: flex-start;
         margin-bottom: 20px;
@@ -286,20 +538,20 @@ Join our community of hosts and unlock the potential of your space</p>
         
     }
 
-    .home-type {
+    .house-type {
         margin-right: 45px;
         display: flex;
         flex-direction: column;
         align-items: center; /* Alinha o ícone e o texto ao centro */
     }
 
-    .home-type span.material-symbols-outlined {
+    .house-type span.material-symbols-outlined {
         width: 35px;
         height: 35px;
         font-size:35px;
     }
 
-    .home-type p {
+    .house-type p {
         font-family: 'Montserrat', sans-serif;
         font-weight: 400;
         font-size: 15px;
@@ -307,16 +559,16 @@ Join our community of hosts and unlock the potential of your space</p>
 
     .search-bar {
         display: flex;
-    justify-content: space-around;
-    width: 1336px;
-    height: 112px;
-    border: 1px solid #193D4E;
-    margin: 0 auto;
-    margin-top: 150px;
-    margin-bottom: 20px;
-    color: #193D4E;
-    align-items: center;
-    border-radius: 70px;
+        justify-content: space-around;
+        width: 1336px;
+        height: 112px;
+        border: 1px solid #193D4E;
+        margin: 0 auto;
+        margin-top: 150px;
+        margin-bottom: 20px;
+        color: #193D4E;
+        align-items: center;
+        border-radius: 70px;
     }
 
     .search-input {
@@ -387,6 +639,259 @@ Join our community of hosts and unlock the potential of your space</p>
     .pagination button:hover {
         background-color: rgba(165, 232, 226, 0.70);
         border-radius:50px
+    }
+
+    /* Filter Modal */
+
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        backdrop-filter: blur(5px);
+        z-index: 1; 
+    }
+
+    .modal{
+        z-index: 10000;
+        display: flex;
+        flex-direction: column;
+        /* align-items: center; */
+        position: absolute;
+        background-color: rgba(255, 255, 255, 1);
+        border-radius: 40px;
+        border: 1px solid #193D4E;
+        margin-left: 20%;
+        margin-right: 20%;
+        padding: 2%;
+        width: 60%;
+        height: auto;
+        top: 20%;
+
+    }
+
+    .modal-filter-info{
+        display: flex;
+        flex-direction: column;
+        /* align-items: center;
+        justify-content: center; */
+        h1{
+            color: #193D4E;
+        }
+        h2{
+            color: #193D4E;
+            margin-top: 2%;
+            margin-left: 5%;
+        }
+        h4{
+            color: #193D4E;
+            font-weight: 300;
+            margin-left: 5%;
+        }
+        p{
+            color: #193D4E;
+            font-weight: 200;
+            margin-left: 5%;
+
+        }
+    }
+
+    .ModalTitle{
+        color: #193D4E;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        font-size: 30px;
+    }
+
+    .priceRange{
+        margin: 2% 0% 2% 0%;
+    }
+
+    ::v-deep .v-slider__container {
+        width: 50%;
+        color: #193D4E;
+        margin: 5% 25% 0 25%;
+    }
+
+    .optionsNumber{
+
+    }
+
+    /* Buttons */
+
+    .optionNumbers{
+        margin-top: 2%;
+        display: flex;
+        flex-direction: row;        
+        justify-content: center;        
+        gap: 20px;   
+    }
+
+    .selected-option {
+        background-color: #193D4E; 
+        color: white !important;
+        p{
+            color: white !important;
+        }
+        .icon{
+            color: inherit !important;        
+        }
+
+    }
+
+    .number{
+        width: 80px;
+        height: 50px;
+        border: 0.2px solid #193D4E;
+        border-radius: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #193D4E;
+        margin-bottom: 3%;
+    }
+
+    .propertyTypes{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        gap: 30px;   
+
+    }
+
+    .type{
+        width: 150px;
+        height: 100px;
+        border: 0.2px solid #193D4E;
+        border-radius: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #193D4E;
+        margin-top: 3%;
+        margin-bottom: 3%;
+        flex-direction: column;
+        p{
+            font-size: 16px;
+            font-weight: 250;
+        }
+        h2{
+            margin-bottom: 2%;
+        }
+
+    }
+
+    .icon {
+        font-size: 45px;
+        color: #193D4E;
+    }
+
+    .amenities{
+    }
+
+    .facility-style {
+        color: #193D4E;
+        font-size: 14px;
+    }
+
+    .facility-icon {
+        color: #193D4E;
+        font-size: 20px !important;
+    }
+
+    .close-icon{
+        position: absolute;
+        right: 50px;
+        top: 40px;
+        cursor: pointer;
+        color: #193D4E;
+    }
+
+    /* Filte Btn */
+
+    .filterBtn{
+        width: 98%;
+        color: white;
+        background-color: rgba(25, 61, 78, 1);    
+        border-radius: 20px;
+        width: 130px;
+        white-space: wrap;
+        height: 50px;
+        font-size: 20px;
+        position: relative;
+        display: inline-block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        box-shadow: none;      
+    }
+
+    .filter-icon{
+        color: white;
+        text-align: center;
+    }
+
+    /* Sort Btn */
+
+    .sort-btn{
+        width: auto;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        margin-top: 20px;
+        margin-right: 60px;
+        gap: 20px;
+    }
+
+    .dropdown-icon{
+        color: white;
+        text-align: center;
+    }
+
+    .dropdown{
+        color: white;
+        background-color: rgba(25, 61, 78, 1);    
+        border-radius: 20px;
+        width: 130px;
+        white-space: wrap;
+        height: 50px;
+        font-size: 20px;
+        font-weight: lighter;
+        position: relative;
+        display: inline-block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        box-shadow: none;
+    } 
+
+    .dropdown ul {
+        position: absolute;
+        top: 3.5ch;
+        right: 0;
+        background-color: rgba(25, 61, 78, 1);  
+        min-width: 160px;
+        padding: 12px 16px;
+        z-index: 1;
+        border-radius: 20px;
+        width: 220px;
+        height: 250px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        align-items: flex-start;
+        box-shadow: none;
+    }
+
+    .dropdown ul li {
+        cursor: pointer;
+        color: white;
+        text-align: center;
+        margin-left: 15%;
     }
 
 </style>

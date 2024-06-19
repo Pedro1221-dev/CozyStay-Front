@@ -408,8 +408,8 @@ export default {
     background-color: rgba(255, 255, 255, 1);
     border-radius: 40px;
     border: 1px solid #193D4E;
-    margin-left: 20%;
-    margin-right: 20%;
+    margin-left: 25%;
+    margin-right: 25%;
     padding: 4%;
     width: 50%;
     height: 65%;
