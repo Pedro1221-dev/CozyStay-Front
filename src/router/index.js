@@ -9,6 +9,7 @@ import ProfileOtherView from '@/views/ProfileOtherView.vue'
 import PropertyListView from '@/views/PropertyListView.vue'
 import PropertyView from '@/views/PropertyView.vue'
 import RegisterPropertyView from '@/views/RegisterPropertyView.vue'
+import ResetPasswordView from '@/views/ResetPasswordView.vue'
 
 
 
@@ -65,6 +66,11 @@ const router = createRouter({
       name: 'propertyRegister',
       component: RegisterPropertyView,
     },
+    {
+      path: '/reset-password/:token',
+      name: 'resetPassword',
+      component: ResetPasswordView,
+    }
     
   ]
 })

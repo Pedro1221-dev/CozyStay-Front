@@ -21,10 +21,10 @@ export async function get(endpoint, params = {}, token = null){
   }
 }
 
-export async function post(endpoint, data, token = null) {
+export async function post(endpoint, data, token = null, contentType = 'application/json') {
   try {
     const headers = {
-      "Content-Type": "application/json",
+      "Content-Type": contentType,
     };
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;

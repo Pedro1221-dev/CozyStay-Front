@@ -143,7 +143,7 @@
                     cols="4"
                     class="d-flex align-center mt-n9 ml-n9 mr-n9 privacyPolicyCheckbox"
                   >
-                    <div class="ml-1 mr-1 mb-5">{{ facility }}</div>
+                    <div class="ml-1 mr-1 mb-5" style="text-transform: capitalize;">{{ facility.name }}</div>
                     <v-checkbox
                       v-model="selectedFacilities"
                       :label="''"
@@ -268,7 +268,7 @@
               </v-dialog>
 
               <v-btn variant="tonal" size="x-large" rounded="lg" color="white" block class="registerButton" @click="next" style="margin-left:25%">
-                Register
+                Continue
               </v-btn>
             </v-container>
             </template>
@@ -280,6 +280,20 @@
                 :rules="[v => !!v || 'Campo obrigatório']"
                 label="Upload property images"
               ></v-file-input>
+              <v-btn
+                variant="tonal"
+                size="x-large"
+                rounded="lg"
+                color="white"
+                block
+                class="registerButton button-316"
+                @click="next"
+              >
+                Register
+              </v-btn>
+            </template>
+            <template v-slot:item.5>
+                <h1>Your Property Register Sucessfuly</h1>
             </template>
           </v-stepper>
       </div>
@@ -293,6 +307,9 @@
   import { ref } from 'vue';
   import Datepicker from '@vuepic/vue-datepicker';
   import '@vuepic/vue-datepicker/dist/main.css';
+  import { usePropertiesStore } from "@/stores/property";
+  import { get } from '@/api/api';
+
   
 export default {
   components: {
@@ -319,27 +336,10 @@ export default {
     propertyTypes: [
       'Apartment',
       'House',
-      'Townhouse',
-      'Condominium',
-      'Bungalow',
-      'Cottage',
-      'Villa',
-      'Mansion'
+      'Hotel',
+      'Guest House',
     ],
-    facilities: [
-        'Free Wi-Fi',
-        'Parking',
-        'Swimming Pool',
-        'Fitness Center',
-        'Restaurant',
-        'Non-smoking Rooms',
-        'Airport Shuttle',
-        'Facilities for Disabled Guests',
-        'Family Rooms',
-        'Spa and Wellness Center',
-        'Bar',
-        '24-hour Front Desk'
-      ],
+    facilities: [],
       basePrice: '',
       dialog: false,
       menu1: false,
@@ -355,6 +355,15 @@ export default {
     },
     };
   },
+  async created() {
+    try {
+        const token = sessionStorage.getItem('jwt');
+        const response = await get('/facilities', {}, token);
+        this.facilities = response.data;
+    } catch (error) {
+        console.error('Failed to fetch facilities:', error);
+    }
+},
   methods: {
     confirm() {
       // Handle confirmation here
@@ -386,7 +395,7 @@ export default {
         }
       }
       this.step++;
-      if(this.step==4){
+      if(this.step==5){
         this.register();
       }
     },
@@ -403,9 +412,64 @@ export default {
       // Confirm seasonal price logic here
       this.dialog = false;
     },
-    register() {
-      // Register logic here
-      alert('Registo Feito!');
+    async register() {
+      const propertyTypeMapping = {
+          'Apartment': 'apartment',
+          'House': 'house',
+          'Hotel': 'hotel',
+          'Guest House': 'guest_house'
+      };
+        const propertyData = new FormData();
+        propertyData.append('title', this.name);
+        propertyData.append('city', this.city);
+        propertyData.append('country', this.country);
+        propertyData.append('address', this.address);
+        propertyData.append('number_bedrooms', this.rooms);
+        propertyData.append('number_beds', this.beds);
+        propertyData.append('number_bathrooms', this.wcs);
+        propertyData.append('number_guests_allowed', this.guests);
+        propertyData.append('description', this.description);
+        propertyData.append('typology', propertyTypeMapping[this.type]);
+        propertyData.append('price', this.basePrice);
+        const selectedFacilityIds = this.selectedFacilities.map(facility => facility.facility_id);
+        propertyData.append('facilities', selectedFacilityIds.join(','));
+        this.paymentMethodsMap = {
+            "Credit Card": 1,
+            "Paypal": 2,
+            "Bank Transfer": 3,
+            "Cash": 4,
+            "Criptocurrency": 5
+        };
+
+        const selectedMethodIds = this.selectedMethods.map(method => this.paymentMethodsMap[method]);
+
+        propertyData.append('payment_methods', selectedMethodIds);
+        if (this.propertyImages) {
+          this.propertyImages.forEach((image) => {
+            console.log('Image: ' + image);
+            console.log('Image Name'+ image.name);
+            propertyData.append('photos', image, image.name);
+          });
+        }
+        if (this.start_date) {
+            propertyData.append('start_date', this.start_date);
+        }
+        if (this.end_date) {
+            propertyData.append('end_date', this.end_date);
+        }
+        if (this.addition) {
+            propertyData.append('addition', this.addition);
+        }
+        try {
+            const token = sessionStorage.getItem('jwt'); // get token from session storage
+            const response = await usePropertiesStore().createProperty(propertyData, token);
+            console.log('Property registered:', response)
+            // Handle the response here, e.g. show a success message
+        } catch (error) {
+            // Handle the error here, e.g. show an error message
+            console.log('Error Register Property:', error)
+        }
+        this.fetchProperties();
     },
     formatDate(date) {
       return format(date, 'dd-MM-yyyy');
@@ -415,6 +479,9 @@ export default {
       console.log('City:',addressData);
       this.city = addressData.administrative_area_level_2;
       this.country = addressData.country;
+    },
+    selectFacility(facility) {
+        this.selectedFacilities.push(facility.facility_id);
     },
   },
   watch: {

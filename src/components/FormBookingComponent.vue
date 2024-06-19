@@ -189,7 +189,8 @@
                 <p style="color: #193D4E;">Payment Successful</p>
                 <p style="color: #193D4E;">Your booking for {{ this.property.title }} from {{ this.checkInDate.toISOString().split('T')[0] }} to {{ this.checkOutDate.toISOString().split('T')[0] }} is confirmed!</p>
                 <p style="color: #193D4E; font-weight: 600; position: absolute; bottom: 140px;">Thank you for choosing CozyStay!</p>
-                <button class="bookNow-btn form-btn-confirm-transfer" type="button" @click="finishBooking">Confirm</button>
+                <button class="bookNow-btn form-btn-confirm-transfer" type="button" @click="downloadInvoice">Download Invoice</button>
+                <button class="bookNow-btn-cancel form-btn" type="button" @click="sendInvoiceEmail" style="margin-left: 2% !important;">Send Invoice Email</button>
             </div>
         </div>
 </template>
@@ -198,6 +199,8 @@
 import Datepicker from '@vuepic/vue-datepicker';
 import { useToast } from "vue-toastification";
 import { useBookingStore } from "@/stores/booking";
+import { post } from '@/api/api';
+import axios from 'axios';
     export default {
         setup() {
             // Get toast interface
@@ -243,6 +246,7 @@ import { useBookingStore } from "@/stores/booking";
                 convertedValue: null,
                 number_guests: 1,
                 selectedMethodID: null,
+                booking_id:null,
             };
         },
         created() {
@@ -450,6 +454,8 @@ import { useBookingStore } from "@/stores/booking";
                 try {
                     const response = await useBooking.createBooking(booking);
                     console.log(response);
+                    this.booking_id = response.booking_id;
+                    
                     this.bookingSuccess = true;
                     this.showPaymentDetailsForm = false;
                 } catch (error) {
@@ -462,8 +468,45 @@ import { useBookingStore } from "@/stores/booking";
                     location.reload();
                 }, 2000);
             },
-        }
+            async downloadInvoice() {
+                //this.toast.success('Invoice downloaded successfully!');
+                try {
+                    const token = sessionStorage.getItem('jwt');
+                    const response = await axios({
+                        method: 'post',
+                        url: 'http://127.0.0.1:3000/bookings/download-invoice',
+                        data: {booking_id: this.booking_id},
+                        headers: {'Authorization': `Bearer ${token}`},
+                        responseType: 'blob'
+                    });
+
+                    const file = new Blob([response.data], { type: 'application/pdf' });
+
+                    let a = document.createElement("a");
+                    a.style = "display: none";
+                    document.body.appendChild(a);
+                    let url = window.URL.createObjectURL(file);
+                    a.href = url;
+                    a.download = `invoice_${this.booking_id}.pdf`;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                } catch (error) {
+                    console.error(error);
+                }
+            },
+            async sendInvoiceEmail() {
+                
+                try {
+                    const token = sessionStorage.getItem('jwt');
+                    const response = await post('bookings/send-invoice', {booking_id: this.booking_id}, token);
+                    console.log(response);
+                    this.toast.success('Invoice sent successfully!');
+                } catch (error) {
+                    console.error(error);
+                }
+            },
     }
+}
 </script>
 
 <style scoped>

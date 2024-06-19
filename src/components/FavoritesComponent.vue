@@ -9,17 +9,12 @@
                 <div class="favorite">
                     <span class="material-symbols-outlined icon-favorite">favorite</span>
                 </div>
-                <img :src="image" alt="Property Image">
+                <img :src="property.photos[0].url_photo" alt="Property Image">
             </div>
             <div class="card-content">
                 <div class="title-rating">
                     <h2>{{ property.title }}</h2>
-                    <div class="rating">
-                        <i class="fas fa-star"></i>
-                        <span>{{ rating }}</span>
-                    </div>
                 </div>
-                <p class="price">{{ property.price }} €</p>
                 <p class="info">{{ property.number_beds }} beds • {{ property.number_bedrooms }} rooms</p>
             </div>
         </div>

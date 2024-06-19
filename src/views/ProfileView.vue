@@ -132,6 +132,7 @@ export default {
                 const response = await useUserStore().getLoggedUser(token);
                 this.user = response;
                 this.bannerImage = this.user.url_banner;
+                this.selectedFile = this.user.url_avatar;
                 console.log("USER:",this.user);
             } catch (error) {
                 console.error('Error getting logged user:', error);
