@@ -51,16 +51,22 @@ export default {
     },
     methods: {
         openModal() {
-        this.isModalOpen = true;
+            this.isModalOpen = true;
+            document.body.style.overflow = 'hidden';            
+            document.body.classList.add('no-scroll');
         },
         closeModal() {
-        this.isModalOpen = false;
+            this.isModalOpen = false;
+            document.body.style.overflow = '';
+            document.body.classList.remove('no-scroll');
         },
         openDeleteModal() {
             this.isDeleteModalOpen = true;
+            
         },
         closeDeleteModal() {
             this.isDeleteModalOpen = false;
+            
         },
         openFileInput() {
             const fileInput = this.$refs.fileInput.$el.querySelector('input');
@@ -100,6 +106,8 @@ export default {
             }
             this.fetchLoggedUser();
             this.isModalOpen = false;
+            document.body.classList.remove('no-scroll');
+
         },
         fileSelected(event) {
             this.selectedFile = event.target.files[0];
@@ -107,6 +115,7 @@ export default {
         deleteAccount(){
 
         },
+        
         async fetchLoggedUser() {
             const token = sessionStorage.getItem('jwt'); // get token from session storage
             try {
@@ -361,6 +370,7 @@ export default {
     height: 100%;
     backdrop-filter: blur(3px);
     z-index: 1; 
+    overflow: hidden
 }
 
 .modal{
@@ -412,7 +422,7 @@ export default {
     margin-right: 25%;
     padding: 4%;
     width: 50%;
-    height: 65%;
+    height: 68%;
     top: 20%;
 
 }
