@@ -1,10 +1,10 @@
 <script>
+import { usePropertiesStore } from "@/stores/property";
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import Navbar from '../components/Navbar.vue';
-import Footer from '../components/Footer.vue';
 import CardPropriedade from '../components/CardPropriedade.vue';
-import { usePropertiesStore } from "@/stores/property";
+import Footer from '../components/Footer.vue';
+import Navbar from '../components/Navbar.vue';
 
 export default {
     data() {
@@ -16,7 +16,7 @@ export default {
             options: ['Latest', 'Oldest', 'Highest Rated', 'Lowest Rated'],
             isModalOpen: false,
             isFilterModalOpen: false,
-            value: [10, 100],
+            value: [100, 400],
             optionNumbers: ['Any', 1, 2, 3, 4, 5, '6+'],
             numberBedrooms: 'Any',
             numberBeds: 'Any',
@@ -54,8 +54,8 @@ export default {
                 { name: 'Russian', icon: 'ru' },
                 { name: 'Mandarin', icon: 'cn' },
             ],
-            rating: 5,
-            location: 100,
+            rating: 4,
+            location: 200,
                 
         };
     },
@@ -144,6 +144,9 @@ export default {
         },
     },
     methods: {
+        closeDropdown() {
+            this.isOpen = false;
+        },
         selectPropertyType(name) {
             if (this.selectedPropertyType !== name) {
                 this.selectedPropertyType = name;
@@ -153,9 +156,11 @@ export default {
         },
         openFilterModal() {
             this.isFilterModalOpen = true;
+            document.body.classList.add('no-scroll');
         },
         closeFilterModal() {
             this.isFilterModalOpen = false;
+            document.body.classList.remove('no-scroll');
         },
         selectOption(option) {
             this.selectedOption = option;
@@ -253,6 +258,7 @@ export default {
                         v-model="value"
                         step="10"
                         thumb-label="always"
+                        max="1000"
                     ></v-range-slider>
                 </div>
                 <hr>
@@ -383,7 +389,7 @@ export default {
 
                 <div class="location">
                     <h2>Location</h2>
-                    <v-slider v-model="location" thumb-label></v-slider>
+                    <v-slider v-model="location" thumb-label step="1" max="400"></v-slider>
                 </div>
                
             </div>
@@ -396,16 +402,16 @@ export default {
                     <span class="sort-text">Filters</span>
                 </button>            
             </div>
-            <div class="dropdown">
-                <button class="dropdown" @click="isOpen = !isOpen">
-                    <span class="material-symbols-outlined dropdown-icon">swap_vert</span>
-                    <span class="sort-text">{{ selectedOption }}</span>
-                </button>
-                <ul v-if="isOpen">
-                <li v-for="option in options" :key="option" @click="selectOption(option)">
-                    {{ option }}
+            <div class="dropdown" v-click-outside="closeDropdown">
+            <button class="dropdown" @click.stop="isOpen = !isOpen">
+                <span class="material-symbols-outlined dropdown-icon">swap_vert</span>
+                <span class="sort-text">{{ selectedOption }}</span>
+            </button>
+            <ul v-if="isOpen">
+                <li v-for="option in options" :key="option" @click.stop="selectOption(option)">
+                {{ option }}
                 </li>
-                </ul>
+            </ul>
             </div>
         </div>
 
@@ -666,8 +672,9 @@ Join our community of hosts and unlock the potential of your space</p>
         margin-right: 20%;
         padding: 2%;
         width: 60%;
-        height: auto;
-        top: 20%;
+        height: 85%;
+        top: 10%;
+        overflow: auto;
 
     }
 
@@ -715,11 +722,30 @@ Join our community of hosts and unlock the potential of your space</p>
         margin: 5% 25% 0 25%;
     }
 
-    .optionsNumber{
+    ::v-deep .v-slider-track__fill {
+        background-color: #193D4E;
+    }
 
+    ::v-deep .v-slider-track__background {
+        background-color: #193D4E;
+    }
+
+    ::v-deep .v-slider-thumb {
+        touch-action: none;
+        color: #193D4E;
+    }
+
+    ::v-deep .v-slider-thumb__label {
+        background: #193D4E;
+        color: #fff;
+        width: 50px;
+        height: 30px;
+        border-radius: 20px;
     }
 
     /* Buttons */
+
+
 
     .optionNumbers{
         margin-top: 2%;
