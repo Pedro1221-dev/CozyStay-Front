@@ -325,7 +325,7 @@ export default {
             </div>
             <hr>
             <div class="profile-content">
-                <component :is="currentComponent" :bookings="this.bookings" :past_bookings="this.past_bookings" :favorites_properties="this.favorites_properties" />       
+                <component :is="currentComponent" :bookings="this.bookings" :past_bookings="this.past_bookings" :favorites_properties="this.favorites_properties" :user="this.user"/>       
                     <!-- v-for="property in properties.slice(0,3)"-->
                     <!-- <BookingsComponent v-for="property in properties.slice(0,3)"/> -->
             </div>
