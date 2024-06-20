@@ -1,47 +1,56 @@
 <script setup>
 import Navbar from '@/components/Navbar.vue';
-import { useUserStore } from "@/stores/user";
 </script>
 
 <script>
+import { useUserStore } from "@/stores/user";
 import BadgesComponent from '@/components/BadgesComponent.vue';
-import FavoritesComponent from '@/components/FavoritesComponent.vue';
+import PropertiesComponent from '@/components/PropertiesComponent.vue';
+
 export default {
     components: {
-        FavoritesComponent,
+        PropertiesComponent,
         BadgesComponent,
     },
     data() {
         return {
             bannerImage: 'https://res.cloudinary.com/dc8ckrwlq/image/upload/v1716975931/banner/nature.webp', // Default image   
-            currentComponent: 'FavoritesComponent',
+            currentComponent: 'PropertiesComponent',
             user:null,
             apiRequestComplete: false,        
         };
     },
     async created() {
-        await this.fetchLoggedUser();
+        await this.getUser();
+        const id_user = this.$route.params.id;
+        this.properties = await useUserStore().getOtherUserProperties(id_user);
         this.apiRequestComplete = true;
     },
     methods: {
-        showComponent(componentName) {
+        async showComponent(componentName) {
             this.currentComponent = componentName;
+
+            if (componentName === 'PropertiesComponent') {
+                const id_user = this.$route.params.id;
+                this.properties = await useUserStore().getOtherUserProperties(id_user);
+            }
         },
 
-        async fetchLoggedUser() {
-            const token = sessionStorage.getItem('jwt'); // get token from session storage
+        async getUser() {
             try {
-                const response = await useUserStore().getLoggedUser(token);
-                this.user = response;
+                const id_user = this.$route.params.id;
+                const response = await useUserStore().getUserbyId(id_user);
+                this.user = response.data;
                 this.bannerImage = this.user.url_banner;
                 console.log("USER:",this.user);
             } catch (error) {
-                console.error('Error getting logged user:', error);
+                console.error('Error getting user:', error);
             }
         },
     },
 };
 </script>
+
 
 <template >
     <div class="profile" v-if="apiRequestComplete">
@@ -54,14 +63,14 @@ export default {
                 <img :src="user.url_banner" alt="bannerImage">
             </div>
             <div class="profile-pic">
-                <img :src="user.url_avatar" alt="">
+                <img :src="this.user.url_avatar" alt="">
             </div>
             <div class="profile-owner">
-                <p class="profile-name">{{ user.name }}</p>
-                <p style="text-transform: capitalize;">{{ user.userType }}</p>
+                <p class="profile-name">{{ this.user.name }}</p>
+                <p style="text-transform: capitalize;">{{ this.user.userType }}</p>
                 <div class="profile-history">
-                    <p>{{ user.totalPropertyReviews }} Reviews</p>
-                    <p>10 Years</p>
+                    <p>{{ this.user.totalPropertyReviews }} Reviews</p>
+                    <p v-if="this.user.host_since">{{ new Date().getFullYear() - new Date(this.user.host_since).getFullYear() }} Years</p>
                 </div>
             </div>
 
@@ -73,7 +82,7 @@ export default {
                     </div>
                     <div class="reviews-info">
                         <p>Total Reviews</p>
-                        <p>{{ user.totalGuestReviews }}</p>
+                        <p>{{ this.user.totalGuestReviews }}</p>
                     </div>
                 </div>
 
@@ -83,7 +92,7 @@ export default {
                     </div>
                     <div class="rating-info">
                         <p>Average Rating</p>
-                        <p>{{ user.averagePropertyRating }}</p>
+                        <p>{{ this.user.averagePropertyRating }}</p>
                     </div>
                 </div>
 
@@ -93,7 +102,7 @@ export default {
                     </div>
                     <div class="rented-info">
                         <p>Rented Propreties</p>
-                        <p>{{ user.totalRentedProperties }}</p>
+                        <p>{{ this.user.totalRentedProperties }}</p>
                     </div>
                 </div>
 
@@ -103,19 +112,19 @@ export default {
                     </div>
                     <div class="registered-info">
                         <p>Registered Propreties</p>
-                        <p>{{ user.totalOwnedProperties }}</p>
+                        <p>{{ this.user.totalOwnedProperties }}</p>
                     </div>
                 </div>
 
             </div>
 
             <div class="profile-navbar">
-                <a @click="showComponent('FavoritesComponent')" :class="{ 'current-page': currentComponent === 'FavoritesComponent' }">Properties</a>
+                <a @click="showComponent('PropertiesComponent')" :class="{ 'current-page': currentComponent === 'PropertiesComponent' }">Properties</a>
                 <a @click="showComponent('BadgesComponent')" :class="{ 'current-page': currentComponent === 'BadgesComponent' }">Badges</a>
             </div>
             <hr>
             <div class="profile-content">
-                <component :is="currentComponent"  />        
+                <component :is="currentComponent" :bookings="this.bookings" :past_bookings="this.past_bookings" :favorites_properties="this.favorites_properties" :user="this.user" :properties="this.properties"/>       
                     <!-- v-for="property in properties.slice(0,3)"-->
                     <!-- <BookingsComponent v-for="property in properties.slice(0,3)"/> -->
             </div>

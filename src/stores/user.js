@@ -47,8 +47,12 @@ export const useUserStore = defineStore('users', {
       try {
         const response = await post('/users/login', { email: email, password: password });
         console.log(response);
-        sessionStorage.setItem('jwt', response.accessToken);
-        return response.data;
+        if (response.accessToken) {
+            sessionStorage.setItem('jwt', response.accessToken);
+        } else {
+            console.error('Login failed: No access token received');
+        }
+        return response;
       } catch (error) {
         console.error('Error in store logging in:', error);
         throw error; 
@@ -108,6 +112,15 @@ export const useUserStore = defineStore('users', {
         // Handle error gracefully
       }
     },
+    async getOtherUserProperties(id_user){
+      try {
+        const response = await api.get(`users/${id_user}/properties`)
+        return response.data
+      } catch (error) {
+        console.error('Error in store getting properties of other user:', error);
+        throw error;
+      }
+    },
     async addFavorite(id_property){
       try {
         const response = await api.post(`/users/current/favorites`, {property_id: id_property}, sessionStorage.getItem('jwt'));
@@ -116,6 +129,15 @@ export const useUserStore = defineStore('users', {
         console.error('Error in store adding favorite:', error);
         throw error; 
         // Handle error gracefully
+      }
+    },
+    async getUserbyId(id_user){
+      try {
+        const response = await api.get(`users/${id_user}`);
+        return response 
+      } catch (error) {
+        console.error(error);
+        throw error;
       }
     }
   },

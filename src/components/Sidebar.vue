@@ -1,10 +1,10 @@
 <template>
     <div class="sidebar"> 
 
-        <div class="admin-user-info">
-            <!-- <img src="#" alt="me" class="profile">-->                    
-            <i class="material-icons profile">account_circle</i>
-            <p class="user-name">John Doe</p>
+        <div class="admin-user-info" v-if="apiRequestComplete==true">
+             <img :src="user.url_avatar" alt="me" class="profile">                    
+            <!-- <i class="material-icons profile">account_circle</i> -->
+            <p class="user-name">{{ user.name }}</p>
             <p class="user-rank">Administrator</p>
         </div>
         
@@ -29,7 +29,7 @@
                 <router-link to="/admin/notifications">Notifications</router-link> 
             </div>
                     
-            <div class="admin-logout">
+            <div class="admin-logout" @click="logout">
                 <i class="material-icons">logout</i>
                 <router-link to="/">Logout</router-link>
             </div>
@@ -40,7 +40,62 @@
 </template>
 
 <script>
+  import { useUserStore } from "@/stores/user";
+  export default{
+    data() {
+        return {
+            user: null,
+            userPhoto: '',
+            isLoggedIn: false,
+            apiRequestComplete: false,
+        }
+    },
+    created () {
+      this.isLoggedIn = this.checkIfUserIsLoggedIn();
 
+      if (this.isLoggedIn) {
+        this.fetchLoggedUser();
+      }
+
+      // Verificar a cada segundo se o JWT mudou
+      this.jwtInterval = setInterval(() => {
+        const isLoggedInNow = this.checkIfUserIsLoggedIn();
+        if (this.isLoggedIn !== isLoggedInNow) {
+          this.isLoggedIn = isLoggedInNow;
+          console.log("Logged? ", this.isLoggedIn);
+          if (this.isLoggedIn) {
+            this.fetchLoggedUser();
+          }
+        }
+      }, 1000);
+    },
+    methods: {
+        checkIfUserIsLoggedIn() {
+            return !!sessionStorage.getItem('jwt');
+        },
+        async fetchLoggedUser() {
+            const token = sessionStorage.getItem('jwt'); // get token from session storage
+            try {
+                const response = await useUserStore().getLoggedUser(token);
+                console.log("RESPONSE NAVBAR:",response);
+                this.userPhoto= response.url_avatar;
+                this.user = response;
+                this.apiRequestComplete = true;
+                console.log("API REQUEST COMPLETE:",this.apiRequestComplete);
+                console.log("USER:",this.user);
+            } catch (error) {
+                console.error('Error getting logged user:', error);
+                if (error.response && error.response.data.msg === 'Your token has expired. Please login again.') {
+                    this.logout();
+                }
+            }
+        },
+        logout() {
+            sessionStorage.removeItem('jwt');
+            this.isLoggedIn = false;
+        },
+    },
+  }
 </script>
 
 <style scoped>

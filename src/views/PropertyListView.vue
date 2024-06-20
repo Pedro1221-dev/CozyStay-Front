@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router';
 import CardPropriedade from '../components/CardPropriedade.vue';
 import Footer from '../components/Footer.vue';
 import Navbar from '../components/Navbar.vue';
+import { watch } from 'vue';
 
 export default {
     data() {
@@ -56,6 +57,7 @@ export default {
             ],
             rating: 4,
             location: 200,
+            today: new Date().toISOString().split('T')[0],
                 
         };
     },
@@ -65,6 +67,7 @@ export default {
         CardPropriedade
     },
     setup() {
+        const activeType = ref(null);
         let totalPages =0;
         const router = useRouter();
         const propertyStore = usePropertiesStore();
@@ -73,6 +76,10 @@ export default {
         const campo2 = ref('');
         const campo3 = ref('');
         const campo4 = ref('');
+        const numberBedrooms = ref('Any');
+        const numberBeds = ref('Any');
+        const numberBaths = ref('Any');
+        const selectedPropertyType = ref('');
 
         let focusInput = (id) => {
             let inputElement = document.getElementById(id);
@@ -81,18 +88,33 @@ export default {
             }
         }
 
-        let search = () => {
+        let search = (type) => {
+            activeType.value = type;
             const destination = document.getElementById('where-to').value;
             const checkIn = document.getElementById('check-in').value;
             const checkOut = document.getElementById('check-out').value;
             const guests = document.getElementById('guests').value;
+            //const priceRange = document.getElementById('price-range').value;
+            const nbedrooms = numberBedrooms.value;
+            const nbeds = numberBeds.value;
+            const nbaths = numberBaths.value;
+            console.log('TIPO:',type)
+           
 
             let query = {};
 
             if (destination) query.destination = destination;
-            if (checkIn) query.checkIn = checkIn;
-            if (checkOut) query.checkOut = checkOut;
-            if (guests) query.guests = guests;
+            if (checkIn) query.check_in_date = checkIn;
+            if (checkOut) query.check_out_date = checkOut;
+            if (guests) query.number_guests_allowed = guests;
+            if (nbedrooms && nbedrooms !== 'Any') query.number_bedrooms = nbedrooms;
+            if (nbeds && nbeds !== 'Any') query.number_beds = nbeds;
+            if (nbaths && nbaths !== 'Any') query.number_bathrooms = nbaths;
+            if (type) {
+                query.typology = type;
+            } else if (selectedPropertyType.value) {
+                query.typology = selectedPropertyType.value;
+            }
 
             router.push({
                 path: '/properties',
@@ -130,6 +152,11 @@ export default {
             campo2,
             campo3,
             campo4,
+            numberBedrooms,
+            numberBeds,
+            numberBaths,
+            selectedPropertyType,
+            activeType,
             focusInput,
             search,
             updateMinCheckoutDate,
@@ -142,6 +169,11 @@ export default {
         pages() {
             return Array.from({ length: this.totalPages }, (_, i) => i + 1);
         },
+        tomorrow() {
+            let today = new Date();
+            today.setDate(today.getDate() + 1);
+            return today.toISOString().split('T')[0];
+        }
     },
     methods: {
         closeDropdown() {
@@ -208,11 +240,11 @@ export default {
         </div>
         <div class="search-input" @click="focusInput('check-in')">
             <label for="check-in">Check-in</label>
-            <input id="check-in" type="date" placeholder="Arrival Date" @change="updateMinCheckoutDate" v-model="campo2">
+            <input id="check-in" type="date" placeholder="Arrival Date" @change="updateMinCheckoutDate" v-model="campo2" :min="today">
         </div>
         <div class="search-input" @click="focusInput('check-out')">
             <label for="check-out">Check-out</label>
-            <input id="check-out" type="date" placeholder="Leaving Date" v-model="campo3">
+            <input id="check-out" type="date" placeholder="Leaving Date" v-model="campo3" :min="tomorrow">
         </div>
         <div class="search-input" @click="focusInput('guests')">
             <label for="guests">With who</label>
@@ -223,19 +255,19 @@ export default {
     <hr /> <!-- Linha de separação -->
     <div class="optionsLine">
         <div class="houseTypes">
-            <div class="house-type">
+            <div class="house-type" @click="search('House')" v-bind:class="{ 'active-type': activeType === 'House' }" style="cursor:pointer">
                 <span class="material-symbols-outlined">houseboat</span>
                 <p>House</p>
             </div>
-            <div class="house-type">
+            <div class="house-type" @click="search('Apartment')" v-bind:class="{ 'active-type': activeType === 'Apartment' }" style="cursor:pointer">
                 <span class="material-symbols-outlined">apartment</span>
                 <p>Apartment</p>
             </div>
-            <div class="house-type">
+            <div class="house-type" @click="search('Guest House')" v-bind:class="{ 'active-type': activeType === 'Guest House' }" style="cursor:pointer">
                 <span class="material-symbols-outlined">house_siding</span>
                 <p>Guest House</p>
             </div>
-            <div class="house-type">
+            <div class="house-type" @click="search('Hotel')" v-bind:class="{ 'active-type': activeType === 'Hotel' }" style="cursor:pointer">
                 <span class="material-symbols-outlined">villa</span>
                 <p>Hotel</p>
             </div>
@@ -391,7 +423,15 @@ export default {
                     <h2>Location</h2>
                     <v-slider v-model="location" thumb-label step="1" max="400"></v-slider>
                 </div>
-               
+                <v-row>
+                    <v-col cols="6" align="center" @click="search(selectedPropertyType.name)">
+                        <v-btn large block :style="{ backgroundColor: 'rgba(25, 61, 78, 1)', color: 'white', borderRadius: '25px' }">Confirm</v-btn>
+                    </v-col>
+                    <v-col cols="6" align="center" @click="isFilterModalOpen=false">
+                        <v-btn large block :style="{ backgroundColor: 'white', color: 'rgba(25, 61, 78, 1)', borderColor: 'rgba(25, 61, 78, 1)', borderWidth: '1px', borderStyle: 'solid', borderRadius: '25px' }">Cancel</v-btn>
+                    </v-col>
+                </v-row>
+                
             </div>
         </div>
 
@@ -443,7 +483,8 @@ Join our community of hosts and unlock the potential of your space</p>
         <CardPropriedade
         v-for="property in properties.slice(12,24)"
         :key="property.property_id"
-        image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRYg2rNFiJzTCRPXETBxp80WLKVMxeLZZbxMGqdKlkAg&s"
+        :id_property="property.property_id"
+        :image="property.photos[0].url_photo"
         :location="`${property.city}, ${property.country}`"
         :title="property.title"
         :rating="property.averageRating"
@@ -912,4 +953,11 @@ Join our community of hosts and unlock the potential of your space</p>
         margin-left: 15%;
     }
 
+    .active-type{
+        background-color: #193d4e;
+        border-radius: 10%;
+        color: white;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
 </style>

@@ -3,7 +3,7 @@
       <Navbar />
   
       <div class="form">
-          <v-stepper alt-labels hide-actions :items="['Step 1', 'Step 2', 'Step 3', 'Step 4']" class="no-border" v-model="step">
+          <v-stepper alt-labels hide-actions :items="['Step 1', 'Step 2', 'Step 3', 'Step 4', 'Step 5']" class="no-border" v-model="step">
             <div class="form-wrapper"></div>
             <template v-slot:item.1>
               <v-form ref="form">
@@ -293,7 +293,11 @@
               </v-btn>
             </template>
             <template v-slot:item.5>
-                <h1>Your Property Register Sucessfuly</h1>
+              <div class="success-page">
+                <h1>Your Property Register Successfully</h1>
+                <span class="material-icons" style="font-size: 245px">check_circle</span>
+                <p>Your property has been registered and is pending confirmation. You will be notified once it has been confirmed.</p>
+              </div>
             </template>
           </v-stepper>
       </div>
@@ -715,5 +719,14 @@ export default {
   font-size: 12px;
   font-weight: 300;
   font-family: 'Montserrat', sans-serif;
+}
+
+.success-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color:#193D4E;
 }
   </style>

@@ -22,6 +22,16 @@ export const usePropertiesStore = defineStore('properties', {
               // Handle error gracefully
           }
       },
+      async getPendingProperties() {
+        try {
+            const data = await api.get('/properties',{status: 'pending'});
+            this.properties = data.data;
+            return data;
+        } catch (error) {
+            console.error('Error in store fetching objects:', error);
+            // Handle error gracefully
+        }
+    },
       async fetchOneProperty(id) {
           try {
               const data = await api.get(`/properties/${id}`);
@@ -42,5 +52,16 @@ export const usePropertiesStore = defineStore('properties', {
               // Handle error gracefully
           }
       },
+      async changeStatus(id_property){
+        try {
+            const data = null;
+            const token = sessionStorage.getItem('jwt');
+            const response = await api.patch(`/properties/${id_property}/confirm`,data,token);
+            return response;
+        } catch (error) {
+            console.error('Error in store fetching objects:', error);
+            // Handle error gracefully
+        }
+      }
   },
 });
