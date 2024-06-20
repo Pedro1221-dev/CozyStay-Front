@@ -21,10 +21,10 @@ export async function get(endpoint, params = {}, token = null){
   }
 }
 
-export async function post(endpoint, data, token = null) {
+export async function post(endpoint, data, token = null, contentType = 'application/json') {
   try {
     const headers = {
-      "Content-Type": "application/json",
+      "Content-Type": contentType,
     };
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
@@ -54,7 +54,8 @@ export async function patch(endpoint, data, token = null) {
 }
 
 async function handleResponse(response) {
-  if (response.status === 200) {
+  console.log('response.', response.status)
+  if (response.status === 200 || response.status === 201) {
     return response.data;
   } else {
     const errorBody = await response.json();

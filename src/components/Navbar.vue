@@ -39,6 +39,9 @@
               <v-list-item @click="changeToProfile">
                 <v-list-item-title>Profile</v-list-item-title>
               </v-list-item>
+              <v-list-item v-if="user.type === 'admin'">
+                <v-list-item-title @click="changeToAdmin">Admin Dashboard</v-list-item-title>
+              </v-list-item>
               <v-list-item @click="changeToRegisterProperty">
                 <v-list-item-title>Register Property</v-list-item-title>
               </v-list-item>
@@ -76,6 +79,10 @@
     created() {
       this.isLoggedIn = this.checkIfUserIsLoggedIn();
       this.setActiveSectionBasedOnRoute(this.$route);
+
+      if (this.isLoggedIn) {
+        this.fetchLoggedUser();
+      }
 
       // Verificar a cada segundo se o JWT mudou
       this.jwtInterval = setInterval(() => {

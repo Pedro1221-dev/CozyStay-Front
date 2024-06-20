@@ -3,7 +3,7 @@
       <Navbar />
   
       <div class="form">
-          <v-stepper alt-labels hide-actions :items="['Step 1', 'Step 2', 'Step 3']" class="no-border" v-model="step">
+          <v-stepper alt-labels hide-actions :items="['Step 1', 'Step 2', 'Step 3', 'Step 4']" class="no-border" v-model="step">
             <div class="form-wrapper"></div>
             <template v-slot:item.1>
               <v-form ref="form">
@@ -27,7 +27,10 @@
                     hint="Enter your property's Country"
                     placeholder="Property's Country"
                     class="mt-12 text-h1 custom-class-text-input field-426"
-                    :rules="[v => !!v || 'Campo obrigatório']"
+                    :rules="[
+                      v => !!v || 'Campo obrigatório',
+                      v => /^[A-Za-z\s]+$/.test(v) || 'Only letters are allowed'
+                    ]"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="6">
@@ -39,7 +42,9 @@
                     hint="Enter your property's City"
                     placeholder="Property's City"
                     class="mt-12 text-h1 custom-class-text-input field-426"
-                    :rules="[v => !!v || 'Campo obrigatório']"
+                    :rules="[v => !!v || 'Campo obrigatório',
+                      v => /^[A-Za-z\s]+$/.test(v) || 'Only letters are allowed'
+                    ]"
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -97,7 +102,7 @@
                     variant="underlined"
                     label="No. of rooms"
                     class="mt-6 text-h1 custom-class-text-input field-250"
-                    :rules="[v => !!v || 'Campo obrigatório']"
+                    :rules="[v => !!v || 'Campo obrigatório',v => /^\d+$/.test(v) || 'Only numbers are allowed']"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="3">
@@ -106,7 +111,7 @@
                     variant="underlined"
                     label="No. of beds"
                     class="mt-6 text-h1 custom-class-text-input field-250"
-                    :rules="[v => !!v || 'Campo obrigatório']"
+                    :rules="[v => !!v || 'Campo obrigatório',v => /^\d+$/.test(v) || 'Only numbers are allowed']"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="3">
@@ -115,7 +120,7 @@
                     variant="underlined"
                     label="No. of guests allowed"
                     class="mt-6 text-h1 custom-class-text-input field-250"
-                    :rules="[v => !!v || 'Campo obrigatório']"
+                    :rules="[v => !!v || 'Campo obrigatório',v => /^\d+$/.test(v) || 'Only numbers are allowed']"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="3">
@@ -124,7 +129,7 @@
                     variant="underlined"
                     label="No. of wcs"
                     class="mt-6 text-h1 custom-class-text-input field-250"
-                    :rules="[v => !!v || 'Campo obrigatório']"
+                    :rules="[v => !!v || 'Campo obrigatório',v => /^\d+$/.test(v) || 'Only numbers are allowed']"
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -138,7 +143,7 @@
                     cols="4"
                     class="d-flex align-center mt-n9 ml-n9 mr-n9 privacyPolicyCheckbox"
                   >
-                    <div class="ml-1 mr-1 mb-5">{{ facility }}</div>
+                    <div class="ml-1 mr-1 mb-5" style="text-transform: capitalize;">{{ facility.name }}</div>
                     <v-checkbox
                       v-model="selectedFacilities"
                       :label="''"
@@ -164,16 +169,37 @@
             </template>
 
             <template v-slot:item.3>
-              <v-container class="mt-8">
-              <v-text-field
-                v-model="basePrice"
-                variant="underlined"
-                label="Enter base price"
-                class="mt-6 text-h1 custom-class-text-input field-250"
-                :rules="[v => !!v || 'Campo obrigatório']"
-              ></v-text-field>
+              <v-container class="form-3">
+                <v-row>
+                  <v-col cols="6">
+                    <v-text-field
+                      v-model="basePrice"
+                      variant="underlined"
+                      label="Enter base price"
+                      class="mt-2 text-h1 custom-class-text-input field-250"
+                      :rules="[v => !!v || 'Campo obrigatório',v => /^\d+$/.test(v) || 'Only numbers are allowed']"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="6">
+                    <v-combobox
+                      v-model="selectedMethods"
+                      clearable
+                      chips
+                      multiple
+                      label="Payment Methods"
+                      :items="['Credit Card', 'Paypal', 'Bank Transfer', 'Cash', 'Criptocurrency']"
+                      class="mt-2 custom-class-text-input field-250" 
+                      variant="underlined"
+                      :rules="[v => !!v || 'Campo obrigatório']"
+                    ></v-combobox>
+                  </v-col>
+                </v-row>
 
-              <span class="section-price">Section Price</span>
+                <span class="section-price">
+                  <span class="price-title">Price</span>
+                  <br>
+                  <span class="price-description">Select your property's price type</span>
+                </span>
               <v-row justify="center" dense class="text-left mt-8">
                 <v-col cols="6">
                   <v-card class="price-option" @click="openModal('fixed')" :class="{ 'selected': selectedOption === 'fixed' }">
@@ -211,12 +237,15 @@
                           <Datepicker
                             v-model="seasonStartDate"
                             :enable-time-picker="false"
+                            placeholder="Select Start Date"
                           />
                         </v-col>
                         <v-col cols="12" sm="4">
                           <Datepicker
                             v-model="seasonEndDate"
                             :enable-time-picker="false"
+                            :min-date="seasonStartDate"
+                            placeholder="Select End Date"
                           />
                         </v-col>
                         <v-col cols="12" sm="4">
@@ -224,7 +253,7 @@
                             v-model="priceIncrease"
                             label="Acréscimo de Preço (%)"
                             type="number"
-                            :rules="[v => !!v || 'Campo obrigatório']"
+                            :rules="[v => !!v || 'Campo obrigatório',v => (/^\d+(\.\d{1,2})?$/.test(v) && v <= 50) || 'Only numbers up to 50 are allowed']"
                           ></v-text-field>
                         </v-col>
                       </v-row>    
@@ -238,10 +267,33 @@
                 </v-card>
               </v-dialog>
 
-              <v-btn variant="tonal" size="x-large" rounded="lg" color="white" block class="registerButton" @click="register">
-                Register
+              <v-btn variant="tonal" size="x-large" rounded="lg" color="white" block class="registerButton" @click="next" style="margin-left:25%">
+                Continue
               </v-btn>
             </v-container>
+            </template>
+            <template v-slot:item.4>
+              <v-file-input
+                v-model="propertyImages"
+                multiple
+                chips
+                :rules="[v => !!v || 'Campo obrigatório']"
+                label="Upload property images"
+              ></v-file-input>
+              <v-btn
+                variant="tonal"
+                size="x-large"
+                rounded="lg"
+                color="white"
+                block
+                class="registerButton button-316"
+                @click="next"
+              >
+                Register
+              </v-btn>
+            </template>
+            <template v-slot:item.5>
+                <h1>Your Property Register Sucessfuly</h1>
             </template>
           </v-stepper>
       </div>
@@ -255,6 +307,9 @@
   import { ref } from 'vue';
   import Datepicker from '@vuepic/vue-datepicker';
   import '@vuepic/vue-datepicker/dist/main.css';
+  import { usePropertiesStore } from "@/stores/property";
+  import { get } from '@/api/api';
+
   
 export default {
   components: {
@@ -281,27 +336,10 @@ export default {
     propertyTypes: [
       'Apartment',
       'House',
-      'Townhouse',
-      'Condominium',
-      'Bungalow',
-      'Cottage',
-      'Villa',
-      'Mansion'
+      'Hotel',
+      'Guest House',
     ],
-    facilities: [
-        'Free Wi-Fi',
-        'Parking',
-        'Swimming Pool',
-        'Fitness Center',
-        'Restaurant',
-        'Non-smoking Rooms',
-        'Airport Shuttle',
-        'Facilities for Disabled Guests',
-        'Family Rooms',
-        'Spa and Wellness Center',
-        'Bar',
-        '24-hour Front Desk'
-      ],
+    facilities: [],
       basePrice: '',
       dialog: false,
       menu1: false,
@@ -310,11 +348,22 @@ export default {
       seasonEndDate: null,
       selectedOption: 'fixed',
       priceIncrease: '',
+      selectedMethods: [],
+      propertyImages: [],
     rules: {
       required: value => !!value || 'Required.'
     },
     };
   },
+  async created() {
+    try {
+        const token = sessionStorage.getItem('jwt');
+        const response = await get('/facilities', {}, token);
+        this.facilities = response.data;
+    } catch (error) {
+        console.error('Failed to fetch facilities:', error);
+    }
+},
   methods: {
     confirm() {
       // Handle confirmation here
@@ -326,16 +375,29 @@ export default {
         // All fields are valid, continue to the next step
         console.log('Valid');
       }
-      if(this.step==1 && (!this.name || !this.country || !this.city || !this.city || !this.address || !this.description)) {
-            //fazer validaçoes com bd
-            console.log("Erro 1");
-            return;
-          }
-      if(this.step==2 && (!this.type || !this.rooms || !this.beds || !this.wcs || !this.guests || this.selectedFacilities.length == 0)) {
+      if(this.step==1 && (!this.name || !this.country || !this.city || !this.address || !this.description || !/^[A-Za-z\s]+$/.test(this.country) || !/^[A-Za-z\s]+$/.test(this.city))) {
+        //fazer validaçoes com bd
+        console.log("Erro 1");
+        return;
+      }
+      if(this.step==2 && (!this.type || !this.rooms || !this.beds || !this.wcs || !this.guests || this.selectedFacilities.length == 0 || !/^\d+$/.test(this.rooms) || !/^\d+$/.test(this.beds) || !/^\d+$/.test(this.wcs) || !/^\d+$/.test(this.guests))) {
         console.log("Erro 2");
         return;
       }
+      if(this.step==3 && (!this.basePrice || !/^\d+(\.\d{1,2})?$/.test(this.basePrice) ||this.selectedMethods.length === 0 )) {
+        console.log("Erro 3");
+        return;
+      }
+      if(this.selectedOption=='seasonal'){
+        if(this.step==3 && (!this.seasonStartDate || !this.seasonEndDate || !this.priceIncrease || !/^\d+(\.\d{1,2})?$/.test(this.priceIncrease) || this.seasonStartDate >= this.seasonEndDate)) {
+          console.log("Erro 4");
+          return;
+        }
+      }
       this.step++;
+      if(this.step==5){
+        this.register();
+      }
     },
     openModal(selectedOption) {
       if (selectedOption === 'seasonal') {
@@ -350,9 +412,64 @@ export default {
       // Confirm seasonal price logic here
       this.dialog = false;
     },
-    register() {
-      // Register logic here
-      alert('Registo Feito!');
+    async register() {
+      const propertyTypeMapping = {
+          'Apartment': 'apartment',
+          'House': 'house',
+          'Hotel': 'hotel',
+          'Guest House': 'guest_house'
+      };
+        const propertyData = new FormData();
+        propertyData.append('title', this.name);
+        propertyData.append('city', this.city);
+        propertyData.append('country', this.country);
+        propertyData.append('address', this.address);
+        propertyData.append('number_bedrooms', this.rooms);
+        propertyData.append('number_beds', this.beds);
+        propertyData.append('number_bathrooms', this.wcs);
+        propertyData.append('number_guests_allowed', this.guests);
+        propertyData.append('description', this.description);
+        propertyData.append('typology', propertyTypeMapping[this.type]);
+        propertyData.append('price', this.basePrice);
+        const selectedFacilityIds = this.selectedFacilities.map(facility => facility.facility_id);
+        propertyData.append('facilities', selectedFacilityIds.join(','));
+        this.paymentMethodsMap = {
+            "Credit Card": 1,
+            "Paypal": 2,
+            "Bank Transfer": 3,
+            "Cash": 4,
+            "Criptocurrency": 5
+        };
+
+        const selectedMethodIds = this.selectedMethods.map(method => this.paymentMethodsMap[method]);
+
+        propertyData.append('payment_methods', selectedMethodIds);
+        if (this.propertyImages) {
+          this.propertyImages.forEach((image) => {
+            console.log('Image: ' + image);
+            console.log('Image Name'+ image.name);
+            propertyData.append('photos', image, image.name);
+          });
+        }
+        if (this.start_date) {
+            propertyData.append('start_date', this.start_date);
+        }
+        if (this.end_date) {
+            propertyData.append('end_date', this.end_date);
+        }
+        if (this.addition) {
+            propertyData.append('addition', this.addition);
+        }
+        try {
+            const token = sessionStorage.getItem('jwt'); // get token from session storage
+            const response = await usePropertiesStore().createProperty(propertyData, token);
+            console.log('Property registered:', response)
+            // Handle the response here, e.g. show a success message
+        } catch (error) {
+            // Handle the error here, e.g. show an error message
+            console.log('Error Register Property:', error)
+        }
+        this.fetchProperties();
     },
     formatDate(date) {
       return format(date, 'dd-MM-yyyy');
@@ -362,6 +479,9 @@ export default {
       console.log('City:',addressData);
       this.city = addressData.administrative_area_level_2;
       this.country = addressData.country;
+    },
+    selectFacility(facility) {
+        this.selectedFacilities.push(facility.facility_id);
     },
   },
   watch: {
@@ -396,8 +516,8 @@ export default {
   .v-stepper-header {
     box-shadow:none;
   }
-  ::v-deep .v-container[data-v-2042d686]{
-    margin-left:20%;
+  .form-3{
+    margin-left:15% !important;
   }
   .registerButton {
     background-color: #193D4E!important;
@@ -583,5 +703,17 @@ export default {
 }
 .price-option.selected {
   border: 3px solid #193D4E;
+}
+
+.price-title {
+  font-size: 18px;
+  font-weight: 500;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.price-description {
+  font-size: 12px;
+  font-weight: 300;
+  font-family: 'Montserrat', sans-serif;
 }
   </style>

@@ -1,71 +1,21 @@
 <template>
     <div class="cards">
-        <div class="card">
+        <div class="card" v-for="booking in past_bookings" :key="booking.id">
             <div class="card-image">
                 <div class="location">
                     <span class="material-symbols-outlined icon-location">location_on</span>
-                    <span>{{ location }}</span>
+                    <span>{{ booking.Property.city }}, {{ booking.Property.country }}</span>
                 </div>
                 <div class="review">
                     <span class="material-symbols-outlined icon-review">reviews</span>
                 </div>
-                <img :src="image" alt="Property Image">
+                <img :src="booking.Property.photos[0].url_photo" alt="Property Image">
             </div>
             <div class="card-content">
                 <div class="title-rating">
-                    <h2>{{ title }}</h2>
-                    <div class="rating">
-                        <i class="fas fa-star"></i>
-                        <span>{{ rating }}</span>
-                    </div>
+                    <h2>{{ booking.Property.title}}</h2>
                 </div>
-                <p class="info">{{ checkInDate }} 14 June • {{ checkOutDate }} 16 June</p> 
-                <!-- Remover datas -->
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-image">
-                <div class="location">
-                    <span class="material-symbols-outlined icon-location">location_on</span>
-                    <span>{{ location }}</span>
-                </div>
-                <div class="review">
-                    <span class="material-symbols-outlined icon-review">reviews</span>
-                </div>
-                <img :src="image" alt="Property Image">
-            </div>
-            <div class="card-content">
-                <div class="title-rating">
-                    <h2>{{ title }}</h2>
-                    <div class="rating">
-                        <i class="fas fa-star"></i>
-                        <span>{{ rating }}</span>
-                    </div>
-                </div>
-                <p class="info">{{ checkInDate }} 14 June • {{ checkOutDate }} 16 June</p> 
-                <!-- Remover datas -->
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-image">
-                <div class="location">
-                    <span class="material-symbols-outlined icon-location">location_on</span>
-                    <span>{{ location }}</span>
-                </div>
-                <div class="review">
-                    <span class="material-symbols-outlined icon-review">reviews</span>
-                </div>
-                <img :src="image" alt="Property Image">
-            </div>
-            <div class="card-content">
-                <div class="title-rating">
-                    <h2>{{ title }}</h2>
-                    <div class="rating">
-                        <i class="fas fa-star"></i>
-                        <span>{{ rating }}</span>
-                    </div>
-                </div>
-                <p class="info">{{ checkInDate }} 14 June • {{ checkOutDate }} 16 June</p> 
+                <p class="info">{{ booking.check_in_date }}  • {{ booking.check_out_date }} </p> 
                 <!-- Remover datas -->
             </div>
         </div>
@@ -76,9 +26,14 @@
 
 
 <script>
-    export default {
-        props: ['image', 'location', 'title', 'rating', 'checkInDate', 'checkOutDate']
-    }
+     export default {
+        props: {
+            past_bookings: {
+            type: Array,
+            required: true,
+            },
+        },
+    };
 </script>
 
 <style scoped>

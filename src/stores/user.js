@@ -67,16 +67,36 @@ export const useUserStore = defineStore('users', {
       }
     },
     async updateUser(updates, token) {
+        try {
+          const response = await api.patch(`/users/current`, updates, token);
+          console.log('Response:', response);
+          this.user = response.data;
+          return response.data;
+      } catch (error) {
+          console.error('Error response:', error.response);
+          console.error('Error in store updating user:', error);
+          throw error; 
+      }
+    },
+    async fetchBookingsUser(token,query){
       try {
-        const response = await api.patch(`/users/current`, updates, token);
-        console.log('Response:', response);
-        this.user = response.data;
+        const response = await api.get(`/users/current/bookings`, query, token);
         return response.data;
-    } catch (error) {
-        console.error('Error response:', error.response);
-        console.error('Error in store updating user:', error);
+      } catch (error) {
+        console.error('Error in store fetching bookings:', error);
         throw error; 
-    }
-  }
+        // Handle error gracefully
+      }
+    },
+    async fetchFavoritesProperties(token){
+      try {
+        const response = await api.get(`/users/current/favorites`, {}, token);
+        return response.data[0].favoriteProperty;
+      } catch (error) {
+        console.error('Error in store fetching favorite bookings:', error);
+        throw error; 
+        // Handle error gracefully
+      }
+    },
   },
 });

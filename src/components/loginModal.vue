@@ -50,6 +50,7 @@
                       :rules="[rules.required]"
                       class="p-5 text-h1 custom-class-text-input" 
                       ></v-text-field>
+                      <p class="link-button-login" variant="text" @click="forgotPassword">Forgot Password?</p>
                       <v-btn 
                       variant="tonal"
                       size="x-large"
@@ -236,6 +237,7 @@ Confirm 'Spam' or Trash, as the e-mail can be found there</div>
                             min-width="400"
                             class="mt-9"
                           ></v-otp-input>
+                          <p class="link-button" variant="text" @click="resendEmail">Resend Verification Email</p>
                           <v-btn variant="tonal"
                             size="x-large"
                             rounded="lg"
@@ -260,6 +262,7 @@ Confirm 'Spam' or Trash, as the e-mail can be found there</div>
 <script>
 import { useUserStore } from "@/stores/user";
 import { useToast } from "vue-toastification";
+import { post } from '@/api/api';
 
 export default {
   setup() {
@@ -466,6 +469,28 @@ export default {
           } catch (error) {
             this.toast.error('Login failed: Email or Password Incorrect.');
             return;
+          }
+        },
+
+        async resendEmail() {
+          try {
+              const response = await post('users/resend-email', {user_id: this.user_id, email: this.email_register});
+              console.log(response);
+              this.toast.success(`Email sent successfully to ${this.email_register}!`);
+          } catch (error) {
+              console.error(error);
+          }
+        },
+        async forgotPassword() {
+          try {
+              if(!this.email_login) {
+                this.toast.error('Please insert the email address');
+              }
+              const response = await post('users/forgot-password', {email: this.email_login});
+              console.log(response);
+              this.toast.success(`Reset password email sent to ${this.email_login}!`);
+          } catch (error) {
+              console.error(error);
           }
         }
         
@@ -731,5 +756,30 @@ export default {
   margin-left: 5%;
 }
 
+.link-button-login {
+    text-decoration: none;
+    color: #193D4E;
+    cursor: pointer;
+    margin-left: 30%;
+    margin-top: 20%;
+    margin-bottom: -13%;
+}
+
+.link-button-login:hover {
+    text-decoration: underline;
+}
+
+.link-button {
+    text-decoration: none;
+    color: #193D4E;
+    cursor: pointer;
+    margin-left: 20%;
+    margin-top: 22%;
+    margin-bottom: -13%;
+}
+
+.link-button:hover {
+    text-decoration: underline;
+}
 </style>
   

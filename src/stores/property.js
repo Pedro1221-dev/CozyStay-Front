@@ -23,14 +23,24 @@ export const usePropertiesStore = defineStore('properties', {
           }
       },
       async fetchOneProperty(id) {
-        try {
-            const data = await api.get(`/properties/${id}`);
-            this.property = data.data;
-            return data;
-        } catch (error) {
-            console.error('Error in store fetching objects:', error);
-            // Handle error gracefully
-        }
-    }
+          try {
+              const data = await api.get(`/properties/${id}`);
+              this.property = data.data;
+              return data;
+          } catch (error) {
+              console.error('Error in store fetching objects:', error);
+              // Handle error gracefully
+          }
+      },
+      async createProperty(property,token) {
+          try {
+              const data = await api.post('/properties', property, token, 'multipart/form-data');
+              this.properties.push(data.data);
+              return data;
+          } catch (error) {
+              console.error('Error in store creating object:', error);
+              // Handle error gracefully
+          }
+      },
   },
 });
