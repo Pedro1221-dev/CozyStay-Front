@@ -51,3 +51,10 @@ npm install google-places
 ```sh
 npm install --save vue-toastification
 ```
+
+### Vue Datepicker
+
+```sh
+npm install @vuepic/vue-datepicker
+```
+
