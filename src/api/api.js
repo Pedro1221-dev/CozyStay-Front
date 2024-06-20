@@ -34,7 +34,7 @@ export async function post(endpoint, data, token = null, contentType = 'applicat
     return handleResponse(response);
   } catch (error) {
     console.error(`Error posting to ${endpoint}:`, error);
-    throw error;
+    return error.response.data;
   }
 }
 
@@ -50,6 +50,21 @@ export async function patch(endpoint, data, token = null) {
   } catch (error) {
       console.error(`Error patching to ${endpoint}:`, error);
       throw error;
+  }
+}
+
+export async function deleteRequest(endpoint, token, headers = {}){
+  try {
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+    console.log('DELETE request to', endpoint);
+    const response = await api.delete(endpoint, { headers: headers });
+    console.log('DELETE response', response);
+    return response;
+  } catch (error) {
+    console.error(`Error deleting to ${endpoint}:`, error);
+    return error.response.data;
   }
 }
 

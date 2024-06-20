@@ -6,8 +6,8 @@
                 <span class="material-symbols-outlined icon-location">location_on</span>
                 <span>{{ location }}</span>
             </div>
-            <div class="favorite">
-                <i class="fas fa-heart"></i>
+            <div class="favorite" @click.stop="addFavorite(id_property)">
+                <i class="fas fa-heart" :class="{ 'is-favorite': isFavorite }"></i>
             </div>
             <img :src="image" alt="Property Image">
         </div>
@@ -25,11 +25,33 @@
     </div>
 </template>
 
-<script>
-    export default {
-        props: ['image', 'location', 'title', 'rating', 'price', 'beds', 'rooms']
-    }
-</script>
+<script> 
+import { useUserStore } from "@/stores/user";
+import { useToast } from "vue-toastification";
+
+ export default { 
+    setup() {
+    // Get toast interface
+    const toast = useToast();
+
+    // Make it available inside methods
+    return { toast }
+  },
+    props: ['id_property','image', 'location', 'title', 'rating', 'price', 'beds', 'rooms'],
+     methods: { 
+        async addFavorite(id){ 
+            const response = await useUserStore().addFavorite(id); 
+            console.log(response);
+            if(response.success != false){ 
+                this.isFavorite = true; 
+                this.toast.success('Property added to favorites!'); 
+            } else { 
+                this.toast.error(`Property already on favorites!`); 
+            }
+        } 
+    }, 
+}
+ </script>
 
 <style scoped>
 .card {
@@ -124,4 +146,11 @@
     font-size: 14px;
     font-weight: 200;
 }
+
+.fa-heart {
+        color: grey;
+    }
+    .fa-heart.is-favorite {
+        color: red;
+    }
 </style>

@@ -98,5 +98,25 @@ export const useUserStore = defineStore('users', {
         // Handle error gracefully
       }
     },
+    async fetchUserProperties(token){
+      try {
+        const response = await api.get(`/users/current/properties`, {}, token);
+        return response.data;
+      } catch (error) {
+        console.error('Error in store fetching favorite bookings:', error);
+        throw error; 
+        // Handle error gracefully
+      }
+    },
+    async addFavorite(id_property){
+      try {
+        const response = await api.post(`/users/current/favorites`, {property_id: id_property}, sessionStorage.getItem('jwt'));
+        return response;
+      } catch (error) {
+        console.error('Error in store adding favorite:', error);
+        throw error; 
+        // Handle error gracefully
+      }
+    }
   },
 });

@@ -1,6 +1,6 @@
 <template>
     <div class="cards">
-        <div class="card" v-for="booking in past_bookings" :key="booking.id">
+        <div class="card" v-for="booking in past_bookings" :key="booking.id" @click="goToProperty(booking.Property.property_id)">
             <div class="card-image">
                 <div class="location">
                     <span class="material-symbols-outlined icon-location">location_on</span>
@@ -31,6 +31,11 @@
             past_bookings: {
             type: Array,
             required: true,
+            },
+        },
+        methods: {
+            goToProperty(propertyId) {
+                this.$router.push({ path: `/property/${propertyId}` });
             },
         },
     };

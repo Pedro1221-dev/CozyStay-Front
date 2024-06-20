@@ -151,6 +151,7 @@ export default {
                     <CardPropriedade
                         v-for="property in homeStore.home.topProperties"
                         :key="property.property_id"
+                        :id_property="property.property_id"
                         :image="property.photo"
                         :location="`${property.city}, ${property.country}`"
                         :title="property.title"

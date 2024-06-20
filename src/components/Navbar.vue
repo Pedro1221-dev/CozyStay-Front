@@ -191,6 +191,7 @@
      font-size: 35px;
      max-width: 35px;
      cursor: pointer;
+     border-radius: 100%;
     }
     .navbar a.active {
         text-decoration: underline !important;

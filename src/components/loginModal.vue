@@ -46,7 +46,7 @@
                       type="password" 
                       label="Password" 
                       variant="underlined"
-                      hint="Must have at least 6 characters"
+                      hint="Enter your password to access this website"
                       :rules="[rules.required]"
                       class="p-5 text-h1 custom-class-text-input" 
                       ></v-text-field>
@@ -93,7 +93,7 @@
                           type="password" 
                           label="Password" 
                           variant="underlined"
-                          hint="Must have at least 6 characters"
+                          hint="Must have at least 8 characters"
                           :rules="rules.password"
                           class="mt-2 text-h1 custom-class-text-input" 
                           ></v-text-field>

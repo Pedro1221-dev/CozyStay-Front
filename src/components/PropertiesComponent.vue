@@ -1,72 +1,23 @@
 <template>
     <div class="cards">
-        <div class="card">
+        <div class="card" v-for="property in properties" :key="property.id" @click="property.property_id">
             <div class="card-image">
                 <div class="location">
                     <span class="material-symbols-outlined icon-location">location_on</span>
-                    <span>{{ location }}</span>
+                    <span>{{ property.city }}, {{ property.country }}</span>
                 </div>
                 <div class="edit">
                     <span class="material-symbols-outlined icon-edit">edit</span>
                 </div>
-                <img :src="image" alt="Property Image">
+                <img :src="property.photos[0].url_photo" alt="Property Image">
+                
             </div>
             <div class="card-content">
                 <div class="title-rating">
-                    <h2>{{ title }}</h2>
-                    <div class="rating">
-                        <i class="fas fa-star"></i>
-                        <span>{{ rating }}</span>
-                    </div>
+                    <h2>{{ property.title }}</h2>
                 </div>
-                <p class="price">{{ price }}</p>
-                <p class="info">{{ beds }} beds • {{ rooms }} rooms</p>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-image">
-                <div class="location">
-                    <span class="material-symbols-outlined icon-location">location_on</span>
-                    <span>{{ location }}</span>
-                </div>
-                <div class="edit">
-                    <span class="material-symbols-outlined icon-edit">edit</span>
-                </div>
-                <img :src="image" alt="Property Image">
-            </div>
-            <div class="card-content">
-                <div class="title-rating">
-                    <h2>{{ title }}</h2>
-                    <div class="rating">
-                        <i class="fas fa-star"></i>
-                        <span>{{ rating }}</span>
-                    </div>
-                </div>
-                <p class="price">{{ price }}</p>
-                <p class="info">{{ beds }} beds • {{ rooms }} rooms</p>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-image">
-                <div class="location">
-                    <span class="material-symbols-outlined icon-location">location_on</span>
-                    <span>{{ location }}</span>
-                </div>
-                <div class="edit">
-                    <span class="material-symbols-outlined icon-edit">edit</span>
-                </div>
-                <img :src="image" alt="Property Image">
-            </div>
-            <div class="card-content">
-                <div class="title-rating">
-                    <h2>{{ title }}</h2>
-                    <div class="rating">
-                        <i class="fas fa-star"></i>
-                        <span>{{ rating }}</span>
-                    </div>
-                </div>
-                <p class="price">{{ price }}</p>
-                <p class="info">{{ beds }} beds • {{ rooms }} rooms</p>                
+                <p class="price">{{ property.price }} €</p>
+                <p class="info">{{ property.number_beds }} beds • {{ property.number_bedrooms }} rooms • {{ property.status }} status</p>
             </div>
         </div>
     </div>
@@ -77,7 +28,17 @@
 
 <script>
     export default {
-        props: ['image', 'location', 'title', 'rating', 'price', 'beds', 'rooms']
+        props: {
+            properties: {
+                type: Array,
+                required: true,
+            },
+        },
+        methods: {
+            goToProperty(propertyId) {
+                this.$router.push({ path: `/property/${propertyId}` });
+            },
+        },
     }
 </script>
 
