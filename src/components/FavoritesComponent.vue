@@ -1,6 +1,6 @@
 <template>
     <div class="cards">
-        <div class="card" v-for="property in favorites_properties" :key="property.property_id">
+        <div class="card" v-for="property in favorites_properties" :key="property.property_id" @click="goToProperty(property.property_id)">
             <div class="card-image">
                 <div class="location">
                     <span class="material-symbols-outlined icon-location">location_on</span>
@@ -30,6 +30,11 @@
             favorites_properties: {
                 type: Array,
                 required: true,
+            },
+        },
+        methods: {
+            goToProperty(propertyId) {
+                this.$router.push({ path: `/property/${propertyId}` });
             },
         },
     };

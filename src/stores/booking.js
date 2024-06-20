@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import * as api from '../api/api.js';
-import { post } from '../api/api.js';
+import { post, deleteRequest } from '../api/api.js';
 
 export const useBookingStore = defineStore('booking', {
   state: () => ({
@@ -20,5 +20,15 @@ export const useBookingStore = defineStore('booking', {
           // Handle error gracefully
         }
       },
+      async cancelBooking(id){
+        try {
+          const token = sessionStorage.getItem('jwt');
+          const response = await deleteRequest(`/bookings/${id}`,token)
+          return response;
+        } catch (error) {
+          console.error('Error in store cancelling booking:', error);
+        }
+      }
     },
+    
 });

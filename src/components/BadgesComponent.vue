@@ -49,7 +49,6 @@
                 <span class="material-symbols-outlined close-icon">close</span>
             </div>
         </div>
-
     </div>
 
 </template>
@@ -88,10 +87,9 @@ export default {
     },
     methods: {
         toggleModal(badge) {
-            console.log("Property Image:", this.property_image)
-            console.log("Booking Image:", this.booking_image)
-            this.showModal = !this.showModal;
-            if(badge == 'property'){
+            
+            if(badge == 'property' && this.isClassActiveProperty == false) {
+                this.showModal = !this.showModal;
                 this.badges.forEach(badge => {
                 if ([1, 2, 3].includes(badge.user_badge.badge_id)) {
                     this.activeBadge = badge
@@ -104,16 +102,17 @@ export default {
                     this.remaining = 5 - this.progress
                     this.message = `You have registered ${this.progress} house(s) so far. ${this.remaining} more to go. Keep it up!` 
                 }
-                else{
+                /* else{
                     this.activeBadge = {title: 'Property Debut',description:'Register 1st property'}
                     this.activeImage = 'https://res.cloudinary.com/dc8ckrwlq/image/upload/v1716974274/badges/property/property_bronze_xwrwv2.png'
                     this.progress= this.user.totalOwnedProperties
                     this.progressValue = (this.progress / 5) * 100
                     this.message = `You need to register one property to earn this badge.`
-                }
+                } */
             });
             }
-            if(badge == 'booking'){
+            if(badge == 'booking' && this.isClassActiveBooking == false){
+                this.showModal = !this.showModal;
                 this.badges.forEach(badge => {
                 if ([4, 5, 6].includes(badge.user_badge.badge_id)) {
                     this.activeBadge = badge
@@ -126,16 +125,17 @@ export default {
                     this.remaining = 5 - this.progress
                     this.message = `You have booked ${this.progress} house(s) so far. ${this.remaining} more to go. Keep it up!` 
                 }
-                else{
+                /* else{
                     this.activeBadge = {title: 'First Time Booker',description:'First booking'}
                     this.activeImage = 'https://res.cloudinary.com/dc8ckrwlq/image/upload/v1716974613/badges/booking/booking_bronze_uteeou.png'
                     this.progress= this.user.totalRentedProperties
                     this.progressValue = (this.progress / 5) * 100
                     this.message = `You need to booked one property to earn this badge.`
-                }
+                } */
             });
             }
-            if(badge == 'favorite'){
+            if(badge == 'favorite' && this.isClassActiveFavorite == false) {
+                this.showModal = !this.showModal;
                 this.badges.forEach(badge => {
                 if ([7, 8, 9].includes(badge.user_badge.badge_id)) {
                     this.activeBadge = badge
@@ -148,16 +148,17 @@ export default {
                     this.remaining = 5 - this.progress
                     this.message = `You have favorited ${this.progress} house(s) so far. ${this.remaining} more to go. Keep it up!` 
                 }
-                else{
+                /* else{
                     this.activeBadge = {title: 'Favorite Finder',description:'Add 1st property to fav'}
                     this.activeImage = 'https://res.cloudinary.com/dc8ckrwlq/image/upload/v1716974913/badges/favorite/favourite_bronze_pt0l9c.png'
                     this.progress= this.user.totalFavoriteProperties
                     this.progressValue = (this.progress / 5) * 100
                     this.message = `You need to add one property to your favorited list to earn this badge.`
-                }
+                } */
             });
             }
-            if(badge == 'review'){
+            if(badge == 'review' && this.isClassActiveReview == false) {
+                this.showModal = !this.showModal;
                 this.badges.forEach(badge => {
                 if ([10, 11, 12].includes(badge.user_badge.badge_id)) {
                     this.activeBadge = badge
@@ -170,16 +171,17 @@ export default {
                     this.remaining = 5 - this.progress
                     this.message = `You have reviewed ${this.progress} house(s) so far. ${this.remaining} more to go. Keep it up!` 
                 }
-                else{
+                /* else{
                     this.activeBadge = {title: 'Review Rookie',description:'Register 1st review'}
                     this.activeImage = 'https://res.cloudinary.com/dc8ckrwlq/image/upload/v1716975258/badges/review/review_bronze_b7vmqz.png'
                     this.progress= this.user.totalPropertyReviews
                     this.progressValue = (this.progress / 5) * 100
                     this.message = `You need to review one property to earn this badge.`
-                }
+                } */
             });
             }
-            if(badge == 'country'){
+            if(badge == 'country' && this.isClassActiveCountry == false){
+                this.showModal = !this.showModal;
                 this.badges.forEach(badge => {
                 if ([13, 14, 15].includes(badge.user_badge.badge_id)) {
                     this.activeBadge = badge
@@ -192,13 +194,13 @@ export default {
                     this.remaining = 6 - this.progress
                     this.message = `You have visited ${this.progress} country(s) so far. ${this.remaining} more to go. Keep it up!` 
                 }
-                else{
+               /*  else{
                     this.activeBadge = {title: 'Adventure Seeker',description:'Booking in 2 different countries'}
                     this.activeImage = 'https://res.cloudinary.com/dc8ckrwlq/image/upload/v1716975471/badges/country/country_bronze_zfpc8k.png'
                     this.progress= this.user.totalUniqueCountries
                     this.progressValue = (this.progress / 6) * 100
                     this.message = `You need to visited two countries to earn this badge.`
-                }
+                } */
             });
             }
             

@@ -45,12 +45,16 @@ export default {
             bookings: null,
             past_bookings: null,
             favorites_properties: null,
+            properties: null,
         };
     },
     async created() {
         const token = sessionStorage.getItem('jwt');
+        let query= {};
+        query.status = 'upcoming'
         await this.fetchLoggedUser();
-        await useUserStore().fetchBookingsUser(token);
+        this.bookings = await useUserStore().fetchBookingsUser(token,query);
+        
         this.apiRequestComplete = true;
     },
     methods: {
@@ -93,6 +97,9 @@ export default {
             }
             if (componentName === 'FavoritesComponent') {
                 this.favorites_properties = await useUserStore().fetchFavoritesProperties(token);
+            }
+            if (componentName === 'PropertiesComponent') {
+                this.properties = await useUserStore().fetchUserProperties(token);
             }
             
         },
@@ -325,7 +332,7 @@ export default {
             </div>
             <hr>
             <div class="profile-content">
-                <component :is="currentComponent" :bookings="this.bookings" :past_bookings="this.past_bookings" :favorites_properties="this.favorites_properties" :user="this.user"/>       
+                <component :is="currentComponent" :bookings="this.bookings" :past_bookings="this.past_bookings" :favorites_properties="this.favorites_properties" :user="this.user" :properties="this.properties"/>       
                     <!-- v-for="property in properties.slice(0,3)"-->
                     <!-- <BookingsComponent v-for="property in properties.slice(0,3)"/> -->
             </div>
@@ -369,6 +376,7 @@ export default {
     height: 20%;
     left: 45%;
     top: 25%;
+    border-radius: 100%;
 }
 
 /* Modal */

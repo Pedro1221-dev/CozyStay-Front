@@ -68,14 +68,19 @@
     methods: {
       async resetPassword() {
         try {
-          const response = await patch(`users/reset-password/${this.token}`, { password: this.password, confirmPassword: this.confirmPassword});
-          console.log(response);
-          this.toast.success('Password reset successfully!');
-          setTimeout(() => {
-            router.push({
-              path: '/',
-            });
-          }, 3000);
+          if (!this.password || this.password.length < 8 || !/[^A-Za-z0-9]/.test(this.password) || this.password != this.confirmPassword) {
+            this.toast.error('Some error!');
+          }
+          else{
+            const response = await patch(`users/reset-password/${this.token}`, { password: this.password, confirmPassword: this.confirmPassword});
+            console.log(response);
+            this.toast.success('Password reset successfully!');
+            setTimeout(() => {
+              router.push({
+                path: '/',
+              });
+            }, 3000);
+          }
         } catch (error) {
           console.error(error);
         }

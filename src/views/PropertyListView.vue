@@ -170,7 +170,8 @@ created() {
         <CardPropriedade
         v-for="property in properties.slice(0,12)"
         :key="property.property_id"
-        image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRYg2rNFiJzTCRPXETBxp80WLKVMxeLZZbxMGqdKlkAg&s"
+        :id_property="property.property_id"
+        :image="property.photos[0].url_photo"
         :location="`${property.city}, ${property.country}`"
         :title="property.title"
         :rating="property.averageRating"
