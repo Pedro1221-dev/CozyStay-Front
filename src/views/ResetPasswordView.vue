@@ -1,44 +1,41 @@
 <template>
-    <div>
-      <h2>Reset Password</h2>
-      <form>
+  <form class="form">
+    <h2>Reset Password</h2>
+    <v-text-field 
+        clearable
+        v-model="password" 
+        type="password" 
+        label="Password" 
+        variant="underlined"
+        hint="Must have at least 6 characters"
+        :rules="rules.password"
+        class="mt-2 text-h1 custom-class-text-input" 
+        ></v-text-field>
         <v-text-field 
-                          clearable
-                          v-model="password" 
-                          type="password" 
-                          label="Password" 
-                          variant="underlined"
-                          hint="Must have at least 6 characters"
-                          :rules="rules.password"
-                          class="mt-2 text-h1 custom-class-text-input" 
-                          ></v-text-field>
-                          <v-text-field 
-                          clearable
-                          v-model="confirmPassword" 
-                          type="password" 
-                          label="Password Confirmation" 
-                          variant="underlined"
-                          hint="The password should match"
-                          :rules="rules.confirmPassword"
-                          class="mt-2 mb-8 text-h1 custom-class-text-input" 
-                          ></v-text-field>
-                          <v-btn variant="tonal"
-                      size="x-large"
-                      rounded="lg"
-                      color="white"
-                      block 
-                      class="registerButton" @click="resetPassword">Seguinte</v-btn>
-      </form>
-    </div>
-  </template>
+        clearable
+        v-model="confirmPassword" 
+        type="password" 
+        label="Password Confirmation" 
+        variant="underlined"
+        hint="The password should match"
+        :rules="rules.confirmPassword"
+        class="mt-2 mb-8 text-h1 custom-class-text-input" 
+        ></v-text-field>
+        <v-btn variant="tonal"
+    size="x-large"
+    rounded="lg"
+    color="white"
+    block 
+    class="registerButton" @click="resetPassword">Continue</v-btn>
+  </form>
   
-  <script>
+</template>
+  
+<script>
   import { patch } from '@/api/api'; 
   import { useToast } from "vue-toastification";
   import router from '@/router'; 
 
-
-  
   export default {
     setup() {
       // Get toast interface
@@ -68,19 +65,14 @@
     methods: {
       async resetPassword() {
         try {
-          if (!this.password || this.password.length < 8 || !/[^A-Za-z0-9]/.test(this.password) || this.password != this.confirmPassword) {
-            this.toast.error('Some error!');
-          }
-          else{
-            const response = await patch(`users/reset-password/${this.token}`, { password: this.password, confirmPassword: this.confirmPassword});
-            console.log(response);
-            this.toast.success('Password reset successfully!');
-            setTimeout(() => {
-              router.push({
-                path: '/',
-              });
-            }, 3000);
-          }
+          const response = await patch(`users/reset-password/${this.token}`, { password: this.password, confirmPassword: this.confirmPassword});
+          console.log(response);
+          this.toast.success('Password reset successfully!');
+          setTimeout(() => {
+            router.push({
+              path: '/',
+            });
+          }, 3000);
         } catch (error) {
           console.error(error);
         }
@@ -88,8 +80,31 @@
     },
   };
   </script>
-  <style scoped>
-    .custom-class-text-input {
+  
+<style scoped>
+
+  h2{
+    display: flex;
+    color: #193D4E;
+    justify-content: center;
+    font-size: 26px;
+    font-weight: 400;
+  }
+
+  .form{
+    background: rgba(165, 232, 226, 0.45);
+    width: 50%;
+    height: 450px;
+    border-radius: 20px;
+    padding: 5%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 8% 25% 5% 25%;
+
+  }
+
+  .custom-class-text-input {
     font-family: 'Montserrat', sans-serif;
     font-size: 1.5rem;
     font-style: normal;
@@ -99,11 +114,17 @@
   }
 
   .registerButton {
-  background-color: #193D4E!important;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1rem;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-}
+    width: 10px !important;
+    background-color: #193D4E!important;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+  }
+
+  ::v-deep .registerButton .v-btn__content {
+    width: 10px !important; /* Set the width as per your requirement */
+  }
+
 </style>
