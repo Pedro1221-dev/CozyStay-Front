@@ -100,10 +100,13 @@ import { useToast } from "vue-toastification";
     position: absolute;
     top: 1.125rem;
     left: 0.75rem;
-    width: 12rem;
+    width: 14rem;
     height: 2.5rem;
     opacity: 0.8;
     border-radius: 40px; /* Adiciona cantos arredondados ao fundo da localização */
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
 }
 
 .icon-location{
