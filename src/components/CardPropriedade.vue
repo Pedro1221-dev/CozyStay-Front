@@ -41,12 +41,17 @@ import { useToast } from "vue-toastification";
      methods: { 
         async addFavorite(id){ 
             const response = await useUserStore().addFavorite(id); 
+            const token = sessionStorage.getItem('jwt')
             console.log(response);
-            if(response.success != false){ 
-                this.isFavorite = true; 
-                this.toast.success('Property added to favorites!'); 
-            } else { 
-                this.toast.error(`Property already on favorites!`); 
+            if(token == null){
+                this.toast.error('You need to be logged in to add a property to favorites!');
+            } else {
+                if(response.success != false){ 
+                    this.isFavorite = true; 
+                    this.toast.success('Property added to favorites!'); 
+                } else { 
+                    this.toast.error(`Property already on favorites!`); 
+                }
             }
         } 
     }, 

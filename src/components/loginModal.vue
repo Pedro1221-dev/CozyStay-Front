@@ -461,14 +461,23 @@ export default {
         },
 
         async login(){
-          try {
-            const userStore = useUserStore();
-            await userStore.login(this.email_login, this.password_login);
-            this.$emit('login-success');
-            this.toast.success('Login successful!')
-          } catch (error) {
+          if (!this.email_login || !this.password_login) {
             this.toast.error('Login failed: Email or Password Incorrect.');
             return;
+          }
+          const userStore = useUserStore();
+          try {
+              const response = await userStore.login(this.email_login, this.password_login);
+              if(response.success){
+                this.$emit('login-success');
+                this.toast.success('Login successful!')
+              }
+              else{
+                this.toast.error('Login failed: Email or Password Incorrect.');
+              }
+          } catch (error) {
+              console.error('Login failed: ', error);
+              this.toast.error('Login failed!')
           }
         },
 

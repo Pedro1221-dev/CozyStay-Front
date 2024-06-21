@@ -53,8 +53,12 @@ export default {
         let query= {};
         query.status = 'upcoming'
         await this.fetchLoggedUser();
-        this.bookings = await useUserStore().fetchBookingsUser(token,query);
-        
+        try {
+            this.bookings = await useUserStore().fetchBookingsUser(token,query);
+        } catch (error) {
+            console.error("Error fetching user bookings: ", error);
+            this.bookings = []; // default to an empty array if there's an error
+        }
         this.apiRequestComplete = true;
     },
     methods: {

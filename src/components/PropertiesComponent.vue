@@ -1,6 +1,6 @@
 <template>
     <div class="cards">
-        <div class="card" v-for="property in properties" :key="property.id" @click="property.property_id">
+        <div class="card" v-for="property in properties" :key="property.id" @click="goToProperty(property.property_id)">
             <div class="card-image">
                 <div class="location">
                     <span class="material-symbols-outlined icon-location">location_on</span>

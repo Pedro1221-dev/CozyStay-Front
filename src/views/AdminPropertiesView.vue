@@ -51,17 +51,11 @@
                         <p>{{ item.status.charAt(0).toUpperCase() + item.status.slice(1) }}</p>
                     </div>
                 </template>
-                <template v-slot:item.rented="{ item }">
-                    <div :class="['status', item.rented === 'Available' ? 'available' : 'booked']">
-                        <p>{{ item.rented }}</p>
-                    </div>
-                </template>
-
                 <template v-slot:item.actions="{ item }">
                     <div class="actions">
                         <span class="material-icons" v-if="item.status === 'pending'" @click="approveProperty(item)">check_circle</span>  
                         <span class="material-icons" v-if="item.status === 'pending'" @click="blockProperty(item)">block</span>
-                        <span class="material-icons" v-if="item.status === 'approved'" @click="deleteProperty(item)">delete</span>                    
+                        <span class="material-icons" v-if="item.status === 'available'" @click="deleteProperty(item)">delete</span>                    
 
                     </div>
                 </template>
@@ -72,6 +66,7 @@
 
 <script>
 import Sidebar from '../components/Sidebar.vue';
+import { usePropertiesStore } from "@/stores/property";
 
 export default {
     components: {
@@ -84,10 +79,9 @@ export default {
             itemsPerPage: 5,
             headers: [
                 { title: 'Photo', align: 'center', sortable: false, key: 'photo' },
-                { title: 'Name', key: 'name', align: 'center' },
-                { title: 'Username', key: 'username', align: 'center' },
-                { title: 'Reviews', key: 'reviews', align: 'center' },
-                { title: 'Rented', key: 'rented', align: 'center' },
+                { title: 'Name', key: 'title', align: 'center' },
+                { title: 'Username', key: 'owner.name', align: 'center' },
+                { title: 'Reviews', key: 'totalNumberReviews', align: 'center' },
                 { title: 'Status', key: 'status', align: 'center' },
                 { title: 'Actions', key: 'actions', sortable: false, align: 'center' }
             ],
@@ -126,9 +120,24 @@ export default {
                 }            
             }        
         },
-        approveProperty(property) {
+         async approveProperty(property) {
+            const response = await usePropertiesStore().changeStatus(property.property_id);
+            console.log(response);
             if (property.status === 'pending') {
                 property.status = 'approved';
+            }
+        },
+        async fetchProperties() {
+            this.loading = true;
+            try {
+                const properties = await usePropertiesStore().getPendingProperties();
+                this.serverItems = properties.data;
+                this.totalItems = properties.length;
+                console.log(this.serverItems)
+            } catch (error) {
+                console.error('Error fetching properties:', error);
+            } finally {
+                this.loading = false;
             }
         }
     },
@@ -152,19 +161,7 @@ export default {
         },
     },
     mounted() {
-        const properties = [
-            { photo: '', name: 'Cozy Cabin Retreat', username: 'Jane Smith', reviews: 4.5, rented: 'Booked', status: 'approved' },
-            { photo: '', name: 'Seaside Paradise', username: 'Michael Johnson', reviews: 4.2, rented: 'Booked', status: 'pending' },
-            { photo: '', name: 'Mountain Getaway', username: 'Emily Davis', reviews: 4.8, rented: 'Booked', status: 'approved' },
-            { photo: '', name: 'Lakefront Oasis', username: 'David Wilson', reviews: 4.6, rented: 'Available', status: 'approved' },
-            { photo: '', name: 'Urban Loft', username: 'Sarah Thompson', reviews: 4.3, rented: 'Available', status: 'pending' },
-            { photo: '', name: 'Rustic Cottage', username: 'Daniel Anderson', reviews: 4.7, rented: 'Available', status: 'approved' },
-            { photo: '', name: 'Luxury Villa', username: 'Olivia Martinez', reviews: 4.9, rented: 'Booked', status: 'approved' },
-            { photo: '', name: 'Beachfront Bungalow', username: 'James Taylor', reviews: 4.4, rented: 'Available', status: 'pending' },
-            { photo: '', name: 'Country Farmhouse', username: 'Sophia Hernandez', reviews: 4.6, rented: 'Booked', status: 'approved' },
-        ];
-        this.serverItems = properties;
-        this.totalItems = properties.length;
+        this.fetchProperties()
         this.loading = false;
     }
 };

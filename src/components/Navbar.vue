@@ -134,6 +134,9 @@
       changeToRegisterProperty() {
         this.$router.push('/property/register');
       },
+      changeToAdmin() {
+        this.$router.push('/admin');
+      },
       async fetchLoggedUser() {
         const token = sessionStorage.getItem('jwt'); // get token from session storage
         try {
@@ -153,6 +156,7 @@
       },
       logout() {
         sessionStorage.removeItem('jwt');
+        this.$router.push('/');
       },
     },
   };
