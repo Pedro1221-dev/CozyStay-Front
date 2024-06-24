@@ -208,7 +208,10 @@
                         hide-details
                         class="privacyPolicyCheckbox"
                       ></v-checkbox>
-                      <a href="#" class="privacyPolicy">Privacy Policy</a>
+                      <a href="#" @click.prevent="openPrivacyPolicyModal" class="privacyPolicy">Privacy Policy</a>
+                      <!-- Modal da política de privacidade -->
+                      <div v-if="showPrivacyPolicy" class="overlay"></div>
+                      <PrivacyPolicyComponent :showModal="showPrivacyPolicy" @update:showModal="showPrivacyPolicy = $event"/>                    
                     </div>
                     <v-btn 
                       variant="tonal"
@@ -220,6 +223,7 @@
                       @click="next"
                       style="width: 300px; margin-left:25%;"
                       >Register</v-btn>
+
                   </template>
                   <template v-slot:item.4>
                     <span class="otp-title">Confirm Your Email</span>
@@ -249,6 +253,7 @@ Confirm 'Spam' or Trash, as the e-mail can be found there</div>
                         </v-form>
                       </v-sheet>
                     </v-card>
+  
                   </template>
                 </v-stepper>
               </v-window-item>
@@ -257,12 +262,15 @@ Confirm 'Spam' or Trash, as the e-mail can be found there</div>
         </div>
       </v-card>
     </v-dialog>
+    
 </template>
   
 <script>
 import { useUserStore } from "@/stores/user";
 import { useToast } from "vue-toastification";
 import { post } from '@/api/api';
+import PrivacyPolicyComponent from '../components/PrivacyPolicyComponent.vue';
+
 
 export default {
   setup() {
@@ -272,8 +280,12 @@ export default {
     // Make it available inside methods
     return { toast }
   },
+  components: {
+    PrivacyPolicyComponent,
+  },
     data() {
       return {
+        showPrivacyPolicy: false,
         user_id: null,
         step:1,
         privacyPolicyAccepted: false,
@@ -349,6 +361,9 @@ export default {
       },
     },
     methods: {
+        openPrivacyPolicyModal() {
+          this.showPrivacyPolicy = true;
+        },
         toggleOverlay() {
             console.log(this.overlayToLeft);
             this.overlayToLeft = this.activeTab === 'login';
