@@ -200,7 +200,7 @@
                         </v-row>
                       </v-container>
                     </v-card>
-                    <div class="d-flex align-center mt-n15 margin-5">
+                    <div class="d-flex align-center mt-n15 margin-5" style="position:relative; z-index:2">
                       <!-- Checkbox para a política de privacidade -->
                       <v-checkbox
                         v-model="privacyPolicyAccepted"
@@ -208,7 +208,7 @@
                         hide-details
                         class="privacyPolicyCheckbox"
                       ></v-checkbox>
-                      <a href="#" @click.prevent="openPrivacyPolicyModal" class="privacyPolicy">Privacy Policy</a>
+                      <span @click.prevent="openPrivacyPolicyModal" class="privacyPolicy" style="cursor: pointer !important">Privacy Policy</span>
                       <!-- Modal da política de privacidade -->
                       <div v-if="showPrivacyPolicy" class="overlay"></div>
                       <PrivacyPolicyComponent :showModal="showPrivacyPolicy" @update:showModal="showPrivacyPolicy = $event"/>                    
