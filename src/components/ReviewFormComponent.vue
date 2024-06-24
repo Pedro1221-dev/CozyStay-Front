@@ -53,6 +53,7 @@
 <script>
 import { useBookingStore } from "../stores/booking.js";
 import { useToast } from "vue-toastification";
+import { post } from '../api/api.js';
 
 
 export default {
@@ -92,15 +93,30 @@ export default {
         setRating(starNumber) {
             this.rating = this.rating === starNumber ? 0 : starNumber;
         },
-        submitReview() {
-            if (this.rating && this.reviewText) {
-                this.$emit('submit-review', { rating: this.rating, reviewText: this.reviewText });
-                this.closeReviewModal();
-            } else{
-                this.toast.error("Please provide a rating and a comment.");            
-            }
-        },
+        async submitReview() {
+      if (this.rating && this.reviewText) {
+        const booking_id = this.idproperty; 
+        const data = {
+          number_stars: this.rating, 
+          comment: this.reviewText,
+        };
+        const token = sessionStorage.getItem('jwt');
+        try {
+          const response = await post(`/bookings/${booking_id}/rate`, data, token); 
+            this.rating = 0;
+            this.reviewText = '';
+          this.closeReviewModal();
+            this.toast.success("Review submitted successfully!");
+        } catch (error) {
+          console.error("Failed to submit review:", error);
+          // Trate o erro conforme necessário
+        }
+      } else {
+        this.toast.error("Please provide a rating and a comment.");
+      }
     },
+    },
+    //this.$emit('submit-review', { rating: this.rating, reviewText: this.reviewText });
     watch: {
         showModal(newVal) {
             if (newVal) {
