@@ -33,9 +33,7 @@
                 <i class="material-icons">logout</i>
                 <router-link to="/">Logout</router-link>
             </div>
-        </div>
-       
-                
+        </div>     
     </div>
 </template>
 
@@ -101,6 +99,11 @@
 <style scoped>
 .profile{
     font-size: 100px;
+}
+
+img{
+    width: 130px;
+    border-radius: 100%;
 }
 
 

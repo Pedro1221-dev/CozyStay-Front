@@ -69,7 +69,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 55;
+    z-index: 99;
   }
 
   .PrivacyPolicyModal{

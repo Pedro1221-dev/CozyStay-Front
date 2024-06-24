@@ -7,7 +7,7 @@
                     <span>{{ booking.Property.city }}, {{ booking.Property.country }}</span>
                 </div>
                 <div class="review">
-                    <span class="material-symbols-outlined icon-review">reviews</span>
+                    <span class="material-symbols-outlined icon-review" @click.stop="openReviewForm">reviews</span>                
                 </div>
                 <img :src="booking.Property.photos[0].url_photo" alt="Property Image">
             </div>
@@ -18,27 +18,46 @@
                 <p class="info">{{ booking.check_in_date }}  • {{ booking.check_out_date }} </p> 
                 <!-- Remover datas -->
             </div>
+            <ReviewFormComponent 
+                v-if="booking && booking.Property && booking.Property.property_id" 
+                :showModal="showReviewForm" 
+                @update:showModal="showReviewForm = $event" 
+                :idproperty="booking.Property.property_id"
+                :propertyName="booking.Property.title"
+                @click.stop
+            />            
+            <div v-if="showReviewForm" class="overlay"></div>
         </div>
     </div>
-    
-
 </template>
-
-
+ 
 <script>
-     export default {
-        props: {
-            past_bookings: {
+import ReviewFormComponent from "../components/ReviewFormComponent.vue"
+
+export default {
+    components:{
+        ReviewFormComponent,
+    },
+    data() {
+        return {
+            showReviewForm: false,
+        };
+    },
+    props: {
+        past_bookings: {
             type: Array,
             required: true,
-            },
         },
-        methods: {
-            goToProperty(propertyId) {
-                this.$router.push({ path: `/property/${propertyId}` });
-            },
+    },
+    methods: {
+        openReviewForm() {
+            this.showReviewForm = true;
         },
-    };
+        goToProperty(propertyId) {
+            this.$router.push({ path: `/property/${propertyId}` });
+        },
+    },
+};
 </script>
 
 <style scoped>

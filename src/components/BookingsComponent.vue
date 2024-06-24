@@ -83,14 +83,20 @@ export default {
         openDeleteModal(id) {
             this.isDeleteModalOpen = true;
             this.booking_id = id;
+            document.body.style.overflow = 'hidden';            
+            document.body.classList.add('no-scroll');
         },
         closeDeleteModal() {
             this.isDeleteModalOpen = false;
+            document.body.style.overflow = 'hidden';            
+            document.body.classList.remove('no-scroll');
         },
         goToProperty(propertyId) {
             this.$router.push({ path: `/property/${propertyId}` });
         },
+
     },
+
 };
 </script>
 
@@ -230,6 +236,7 @@ export default {
     width: 50%;
     height: 45%;
     top: 20%;
+    overflow: hidden;
 
 }
 
