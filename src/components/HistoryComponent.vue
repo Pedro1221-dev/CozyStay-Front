@@ -6,20 +6,17 @@
                     <span class="material-symbols-outlined icon-location">location_on</span>
                     <span>{{ booking.Property.city }}, {{ booking.Property.country }}</span>
                 </div>
-                <div class="review">
+                <div class="review" v-if="canOpenReviewForm(booking)">
                     <span class="material-symbols-outlined icon-review" @click.stop="openReviewForm">reviews</span>                
                 </div>
                 <img :src="booking.Property.photos[0].url_photo" alt="Property Image">
             </div>
             <div class="card-content">
-                <div class="title-rating">
-                    <h2>{{ booking.Property.title}}</h2>
-                </div>
-                <p class="info">{{ booking.check_in_date }}  • {{ booking.check_out_date }} </p> 
-                <!-- Remover datas -->
+                <h2>{{ booking.Property.title}}</h2>
+                <p class="info">{{ booking.check_in_date }} • {{ booking.check_out_date }}</p>
             </div>
             <ReviewFormComponent 
-                v-if="booking && booking.Property && booking.Property.property_id" 
+                v-if="booking && booking.Property && booking.Property.property_id && showReviewForm" 
                 :showModal="showReviewForm" 
                 @update:showModal="showReviewForm = $event" 
                 :idproperty="booking.Property.property_id"
@@ -55,6 +52,10 @@ export default {
         },
         goToProperty(propertyId) {
             this.$router.push({ path: `/property/${propertyId}` });
+        },
+        canOpenReviewForm(booking) {
+            // Check if the booking's property has null values for the specified fields
+            return booking.number_stars === null || booking.comment === null || booking.rating_date === null;
         },
     },
 };

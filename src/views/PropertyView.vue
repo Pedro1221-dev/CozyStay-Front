@@ -33,8 +33,9 @@ export default {
     // Methods
     const fetchProperty = async () => {
       const response = await usePropertiesStore().fetchOneProperty(propertyId.value);
-      property.value = response.data;  // assuming the API response has a 'data' field
+      property.value = response.data;  
       console.log(property.value);
+      
 
       const bookedDates = response.data.bookedDates;
       // Convert the booked dates to the format required by vuejs-datepicker
@@ -76,6 +77,16 @@ export default {
     selectOption(option) {
       this.selectedOption = option;
       this.isOpen = false;
+      console.log('option',this.selectedOption);
+      if( this.selectedOption === 'Latest') {
+        this.property.rating.sort((a, b) => new Date(b.rating_date) - new Date(a.rating_date));
+      } else if( this.selectedOption === 'Oldest') {
+        this.property.rating.sort((a, b) => new Date(a.rating_date) - new Date(b.rating_date));
+      } else if( this.selectedOption === 'Highest Rated') {
+        this.property.rating.sort((a, b) => b.number_stars - a.number_stars);
+      } else if( this.selectedOption === 'Lowest Rated') {
+        this.property.rating.sort((a, b) => a.number_stars - b.number_stars);
+      }
     },
     
     formatFacilityName(name) {
