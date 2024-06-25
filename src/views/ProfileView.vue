@@ -119,25 +119,34 @@ export default {
         },
         async saveChanges() {
             const updates = new FormData();
+            // Append email and password as before
             if (this.email) updates.append('email', this.email);
             if (this.password) updates.append('password', this.password);
-            if (this.bannerImage) updates.append('url_banner', this.bannerImage);
-            if (this.selectedFile) {
+
+            // Check and append bannerImage if it's a Blob/File
+            if (this.bannerImage && (this.bannerImage instanceof Blob || typeof this.bannerImage === 'string')) {
+                updates.append('url_banner', this.bannerImage);
+            }
+
+            // Check and append selectedFile if it's a File
+            if (this.selectedFile && this.selectedFile instanceof File) {
                 updates.append('url_avatar', this.selectedFile, this.selectedFile.name);
                 console.log('Selected file:', this.selectedFile);
             }
+
             try {
-                const token = sessionStorage.getItem('jwt'); // get token from session storage
+                const token = sessionStorage.getItem('jwt');
                 const response = await useUserStore().updateUser(updates, token);
-                console.log('User updated:', response)
-                // Handle the response here, e.g. show a success message
+                console.log('User updated:', response);
+                // Handle success
             } catch (error) {
-                // Handle the error here, e.g. show an error message
+                // Handle error
             }
+
+            // Post-update actions
             this.fetchLoggedUser();
             this.isModalOpen = false;
             document.body.classList.remove('no-scroll');
-
         },
         fileSelected(event) {
             this.selectedFile = event.target.files[0];

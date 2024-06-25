@@ -175,8 +175,8 @@ export default {
             <div class="about-us" id="about-us">
                 <h1>About Us</h1>
                 <div>
-                    <p>Bem-vindo ao CozyStay: Encontre o seu Refúgio Perfeito</p>
-                    <p>Explore uma variedade de propriedades acolhedoras em destinos deslumbrantes ao redor do mundo com o CozyStay. Encontre o lugar ideal para sua próxima aventura, onde o conforto e a segurança se encontram. Reserve agora e embarque em uma jornada inesquecível.</p>
+                    <p>Welcome to CozyStay: Find your Perfect Getaway</p>
+                    <p>Explore a variety of cozy properties in stunning destinations around the world with CozyStay. Find the ideal place for your next adventure, where comfort and safety meet. Book now and embark on an unforgettable journey.</p>
                 </div>
                 <div class="about-us-images">
                     <div class="left">

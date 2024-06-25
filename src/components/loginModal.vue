@@ -112,7 +112,7 @@
                       rounded="lg"
                       color="white"
                       block 
-                      class="registerButton" @click="next">Seguinte</v-btn>
+                      class="registerButton" @click="next">Next</v-btn>
                         </v-form>
                     </v-sheet>
                     </v-card>
@@ -167,7 +167,7 @@
                       rounded="lg"
                       color="white" 
                       block 
-                      class="registerButton margin-42" @click="next">Seguinte</v-btn>
+                      class="registerButton margin-42" @click="next">Next</v-btn>
                         </v-form>
                     </v-sheet>
                   </v-card>

@@ -588,7 +588,6 @@ h1{
         img{
             width: 125px;
             height: 160px;
-            border-radius:  0px;
         }
     }
     .top-right img {
